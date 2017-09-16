@@ -10,31 +10,31 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Disabled
 public class DriveFunctions extends LinearOpMode
 {
-    //Define DC motors
+    //Define DC Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
-    DcMotor spinnerTop;
-    DcMotor spinnerBottom;
-    DcMotor shooterLeft;
-    DcMotor shooterRight;
+    DcMotor glyphGrabber;
 
-    //Define sensors and CDI
-    ColorSensor colorSensorLeft;
-    ColorSensor colorSensorRight;
-    ColorSensor colorSensorBottom;
+    //Define Servo Motors
+    Servo leftGlyphGrabber;
+    Servo rightGlyphGrabber;
+
+    //Define Sensors and the CDI
+    ColorSensor colorSensor;
     DeviceInterfaceModule CDI;
 
     /**
      * Initialize all the harware all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor spinnerTop, DcMotor spinnerBottom, DcMotor shooterLeft, DcMotor shooterRight, ColorSensor colorSensorLeft, ColorSensor colorSensorRight, ColorSensor colorSensorBottom, DeviceInterfaceModule CDI)
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrabber, Servo leftGlyphGrabber, Servo rightGlyphGrabber, ColorSensor colorSensor, DeviceInterfaceModule CDI)
     {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC motors
@@ -42,15 +42,12 @@ public class DriveFunctions extends LinearOpMode
         this.leftMotorBack = leftMotorBack;
         this.rightMotorFront = rightMotorFront;
         this.rightMotorBack = rightMotorBack;
-        this.spinnerTop = spinnerTop;
-        this.spinnerBottom = spinnerBottom;
-        this.shooterLeft = shooterLeft;
-        this.shooterRight = shooterRight;
+        this.leftGlyphGrabber = leftGlyphGrabber;
+        this.rightGlyphGrabber = rightGlyphGrabber;
+        this.glyphGrabber = glyphGrabber;
 
         //Initialize sensors and CDI
-        this.colorSensorLeft = colorSensorLeft;
-        this.colorSensorRight = colorSensorRight;
-        this.colorSensorBottom = colorSensorBottom;
+        this.colorSensor = colorSensor;
         this.CDI = CDI;
     }
 
@@ -60,12 +57,7 @@ public class DriveFunctions extends LinearOpMode
     public void initializeMotorsAndSensors()
     {
         //Set the sensors to the modes that we want, and set their addresses
-        colorSensorBottom.enableLed(true);
-        colorSensorBottom.setI2cAddress(I2cAddr.create8bit(0x3a));
-        colorSensorLeft.enableLed(false);
-        colorSensorLeft.setI2cAddress(I2cAddr.create8bit(0x3c));
-        colorSensorRight.enableLed(false);
-        colorSensorRight.setI2cAddress(I2cAddr.create8bit(0x3e));
+        colorSensor.enableLed(false);
 
         //Reverse some motors and keep others forward
         leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -98,27 +90,6 @@ public class DriveFunctions extends LinearOpMode
         setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
     }
 
-    /**
-     * If this function is called, stop the attachments
-     */
-    public void stopAttachments()
-    {
-        //Set all attachment motor powers to zero
-        spinnerTop.setPower(0.0);
-        spinnerBottom.setPower(0.0);
-        shooterRight.setPower(0.0);
-        shooterLeft.setPower(0.0);
-    }
-
-    /**
-     * If this function is called, stop everything
-     */
-    public void stopEverything()
-    {
-        //Stop attachments and the drive motors
-        stopDriving();
-        stopAttachments();
-    }
 
     /**
      * If this function is called, turn on the drive motors at the given powers to make it drive forward or backwards
@@ -155,68 +126,6 @@ public class DriveFunctions extends LinearOpMode
     {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift
         setDriveMotorPowers(-shift, shift, shift, -shift);
-    }
-
-    /**
-     * Toggle the spinner to make it stop, go forwards, and go backwards whenever we want
-     * @param spinnerMode tells the mode of the spinner, that is set in the teleop program
-     */
-    public void spinner(int spinnerMode)
-    {
-        if (spinnerMode == 0)
-        {
-            //If the spinner mode is 0, stop both spinners
-            spinnerTop.setPower(0.0);
-            spinnerBottom.setPower(0.0);
-        }
-        if (spinnerMode == 1)
-        {
-            //If the spinner mode is 1, send the top spinner forwards, and the bottom spinner backwards
-            //The top spinner is purposely slower because otherwise it hits the ball too hard
-            spinnerTop.setPower(0.35);
-            spinnerBottom.setPower(-1.0);
-
-        }
-        if (spinnerMode % 3 == 2)
-        {
-            //If the spinner mode is 1, send the top spinner backwards, and the bottom spinner forwards
-            //The top spinner is purposely slower because otherwise it hits the ball too hard
-            spinnerTop.setPower(-0.35);
-            spinnerBottom.setPower(1.0);
-        }
-    }
-
-    /**
-     * Toggle the shooter
-     * @param shooterCount enables us to toggle the shooter
-     */
-    public void shooterTeleOp(int shooterCount, float power) {
-        if (shooterCount % 2 == 0) {
-            shooterLeft.setPower(0.0);
-            shooterRight.setPower(0.0);
-        }
-
-        if (shooterCount % 2 == 1) {
-            shooterLeft.setPower(power);
-            shooterLeft.setPower(-power);
-        }
-    }
-
-    /**
-     * @param time time for shooter to spin
-     * @throws InterruptedException allows us to use the Thread.sleep function
-     */
-    public void shooterAutonomous(int time) throws InterruptedException {
-        //Turn on the left shooter backwards and the right shooter forwards, both at max power
-        shooterLeft.setPower(-1.0);
-        shooterRight.setPower(1.0);
-
-        //Use the Thread.sleep function, which will run the above two lines for the entered time
-        Thread.sleep(time);
-
-        //After the time has passed by, stop the shooter
-        shooterLeft.setPower(0.0);
-        shooterRight.setPower(0.0);
     }
 
     /**
@@ -346,7 +255,6 @@ public class DriveFunctions extends LinearOpMode
 
         if (value <= 0.09)
         {
-
             return false;
         }
 
@@ -383,81 +291,25 @@ public class DriveFunctions extends LinearOpMode
         return "Red";
     }
 
-    /**
-     * Drives forward slowly until the target color is seen, then shifts into the beacon to press
-     * the button of the correct color
-     * @param color take in our teams color, as that is the color that needs to be pressed
-     * @param colorSensor take in the correct color sensor
-     */
-    public void beaconColorCheck(String color, ColorSensor colorSensor)
-    {
-        //Define some constants to use and avoid magic numbers
-        float drivePower = (float) 0.2;
-        float shiftPower = (float) 0.1;
-        float shiftPowerFast = (float) 0.5;
-        int alignBeaconDistance = 200;
-        int shiftDistance = 1400;
-        int leaveBeaconDistance = 800;
 
-        //While we do not see the beacon, drive forward
-        while (!iSeeAColor(colorSensor))
-        {
-            driveTeleop(-drivePower);
-        }
-
-
-        while (!noPurple(colorSensor))
-        {
-            driveTeleop(-drivePower);
-        }
-
-        //Now we see a color, but possibly not the target color
-        //While we don't see the target color, drive forward
-        while (!whatColor(colorSensor).equals(color))
-        {
-            driveTeleop(-drivePower);
-        }
-
-        driveAutonomous(drivePower, alignBeaconDistance);
-
-        //The robot is aligned to the button of the target color, shift into the button to press it
-        if (color.equals("Red"))
-        {
-            //If we are on red team, right shifting will press the button
-            rightShiftAutonomous(shiftPower, shiftDistance);
-
-            //Come off the beacon
-            leftShiftAutonomous(shiftPowerFast, leaveBeaconDistance);
-        }
-
-        if (color.equals("Blue"))
-        {
-            //If we are on blue team, left shifting will press the button
-            leftShiftAutonomous(shiftPower, shiftDistance);
-
-            //Come off the beacon
-            rightShiftAutonomous(shiftPowerFast, leaveBeaconDistance);
-        }
-    }
-
-    /**
-     * Stops on the white line
-     * Take in a drive power
-     * Use the alpha value, because it measures luminosity, and the white line has a much higher luminosity compared to the mat
-     * The alpha value of the mat is close to zero, and the alpha value of the line is above 50
-     */
-    public void whiteLineStop(float drivePower)
-    {
-        //If the alpha value is less than 20, drive forward
-        //If the below condition is true, we are not on the line
-        while (colorSensorBottom.alpha() < 20)
-        {
-            driveTeleop(drivePower);
-        }
-
-        //When the above condition is no longer true, stop the robot, after which it will be on the line
-        stopDriving();
-    }
+//    /**
+//     * Stops on the white line
+//     * Take in a drive power
+//     * Use the alpha value, because it measures luminosity, and the white line has a much higher luminosity compared to the mat
+//     * The alpha value of the mat is close to zero, and the alpha value of the line is above 50
+//     */
+//    public void whiteLineStop(float drivePower)
+//    {
+//        //If the alpha value is less than 20, drive forward
+//        //If the below condition is true, we are not on the line
+//        while (colorSensorBottom.alpha() < 20)
+//        {
+//            driveTeleop(drivePower);
+//        }
+//
+//        //When the above condition is no longer true, stop the robot, after which it will be on the line
+//        stopDriving();
+//    }
 
     //Empty main
     @Override

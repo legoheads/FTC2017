@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp (name="Legoheads TeleOp ") //Name the class
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp (name="TeleOp") //Name the class
 public class Teleop extends LinearOpMode
 {
     //Define DC Motors
@@ -16,19 +16,14 @@ public class Teleop extends LinearOpMode
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
-    DcMotor shooterLeft;
-    DcMotor shooterRight;
-    DcMotor spinnerTop;
-    DcMotor spinnerBottom;
+    DcMotor glyphGrabber;
 
-    //Define an int to use as the spinner's mode, and an int to use as the shooters mode
-    int spinnerCount = 1;
-    int shooterCount = 1;
+    //Define Servo Motors
+    Servo leftGlyphGrabber;
+    Servo rightGlyphGrabber;
 
     //Define Sensors and the CDI
-    ColorSensor colorSensorLeft;
-    ColorSensor colorSensorRight;
-    ColorSensor colorSensorBottom;
+    ColorSensor colorSensor;
     DeviceInterfaceModule CDI;
 
     //Define floats to be used as joystick and trigger inputs
@@ -47,19 +42,18 @@ public class Teleop extends LinearOpMode
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        spinnerTop = hardwareMap.dcMotor.get("spinnerTop");
-        spinnerBottom = hardwareMap.dcMotor.get("spinnerBottom");
-        shooterLeft = hardwareMap.dcMotor.get("shooterLeft");
-        shooterRight = hardwareMap.dcMotor.get("shooterRight");
+        glyphGrabber = hardwareMap.dcMotor.get("glyphGrabber");
+
+        //Get references to the Servo Motors from the hardware map
+        leftGlyphGrabber = hardwareMap.servo.get("leftGlyphGrabber");
+        rightGlyphGrabber = hardwareMap.servo.get("rightGlyphGrabber");
 
         //Get references to the sensors and the CDI from the hardware map
-        colorSensorBottom = hardwareMap.colorSensor.get("colorSensorBottom");
-        colorSensorLeft = hardwareMap.colorSensor.get("colorSensorLeft");
-        colorSensorRight = hardwareMap.colorSensor.get("colorSensorRight");
+        colorSensor = hardwareMap.colorSensor.get("colorSensor");
         CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, spinnerTop, spinnerBottom, shooterLeft, shooterRight, colorSensorLeft, colorSensorRight, colorSensorBottom, CDI);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrabber, leftGlyphGrabber, rightGlyphGrabber, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -111,39 +105,25 @@ public class Teleop extends LinearOpMode
                 functions.rightTurnTeleop(rightTurn);
             }
 
-
-            //If the dpad is pushed left or right, stop the spinner
-            if (gamepad2.dpad_left || gamepad2.dpad_right)
+            //If the "a" button is pressed, grab the glyph with the DC
+            if (gamepad2.a)
             {
-                spinnerCount = 0;
-                functions.spinner(spinnerCount);
-            }
-            //If the dpad is pressed down, start the spinner forward
-            if (gamepad2.dpad_down)
-            {
-                spinnerCount = 1;
-                functions.spinner(spinnerCount);
-            }
-            //If the dpad is pressed up, start the spinner backward
-            if (gamepad2.dpad_up)
-            {
-                spinnerCount = 2;
-                functions.spinner(spinnerCount);
+                glyphGrabber.setPower(0.5);
+                Thread.sleep((long) 0.5);
+                glyphGrabber.setPower(0.0);
             }
 
-
-            //If the "y" button is pressed, shoot the ball
+            //If the "y" button is pressed, grab the glyph with servos
             if (gamepad2.y)
             {
-                shooterCount+=1;
-                functions.shooterTeleOp(shooterCount, (float) 1.0);
+                leftGlyphGrabber.setPosition(0.5);
+                rightGlyphGrabber.setPosition(0.5);
             }
 
-
-            //Stop all motors when any bumper is pressed
+            //Stop driving when any "b" button is pressed
             if ((gamepad1.b) || (gamepad2.b))
             {
-                functions.stopEverything();
+                functions.stopDriving();
             }
 
             //Update the data

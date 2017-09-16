@@ -6,8 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Blue") //Name the program
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto") //Name the program
 public class auto extends LinearOpMode
 {
     //Define DC Motors
@@ -15,15 +16,14 @@ public class auto extends LinearOpMode
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
-    DcMotor shooterLeft;
-    DcMotor shooterRight;
-    DcMotor spinnerTop;
-    DcMotor spinnerBottom;
+    DcMotor glyphGrabber;
+
+    //Define Servo Motors
+    Servo leftGlyphGrabber;
+    Servo rightGlyphGrabber;
 
     //Define Sensors and the CDI
-    ColorSensor colorSensorLeft;
-    ColorSensor colorSensorRight;
-    ColorSensor colorSensorBottom;
+    ColorSensor colorSensor;
     DeviceInterfaceModule CDI;
 
     //Define a string to use as the color, and set it to blue, since we are blue team
@@ -48,19 +48,18 @@ public class auto extends LinearOpMode
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        spinnerTop = hardwareMap.dcMotor.get("spinnerTop");
-        spinnerBottom = hardwareMap.dcMotor.get("spinnerBottom");
-        shooterLeft = hardwareMap.dcMotor.get("shooterLeft");
-        shooterRight = hardwareMap.dcMotor.get("shooterRight");
+        glyphGrabber = hardwareMap.dcMotor.get("glyphGrabber");
+
+        //Get references to the Servo Motors from the hardware map
+        leftGlyphGrabber = hardwareMap.servo.get("leftGlyphGrabber");
+        rightGlyphGrabber = hardwareMap.servo.get("rightGlyphGrabber");
 
         //Get references to the sensors and the CDI from the hardware map
-        colorSensorBottom = hardwareMap.colorSensor.get("colorSensorBottom");
-        colorSensorLeft = hardwareMap.colorSensor.get("colorSensorLeft");
-        colorSensorRight = hardwareMap.colorSensor.get("colorSensorRight");
+        colorSensor = hardwareMap.colorSensor.get("colorSensor");
         CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, spinnerTop, spinnerBottom, shooterLeft, shooterRight, colorSensorLeft, colorSensorRight, colorSensorBottom, CDI);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrabber, leftGlyphGrabber, rightGlyphGrabber, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
