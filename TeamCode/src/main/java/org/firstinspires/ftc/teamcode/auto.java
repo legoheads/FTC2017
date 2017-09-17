@@ -2,13 +2,14 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto") //Name the program
+@Autonomous(name="Auto") //Name the program
 public class auto extends LinearOpMode
 {
     //Define DC Motors
@@ -41,8 +42,7 @@ public class auto extends LinearOpMode
 //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -68,11 +68,12 @@ public class auto extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
+            //YOUR CODE HERE
+
+
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
-
             //Break the loop after one run
             break;
         }//Close while opModeIsActive loop

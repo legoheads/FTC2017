@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp (name="TeleOp") //Name the class
+@TeleOp(name="TeleOp") //Name the class
 public class Teleop extends LinearOpMode
 {
     //Define DC Motors
@@ -32,11 +35,15 @@ public class Teleop extends LinearOpMode
     float rightTurn;
     float leftTurn;
 
-//***********************************************************************************************************
+    private ElapsedTime runtime = new ElapsedTime();
+
+    //***********************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -60,13 +67,13 @@ public class Teleop extends LinearOpMode
 
         //Wait for start button to be clicked
         waitForStart();
+        runtime.reset();
 
 //***********************************************************************************************************
-    //LOOP BELOW
+        //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Set float variables as the inputs from the joysticks and the triggers
             drive = -gamepad1.left_stick_y;
             shift = - gamepad1.left_stick_x;
@@ -75,27 +82,23 @@ public class Teleop extends LinearOpMode
 
             //Do nothing if joystick is stationary
             //Drive vs Shift on left joystick:
-            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
-            {
+            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0)) {
                 functions.stopDriving();
             }
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shift) > Math.abs(drive))
-            {
+            if (Math.abs(shift) > Math.abs(drive)) {
                 functions.shiftTeleop(shift);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drive) > Math.abs(shift))
-            {
+            if (Math.abs(drive) > Math.abs(shift)) {
                 functions.driveTeleop(drive);
             }
 
 
             //If the left trigger is pushed, turn left at that power
-            if (leftTurn > 0)
-            {
+            if (leftTurn > 0) {
                 functions.leftTurnTeleop(leftTurn);
             }
 
@@ -106,27 +109,27 @@ public class Teleop extends LinearOpMode
             }
 
             //If the "a" button is pressed, grab the glyph with the DC
-            if (gamepad2.a)
-            {
+            if (gamepad2.a) {
                 glyphGrabber.setPower(0.5);
                 Thread.sleep((long) 0.5);
                 glyphGrabber.setPower(0.0);
             }
 
             //If the "y" button is pressed, grab the glyph with servos
-            if (gamepad2.y)
-            {
+            if (gamepad2.y) {
                 leftGlyphGrabber.setPosition(0.5);
+                Thread.sleep(500);
                 rightGlyphGrabber.setPosition(0.5);
             }
 
             //Stop driving when any "b" button is pressed
-            if ((gamepad1.b) || (gamepad2.b))
-            {
+            if ((gamepad1.b) || (gamepad2.b)) {
                 functions.stopDriving();
             }
 
+            //Count time
             //Update the data
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop

@@ -4,15 +4,17 @@ package org.firstinspires.ftc.teamcode;
 //Import necessary items
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Test Color Sensors") //Name the program
-public class colorSensorsTest extends LinearOpMode //CLASS START
-{
+@Disabled
+@TeleOp(name = "Test Color Sensors") //Name the program
+public class colorSensorsTest extends LinearOpMode { //CLASS START
     //Define DC Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -36,8 +38,7 @@ public class colorSensorsTest extends LinearOpMode //CLASS START
 //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -65,8 +66,7 @@ public class colorSensorsTest extends LinearOpMode //CLASS START
 //***************************************************************************************************************************
         //While the op mode is active, loop and read the RGB data from all three sensors.
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
 //            //Convert RGB (red-blue-green) to HSV (hue-saturation-value) and store them into hsvValues
 //            //This makes hsvValues[0] = hue, hsvValues[1] = saturation and hsvValues[2] = value
 //            Color.RGBToHSV(colorSensorBottom.red() * 8, colorSensorBottom.green() * 8, colorSensorBottom.blue() * 8, hsvValuesBottom);
