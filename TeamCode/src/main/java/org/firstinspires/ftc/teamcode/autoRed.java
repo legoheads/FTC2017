@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Auto") //Name the program
-public class auto extends LinearOpMode
+public class autoRed extends LinearOpMode
 {
     //Define DC Motors
     DcMotor leftMotorFront;
@@ -18,48 +18,48 @@ public class auto extends LinearOpMode
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
     DcMotor glyphGrabber;
+    DcMotor glyphLifter;
+    DcMotor relicGrabber;
+    DcMotor relicLifter;
 
     //Define Servo Motors
-    Servo leftGlyphGrabber;
-    Servo rightGlyphGrabber;
+    Servo jewelArm;
 
     //Define Sensors and the CDI
     ColorSensor colorSensor;
     DeviceInterfaceModule CDI;
 
-    //Define a string to use as the color, and set it to blue, since we are blue team
-    String color = "Blue";
-
-//    //Define an int for the time that the shooter will be on
-//    int shootTime = 3000;
+    String color = "Red";
 
     //Define up drive powers to avoid magic numbers
     float drivePower = (float) 0.8;
-    float stopOnLinePower = (float) 0.25;
     float shiftPower = (float) 0.6;
     float turnPower = (float) 0.6;
 
-//***************************************************************************************************************************
+    //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrabber = hardwareMap.dcMotor.get("glyphGrabber");
+        glyphLifter = hardwareMap.dcMotor.get("glyphLifter");
+        relicGrabber = hardwareMap.dcMotor.get("relicGrabber");
+        relicLifter = hardwareMap.dcMotor.get("relicLifter");
 
         //Get references to the Servo Motors from the hardware map
-        leftGlyphGrabber = hardwareMap.servo.get("leftGlyphGrabber");
-        rightGlyphGrabber = hardwareMap.servo.get("rightGlyphGrabber");
+        jewelArm = hardwareMap.servo.get("jewelArm");
 
         //Get references to the sensors and the CDI from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
         CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrabber, leftGlyphGrabber, rightGlyphGrabber, colorSensor, CDI);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrabber, glyphLifter, relicGrabber, relicLifter, jewelArm, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -68,9 +68,34 @@ public class auto extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
-            //YOUR CODE HERE
+        while (opModeIsActive())
+        {
+            //Go to jewels
+            functions.driveAutonomous(-drivePower, -400);
 
+            //Do jewels
+            functions.jewelPush(colorSensor, color);
+
+            //Move to pictograph
+            functions.leftShiftAutonomous(shiftPower, 300);
+
+            //Use Vuforia to read the picture
+            //INSERT VUFORIA HERE
+
+            //Move towards cryptobox
+            functions.rightShiftAutonomous(shiftPower, 800);
+
+            //Move away from the cryptobox
+            functions.driveAutonomous(drivePower, 500);
+
+            //Turn to face cryptobox
+            functions.rightTurnAutonomous(turnPower, 500);
+
+            //Align with the cryptobox
+            functions.leftShiftAutonomous(shiftPower, 600);
+
+            //Drive into the cryptobox
+            functions.driveAutonomous(drivePower, 1300);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

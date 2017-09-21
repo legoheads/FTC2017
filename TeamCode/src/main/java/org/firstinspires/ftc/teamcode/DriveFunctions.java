@@ -21,30 +21,34 @@ public class DriveFunctions extends LinearOpMode
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
     DcMotor glyphGrabber;
+    DcMotor glyphLifter;
+    DcMotor relicGrabber;
+    DcMotor relicLifter;
 
     //Define Servo Motors
-    Servo leftGlyphGrabber;
-    Servo rightGlyphGrabber;
+    Servo jewelArm;
 
     //Define Sensors and the CDI
     ColorSensor colorSensor;
     DeviceInterfaceModule CDI;
 
     /**
-     * Initialize all the harware all the hardware
+     * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrabber, Servo leftGlyphGrabber, Servo rightGlyphGrabber, ColorSensor colorSensor, DeviceInterfaceModule CDI)
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrabber, DcMotor glyphLifter, DcMotor relicGrabber, DcMotor relicLifter, Servo jewelArm, ColorSensor colorSensor, DeviceInterfaceModule CDI)
     {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
-        //Initialize DC motors
+        //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
         this.leftMotorBack = leftMotorBack;
         this.rightMotorFront = rightMotorFront;
         this.rightMotorBack = rightMotorBack;
-        this.leftGlyphGrabber = leftGlyphGrabber;
-        this.rightGlyphGrabber = rightGlyphGrabber;
         this.glyphGrabber = glyphGrabber;
+        this.glyphLifter = glyphLifter;
+        this.relicGrabber = relicGrabber;
+        this.relicLifter = relicLifter;
+        this.jewelArm = jewelArm;
 
         //Initialize sensors and CDI
         this.colorSensor = colorSensor;
@@ -57,7 +61,7 @@ public class DriveFunctions extends LinearOpMode
     public void initializeMotorsAndSensors()
     {
         //Set the sensors to the modes that we want, and set their addresses
-        colorSensor.enableLed(false);
+        colorSensor.enableLed(true);
 
         //Reverse some motors and keep others forward
         leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -65,15 +69,18 @@ public class DriveFunctions extends LinearOpMode
         rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //Illuminate all three colors of the CDI
+        //Illuminate all colors of the CDI
         CDI.setLED(0, true);
         CDI.setLED(1, true);
+        CDI.setLED(2, true);
+        CDI.setLED(3, true);
     }
 
     /**
      * Takes in motor powers for 4 drive motors
      */
-    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
+    {
         //Use the entered powers and feed them to the motors
         leftMotorFront.setPower(leftFrontPower);
         leftMotorBack.setPower(leftBackPower);
@@ -128,17 +135,28 @@ public class DriveFunctions extends LinearOpMode
         setDriveMotorPowers(-shift, shift, shift, -shift);
     }
 
+    public void resetEncoders()
+    {
+        //Reset the encoders
+        leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //Use the encoders
+        leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
     /**
      * Takes in powers for 4 drive motors, as well as 4 encoder distances
      * Allows us to run at the entered power, for the entered distance
      */
     public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
     {
-        //Resets encoders
-        leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Reset the encoders
+        resetEncoders();
 
         //Set up the motors run to the given position
         leftMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -173,7 +191,8 @@ public class DriveFunctions extends LinearOpMode
      * Drive for the given distance at the given power
      * @param degrees distance
      */
-    public void driveAutonomous(float power, int degrees) {
+    public void driveAutonomous(float power, int degrees)
+    {
         //Everything in the same direction creates linear driving
         moveDriveMotorsWithEncoders(-degrees, -degrees, -degrees, -degrees, -power, -power, -power, -power);
     }
@@ -182,7 +201,8 @@ public class DriveFunctions extends LinearOpMode
      * Turn left for the given distance at the given power
      * @param degrees distance
      */
-    public void leftTurnAutonomous(float power, int degrees) {
+    public void leftTurnAutonomous(float power, int degrees)
+    {
         //Left motors backwards and right motors forwards gives us a left turn
         moveDriveMotorsWithEncoders(-degrees, -degrees, degrees, degrees, -power, -power, power, power);
     }
@@ -191,7 +211,8 @@ public class DriveFunctions extends LinearOpMode
      * Turn right for the given distance at the given power
      * @param degrees distance
      */
-    public void rightTurnAutonomous(float power, int degrees) {
+    public void rightTurnAutonomous(float power, int degrees)
+    {
         //Right motors backwards and left motors forwards gives us a right turn
         moveDriveMotorsWithEncoders(degrees, degrees, -degrees, -degrees, power, power, -power, -power);
     }
@@ -200,7 +221,8 @@ public class DriveFunctions extends LinearOpMode
      * Shift left for the given distance at the given power
      * @param degrees distance
      */
-    public void leftShiftAutonomous(float power, int degrees) {
+    public void leftShiftAutonomous(float power, int degrees)
+    {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift left
         moveDriveMotorsWithEncoders(-degrees, degrees, degrees, -degrees, -power, power, power, -power);
     }
@@ -209,16 +231,33 @@ public class DriveFunctions extends LinearOpMode
      * Shift right for the given distance at the given power
      * @param degrees distance
      */
-    public void rightShiftAutonomous(float power, int degrees) {
+    public void rightShiftAutonomous(float power, int degrees)
+    {
         //This sequence of forwards, backwards, backwards, forwards makes the robot shift right
         moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
+    }
+
+    public void hitBallAndReset()
+    {
+        //Define a power to avoid magic number
+        float hitPower = (float) 0.7;
+
+        //Define distances to avoid magic numbers
+        int hitDistance = 400;
+
+        //Hit the ball
+        driveAutonomous(hitPower, hitDistance);
+
+        //Lift the arm
+        jewelArm.setPosition(0.0);
     }
 
     /**
      * @param colorSensor take in the correct color sensor
      * @return returns true if the supplied ColorSensor either red or blue.  False otherwise
      */
-    public boolean iSeeAColor(ColorSensor colorSensor) {
+    public boolean iSeeAColor(ColorSensor colorSensor)
+    {
         //This is an array that stores the hue[0], saturation[1], and value[2], values
         float[] hsvValues = {0F, 0F, 0F};
 
@@ -233,33 +272,6 @@ public class DriveFunctions extends LinearOpMode
 
         //Otherwise return true
         return true;
-    }
-
-    /**
-     *
-     * @param colorSensor use the correct color sensor
-     * @return true if we are not seeing purple, false if we are
-     */
-    public boolean noPurple(ColorSensor colorSensor)
-    {
-        //Define a float for value
-        float value;
-
-        //This is an array that stores the hue[0], saturation[1], and value[2], values
-        float[] hsvValues = {0F, 0F, 0F};
-
-        //Convert from RGB to HSV (red-green-blue to hue-saturation-value)
-        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
-
-        value = hsvValues[2];
-
-        if (value <= 0.09)
-        {
-            return false;
-        }
-
-        return true;
-
     }
 
     /**
@@ -291,25 +303,59 @@ public class DriveFunctions extends LinearOpMode
         return "Red";
     }
 
+    public void jewelPush(ColorSensor colorSensor, String color)
+    {
+        //Define powers to avoid magic numbers
+        float drivePower = (float) 0.4;
+        float shiftPower = (float) 0.2;
 
-//    /**
-//     * Stops on the white line
-//     * Take in a drive power
-//     * Use the alpha value, because it measures luminosity, and the white line has a much higher luminosity compared to the mat
-//     * The alpha value of the mat is close to zero, and the alpha value of the line is above 50
-//     */
-//    public void whiteLineStop(float drivePower)
-//    {
-//        //If the alpha value is less than 20, drive forward
-//        //If the below condition is true, we are not on the line
-//        while (colorSensorBottom.alpha() < 20)
-//        {
-//            driveTeleop(drivePower);
-//        }
-//
-//        //When the above condition is no longer true, stop the robot, after which it will be on the line
-//        stopDriving();
-//    }
+        //Define distances to avoid magic numbers
+        int shiftDistance = 300;
+
+        //Drop the arm in
+        jewelArm.setPosition(0.5);
+
+        //If we don't see the ball, keep driving
+        while(!iSeeAColor(colorSensor))
+        {
+            driveTeleop(-drivePower);
+        }
+
+        //Once we see the ball, if we see our color:
+        if (whatColor(colorSensor) == color)
+        {
+            if (color.equals("Blue"))
+            {
+                //Shift to the left to align with the other ball
+                rightShiftAutonomous(shiftPower, shiftDistance);
+
+                //Hit the ball and reset the arm
+                hitBallAndReset();
+
+                //shift back to the original position
+                leftShiftAutonomous(shiftPower, shiftDistance);
+            }
+
+            if (color.equals("Red"))
+            {
+                //Shift to the left to align with the other ball
+                leftShiftAutonomous(shiftPower, shiftDistance);
+
+                //Hit the ball and reset the arm
+                hitBallAndReset();
+
+                //shift back to the original position
+                rightShiftAutonomous(shiftPower, shiftDistance);
+            }
+        }
+
+        //If we don't see our color:
+        else
+        {
+            //Hit the ball and reset the arm
+            hitBallAndReset();
+        }
+    }
 
     //Empty main
     @Override

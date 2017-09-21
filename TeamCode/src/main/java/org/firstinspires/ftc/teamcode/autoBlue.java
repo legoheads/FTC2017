@@ -2,17 +2,15 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Disabled
-@TeleOp(name="Data Logging") //Name the class
-public class dataLogging extends LinearOpMode
+@Autonomous(name="Auto") //Name the program
+public class autoBlue extends LinearOpMode
 {
     //Define DC Motors
     DcMotor leftMotorFront;
@@ -31,20 +29,18 @@ public class dataLogging extends LinearOpMode
     ColorSensor colorSensor;
     DeviceInterfaceModule CDI;
 
-    //Define floats to be used as joystick and trigger inputs
-    float drive;
-    float shift;
-    float rightTurn;
-    float leftTurn;
+    String color = "Blue";
 
-//***********************************************************************************************************
+    //Define up drive powers to avoid magic numbers
+    float drivePower = (float) 0.8;
+    float shiftPower = (float) 0.6;
+    float turnPower = (float) 0.6;
+
+//***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException
     {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -72,36 +68,39 @@ public class dataLogging extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
-        //While the op mode is active, loop and read the RGB data.
-        //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive())
         {
-            if (gamepad1.b)
-            {
-                //If "b" is pressed, reset the encoders
-                leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            //Go to jewels
+            functions.driveAutonomous(-drivePower, -400);
 
-                //Use the encoders
-                leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
+            //Do jewels
+            functions.jewelPush(colorSensor, color);
 
-            //Show all the encoder values on the driver station
-            telemetry.addData("left front", leftMotorFront.getCurrentPosition());
-            telemetry.addData("left back", leftMotorBack.getCurrentPosition());
-            telemetry.addData("right front", rightMotorFront.getCurrentPosition());
-            telemetry.addData("right back", rightMotorBack.getCurrentPosition());
+            //Move to pictograph
+            functions.rightShiftAutonomous(shiftPower, 300);
 
-            //Update the data if/when it changes
-            telemetry.update();
+            //Use Vuforia to read the picture
+            //INSERT VUFORIA HERE
+
+            //Move towards cryptobox
+            functions.leftShiftAutonomous(shiftPower, 800);
+
+            //Move away from the cryptobox
+            functions.driveAutonomous(drivePower, 500);
+
+            //Turn to face cryptobox
+            functions.leftTurnAutonomous(turnPower, 500);
+
+            //Align with the cryptobox
+            functions.rightShiftAutonomous(shiftPower, 600);
+
+            //Drive into the cryptobox
+            functions.driveAutonomous(drivePower, 1300);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
-        } //Close "while(opModeIsActive())" loop
+            //Break the loop after one run
+            break;
+        }//Close while opModeIsActive loop
     } //Close "run Opmode" loop
 } //Close class and end program
