@@ -9,20 +9,23 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Auto") //Name the program
-public class autoBlue extends LinearOpMode
-{
-    //Define DC Motors
+@Autonomous(name="Auto Blue") //Name the program
+public class autoBlue extends LinearOpMode {
+    //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
-    DcMotor glyphGrabber;
-    DcMotor glyphLifter;
-    DcMotor relicGrabber;
-    DcMotor relicLifter;
 
-    //Define Servo Motors
+    //Glyph Motors
+    DcMotor glyphGrab;
+    DcMotor glyphLift;
+
+    //Relic Motors
+    Servo relicGrab;
+    DcMotor relicLift;
+
+    //Jewel Motor
     Servo jewelArm;
 
     //Define Sensors and the CDI
@@ -46,10 +49,10 @@ public class autoBlue extends LinearOpMode
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphGrabber = hardwareMap.dcMotor.get("glyphGrabber");
-        glyphLifter = hardwareMap.dcMotor.get("glyphLifter");
-        relicGrabber = hardwareMap.dcMotor.get("relicGrabber");
-        relicLifter = hardwareMap.dcMotor.get("relicLifter");
+        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+        glyphLift = hardwareMap.dcMotor.get("glyphLift");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicLift = hardwareMap.dcMotor.get("relicLift");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
@@ -59,7 +62,7 @@ public class autoBlue extends LinearOpMode
         CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrabber, glyphLifter, relicGrabber, relicLifter, jewelArm, colorSensor, CDI);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();

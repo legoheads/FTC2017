@@ -8,24 +8,27 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Disabled
-public class DriveFunctions extends LinearOpMode
-{
-    //Define DC Motors
+public class DriveFunctions extends LinearOpMode {
+
+    //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
-    DcMotor glyphGrabber;
-    DcMotor glyphLifter;
-    DcMotor relicGrabber;
-    DcMotor relicLifter;
 
-    //Define Servo Motors
+    //Glyph Motors
+    DcMotor glyphGrab;
+    DcMotor glyphLift;
+
+    //Relic Motors
+    Servo relicGrab;
+    DcMotor relicLift;
+
+    //Jewel Motor
     Servo jewelArm;
 
     //Define Sensors and the CDI
@@ -36,18 +39,17 @@ public class DriveFunctions extends LinearOpMode
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrabber, DcMotor glyphLifter, DcMotor relicGrabber, DcMotor relicLifter, Servo jewelArm, ColorSensor colorSensor, DeviceInterfaceModule CDI)
-    {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, DcMotor relicLift, Servo relicGrab, Servo jewelArm, ColorSensor colorSensor, DeviceInterfaceModule CDI) {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
         this.leftMotorBack = leftMotorBack;
         this.rightMotorFront = rightMotorFront;
         this.rightMotorBack = rightMotorBack;
-        this.glyphGrabber = glyphGrabber;
-        this.glyphLifter = glyphLifter;
-        this.relicGrabber = relicGrabber;
-        this.relicLifter = relicLifter;
+        this.glyphGrab = glyphGrab;
+        this.glyphLift = glyphLift;
+        this.relicGrab = relicGrab;
+        this.relicLift = relicLift;
         this.jewelArm = jewelArm;
 
         //Initialize sensors and CDI
@@ -58,8 +60,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * Set sensor addresses, modes and DC motor directions
      */
-    public void initializeMotorsAndSensors()
-    {
+    public void initializeMotorsAndSensors() {
         //Set the sensors to the modes that we want, and set their addresses
         colorSensor.enableLed(true);
 
@@ -79,8 +80,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * Takes in motor powers for 4 drive motors
      */
-    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
-    {
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
         //Use the entered powers and feed them to the motors
         leftMotorFront.setPower(leftFrontPower);
         leftMotorBack.setPower(leftBackPower);
@@ -91,8 +91,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * If this function is called, stop the drive motors
      */
-    public void stopDriving()
-    {
+    public void stopDriving() {
         //Set all drive motor powers as zero
         setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
     }
@@ -101,8 +100,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * If this function is called, turn on the drive motors at the given powers to make it drive forward or backwards
      */
-    public void driveTeleop(float drive)
-    {
+    public void driveTeleop(float drive) {
         //Send all the motors in the same direction
         setDriveMotorPowers(-drive, -drive, -drive, -drive);
     }
@@ -110,8 +108,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * If this function is called, turn on the drive motors at the given powers, to make it tank turn right
      */
-    public void rightTurnTeleop(float power)
-    {
+    public void rightTurnTeleop(float power) {
         //Turn the right motors backwards and the left motors forward so that it turns right
         setDriveMotorPowers(power, power, -power, -power);
     }
@@ -119,8 +116,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * If this function is called, turn on the drive motors at the given powers, to make it tank turn left
      */
-    public void leftTurnTeleop(float power)
-    {
+    public void leftTurnTeleop(float power) {
         //Turn the left motors backwards and the right motors forward so that it turns left
         setDriveMotorPowers(-power, -power, power, power);
     }
@@ -129,14 +125,12 @@ public class DriveFunctions extends LinearOpMode
      * If this function is called, turn on the drive motors at the
      * given powers, to make it shift in the desired direction
      */
-    public void shiftTeleop(float shift)
-    {
+    public void shiftTeleop(float shift) {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift
         setDriveMotorPowers(-shift, shift, shift, -shift);
     }
 
-    public void resetEncoders()
-    {
+    public void resetEncoders() {
         //Reset the encoders
         leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -153,8 +147,7 @@ public class DriveFunctions extends LinearOpMode
      * Takes in powers for 4 drive motors, as well as 4 encoder distances
      * Allows us to run at the entered power, for the entered distance
      */
-    public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
-    {
+    public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
         //Reset the encoders
         resetEncoders();
 
@@ -191,8 +184,7 @@ public class DriveFunctions extends LinearOpMode
      * Drive for the given distance at the given power
      * @param degrees distance
      */
-    public void driveAutonomous(float power, int degrees)
-    {
+    public void driveAutonomous(float power, int degrees) {
         //Everything in the same direction creates linear driving
         moveDriveMotorsWithEncoders(-degrees, -degrees, -degrees, -degrees, -power, -power, -power, -power);
     }
@@ -201,8 +193,7 @@ public class DriveFunctions extends LinearOpMode
      * Turn left for the given distance at the given power
      * @param degrees distance
      */
-    public void leftTurnAutonomous(float power, int degrees)
-    {
+    public void leftTurnAutonomous(float power, int degrees) {
         //Left motors backwards and right motors forwards gives us a left turn
         moveDriveMotorsWithEncoders(-degrees, -degrees, degrees, degrees, -power, -power, power, power);
     }
@@ -211,8 +202,7 @@ public class DriveFunctions extends LinearOpMode
      * Turn right for the given distance at the given power
      * @param degrees distance
      */
-    public void rightTurnAutonomous(float power, int degrees)
-    {
+    public void rightTurnAutonomous(float power, int degrees) {
         //Right motors backwards and left motors forwards gives us a right turn
         moveDriveMotorsWithEncoders(degrees, degrees, -degrees, -degrees, power, power, -power, -power);
     }
@@ -221,8 +211,7 @@ public class DriveFunctions extends LinearOpMode
      * Shift left for the given distance at the given power
      * @param degrees distance
      */
-    public void leftShiftAutonomous(float power, int degrees)
-    {
+    public void leftShiftAutonomous(float power, int degrees) {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift left
         moveDriveMotorsWithEncoders(-degrees, degrees, degrees, -degrees, -power, power, power, -power);
     }
@@ -231,14 +220,12 @@ public class DriveFunctions extends LinearOpMode
      * Shift right for the given distance at the given power
      * @param degrees distance
      */
-    public void rightShiftAutonomous(float power, int degrees)
-    {
+    public void rightShiftAutonomous(float power, int degrees) {
         //This sequence of forwards, backwards, backwards, forwards makes the robot shift right
         moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
     }
 
-    public void hitBallAndReset()
-    {
+    public void hitBallAndReset() {
         //Define a power to avoid magic number
         float hitPower = (float) 0.7;
 
@@ -256,8 +243,7 @@ public class DriveFunctions extends LinearOpMode
      * @param colorSensor take in the correct color sensor
      * @return returns true if the supplied ColorSensor either red or blue.  False otherwise
      */
-    public boolean iSeeAColor(ColorSensor colorSensor)
-    {
+    public boolean iSeeAColor(ColorSensor colorSensor) {
         //This is an array that stores the hue[0], saturation[1], and value[2], values
         float[] hsvValues = {0F, 0F, 0F};
 
@@ -272,6 +258,33 @@ public class DriveFunctions extends LinearOpMode
 
         //Otherwise return true
         return true;
+    }
+
+    /**
+     *
+     * @param colorSensor use the correct color sensor
+     * @return true if we are not seeing purple, false if we are
+     */
+    public boolean noPurple(ColorSensor colorSensor)
+    {
+        //Define a float for value
+        float value;
+
+        //This is an array that stores the hue[0], saturation[1], and value[2], values
+        float[] hsvValues = {0F, 0F, 0F};
+
+        //Convert from RGB to HSV (red-green-blue to hue-saturation-value)
+        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+
+        value = hsvValues[2];
+
+        if (value <= 0.09)
+        {
+            return false;
+        }
+
+        return true;
+
     }
 
     /**
