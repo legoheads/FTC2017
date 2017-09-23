@@ -39,6 +39,8 @@ public class Teleop extends LinearOpMode {
     float rightTurn;
     float leftTurn;
 
+    private int yPress = 0;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     //***********************************************************************************************************
@@ -118,25 +120,20 @@ public class Teleop extends LinearOpMode {
                 functions.rightTurnTeleop(rightTurn);
             }
 
-            //If the "y" button is pressed, grab the glyph
-            if (gamepad1.y)
-            {
-                glyphGrab.setPower(0.2);
-                Thread.sleep((long) 500);
-                glyphGrab.setPower(0.0);
+            if (gamepad1.y) {
+                yPress++;
             }
 
-            //If the "a" button is pressed, release the glyph
-            if (gamepad2.a)
-            {
-                glyphGrab.setPower(-0.2);
-                Thread.sleep((long) 500);
-                glyphGrab.setPower(0.0);
+            //If the "y" button is pressed, grab/drop a glyph
+            if (yPress %2 == 0 && yPress>=0) {
+                functions.glyphDoor("close");
+            }
+            else if (yPress %2 == 1 && yPress>=0) {
+                functions.glyphDoor("open");
             }
 
             //Stop driving when any "b" button is pressed
-            if ((gamepad1.b) || (gamepad2.b))
-            {
+            if ((gamepad1.b) || (gamepad2.b)) {
                 functions.stopDriving();
             }
 

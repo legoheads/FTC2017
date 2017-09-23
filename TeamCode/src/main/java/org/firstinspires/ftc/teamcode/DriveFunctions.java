@@ -39,7 +39,8 @@ public class DriveFunctions extends LinearOpMode {
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, DcMotor relicLift, Servo relicGrab, Servo jewelArm, ColorSensor colorSensor, DeviceInterfaceModule CDI) {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, DcMotor relicLift, Servo relicGrab, Servo jewelArm, ColorSensor colorSensor, DeviceInterfaceModule CDI)
+    {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
@@ -60,7 +61,8 @@ public class DriveFunctions extends LinearOpMode {
     /**
      * Set sensor addresses, modes and DC motor directions
      */
-    public void initializeMotorsAndSensors() {
+    public void initializeMotorsAndSensors()
+    {
         //Set the sensors to the modes that we want, and set their addresses
         colorSensor.enableLed(true);
 
@@ -224,6 +226,20 @@ public class DriveFunctions extends LinearOpMode {
         //This sequence of forwards, backwards, backwards, forwards makes the robot shift right
         moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
     }
+
+    public void glyphDoor(String openOrClose) throws InterruptedException {
+        if (openOrClose == "open" || openOrClose == "Open") {
+            glyphGrab.setPower(-0.2);
+            Thread.sleep(500);
+            glyphGrab.setPower(0.0);
+        }
+        if (openOrClose == "close" || openOrClose == "Close") {
+            glyphGrab.setPower(0.2);
+            Thread.sleep(500);
+            glyphGrab.setPower(0.0);
+        }
+    }
+
 
     public void hitBallAndReset() {
         //Define a power to avoid magic number

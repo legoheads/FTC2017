@@ -5,13 +5,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TELE FLOP") //Name the class
-public class tele2 extends LinearOpMode {
+public class testBotTele extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -49,10 +51,13 @@ public class tele2 extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    private int yPress = -1;
+
     //***********************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -77,7 +82,11 @@ public class tele2 extends LinearOpMode {
         //DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
-        //functions.initializeMotorsAndSensors();
+        //Reverse some motors and keep others forward
+        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Wait for start button to be clicked
         waitForStart();
@@ -89,12 +98,13 @@ public class tele2 extends LinearOpMode {
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Set float variables as the inputs from the joysticks and the triggers
-            drive = -gamepad1.left_stick_y;
-            shift = - gamepad1.left_stick_x;
-            leftTurn = gamepad1.left_trigger;
-            rightTurn = gamepad1.right_trigger;
+            drive = -gamepad1.left_stick_y / 2;
+            shift = gamepad1.left_stick_x / 4;
+            leftTurn = gamepad1.left_trigger / 4;
+            rightTurn = gamepad1.right_trigger / 4;
 
 
 
@@ -109,13 +119,13 @@ public class tele2 extends LinearOpMode {
             //Shift if pushed more on X than Y
             if (Math.abs(shift) > Math.abs(drive))
             {
-                setDriveMotorPowers(-shift, shift, shift, -shift);
+                setDriveMotorPowers(shift, -shift, -shift, shift);
             }
 
             //Drive if joystick pushed more Y than X
             if (Math.abs(drive) > Math.abs(shift))
             {
-                setDriveMotorPowers(-drive, -drive, -drive, -drive);
+                setDriveMotorPowers(drive, drive, drive, drive);
             }
 
             if (drive == 0 && shift == 0) {
@@ -135,16 +145,19 @@ public class tele2 extends LinearOpMode {
                 setDriveMotorPowers(rightTurn, rightTurn, -rightTurn, -rightTurn);
             }
 
-            //If the "y" button is pressed, grab the glyph
             if (gamepad1.y)
+            {
+                yPress++;
+            }
+
+            //If the "y" button is pressed, grab/drop a glyph
+            if (yPress %2 == 0 && yPress>=0)
             {
                 glyphGrab.setPower(0.2);
                 Thread.sleep((long) 500);
                 glyphGrab.setPower(0.0);
             }
-
-            //If the "a" button is pressed, release the glyph
-            if (gamepad1.a)
+            else if (yPress %2 == 1 && yPress>=0)
             {
                 glyphGrab.setPower(-0.2);
                 Thread.sleep((long) 500);
