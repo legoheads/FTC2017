@@ -41,7 +41,8 @@ public class testBotTele extends LinearOpMode
     float rightTurn;
     float leftTurn;
 
-    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
+    {
         //Use the entered powers and feed them to the motors
         leftMotorFront.setPower(leftFrontPower);
         leftMotorBack.setPower(leftBackPower);
@@ -51,7 +52,7 @@ public class testBotTele extends LinearOpMode
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private int yPress = -1;
+    private int yPress = 0;
 
     //***********************************************************************************************************
     //MAIN BELOW
@@ -107,8 +108,6 @@ public class testBotTele extends LinearOpMode
             rightTurn = gamepad1.right_trigger / 4;
 
 
-
-
             //Do nothing if joystick is stationary
             //Drive vs Shift on left joystick:
 //            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
@@ -128,10 +127,10 @@ public class testBotTele extends LinearOpMode
                 setDriveMotorPowers(drive, drive, drive, drive);
             }
 
-            if (drive == 0 && shift == 0) {
+            if (drive == 0 && shift == 0)
+            {
                 setDriveMotorPowers(0,0,0,0);
             }
-
 
             //If the left trigger is pushed, turn left at that power
             if (leftTurn > 0)
@@ -151,17 +150,25 @@ public class testBotTele extends LinearOpMode
             }
 
             //If the "y" button is pressed, grab/drop a glyph
-            if (yPress %2 == 0 && yPress>=0)
+            if (yPress % 3 == 0)
+            {
+                glyphGrab.setPower(0.0);
+            }
+            else if (yPress % 3 == 1)
             {
                 glyphGrab.setPower(0.2);
                 Thread.sleep((long) 500);
                 glyphGrab.setPower(0.0);
+                while (!gamepad1.y)
+                { }
             }
-            else if (yPress %2 == 1 && yPress>=0)
+            else if (yPress % 3 == 2)
             {
                 glyphGrab.setPower(-0.2);
                 Thread.sleep((long) 500);
                 glyphGrab.setPower(0.0);
+                while (!gamepad1.y)
+                { }
             }
 
             if ((gamepad1.b) || (gamepad2.b))
