@@ -64,8 +64,8 @@ public class testBotTele extends LinearOpMode
 
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
-        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
+        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
 //        glyphLift = hardwareMap.dcMotor.get("glyphLift");
@@ -84,9 +84,9 @@ public class testBotTele extends LinearOpMode
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         //Reverse some motors and keep others forward
-        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Wait for start button to be clicked
@@ -102,10 +102,10 @@ public class testBotTele extends LinearOpMode
         while (opModeIsActive())
         {
             //Set float variables as the inputs from the joysticks and the triggers
-            drive = -gamepad1.left_stick_y / 2;
-            shift = gamepad1.left_stick_x / 4;
-            leftTurn = gamepad1.left_trigger / 4;
-            rightTurn = gamepad1.right_trigger / 4;
+            drive = -gamepad1.left_stick_y;
+            shift = gamepad1.left_stick_x / 2;
+            leftTurn = gamepad1.left_trigger;
+            rightTurn = gamepad1.right_trigger;
 
 
             //Do nothing if joystick is stationary
@@ -118,7 +118,7 @@ public class testBotTele extends LinearOpMode
             //Shift if pushed more on X than Y
             if (Math.abs(shift) > Math.abs(drive))
             {
-                setDriveMotorPowers(shift, -shift, -shift, shift);
+                setDriveMotorPowers(-shift, shift/ (float) 1.5, shift, -shift/(float) 1.5);
             }
 
             //Drive if joystick pushed more Y than X
@@ -147,29 +147,26 @@ public class testBotTele extends LinearOpMode
             if (gamepad1.y)
             {
                 yPress++;
+                if (yPress % 3 == 0)
+                {
+                    glyphGrab.setPower(0.0);
+                }
+                if (yPress % 3 == 1)
+                {
+                    glyphGrab.setPower(0.2);
+                    Thread.sleep((long) 500);
+                    glyphGrab.setPower(0.0);
+                }
+                if (yPress % 3 == 2)
+                {
+                    glyphGrab.setPower(-0.2);
+                    Thread.sleep((long) 500);
+                    glyphGrab.setPower(0.0);
+                }
             }
 
             //If the "y" button is pressed, grab/drop a glyph
-            if (yPress % 3 == 0)
-            {
-                glyphGrab.setPower(0.0);
-            }
-            else if (yPress % 3 == 1)
-            {
-                glyphGrab.setPower(0.2);
-                Thread.sleep((long) 500);
-                glyphGrab.setPower(0.0);
-                while (!gamepad1.y)
-                { }
-            }
-            else if (yPress % 3 == 2)
-            {
-                glyphGrab.setPower(-0.2);
-                Thread.sleep((long) 500);
-                glyphGrab.setPower(0.0);
-                while (!gamepad1.y)
-                { }
-            }
+
 
             if ((gamepad1.b) || (gamepad2.b))
             {
