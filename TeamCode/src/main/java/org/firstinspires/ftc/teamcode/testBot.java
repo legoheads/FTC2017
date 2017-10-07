@@ -2,16 +2,17 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TeleOp") //Name the class
-public class Teleop extends LinearOpMode {
+@TeleOp(name="teleFLOP") //Name the class
+public class testBot extends LinearOpMode {
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -39,7 +40,13 @@ public class Teleop extends LinearOpMode {
     float rightTurn;
     float leftTurn;
 
-    private int yPress = 0;
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
+        //Use the entered powers and feed them to the motors
+        leftMotorFront.setPower(leftFrontPower);
+        leftMotorBack.setPower(leftBackPower);
+        rightMotorFront.setPower(rightFrontPower);
+        rightMotorBack.setPower(rightBackPower);
+    }
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -57,25 +64,27 @@ public class Teleop extends LinearOpMode {
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-        relicGrab = hardwareMap.servo.get("relicGrab");
-        relicLift = hardwareMap.dcMotor.get("relicLift");
+//        relicGrab = hardwareMap.servo.get("relicGrab");
+//        relicLift = hardwareMap.dcMotor.get("relicLift");
 
         //Get references to the Servo Motors from the hardware map
-        jewelArm = hardwareMap.servo.get("jewelArm");
+        //jewelArm = hardwareMap.servo.get("jewelArm");
 
         //Get references to the sensors and the CDI from the hardware map
-        colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        CDI = hardwareMap.deviceInterfaceModule.get("CDI");
+        //colorSensor = hardwareMap.colorSensor.get("colorSensor");
+        //CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
+        //DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
-        functions.initializeMotorsAndSensors();
+        //functions.initializeMotorsAndSensors();
 
         //Wait for start button to be clicked
         waitForStart();
         runtime.reset();
+
+
 
 //***********************************************************************************************************
         //LOOP BELOW
@@ -88,66 +97,67 @@ public class Teleop extends LinearOpMode {
             leftTurn = gamepad1.left_trigger;
             rightTurn = gamepad1.right_trigger;
 
+
             //Do nothing if joystick is stationary
             //Drive vs Shift on left joystick:
-            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
-            {
-                functions.stopDriving();
-            }
+//            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
+//            {
+//                functions.stopDriving();
+//            }
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shift) > Math.abs(drive))
-            {
-                functions.shiftTeleop(shift);
+            if (Math.abs(shift) > Math.abs(drive)) {
+                setDriveMotorPowers(-shift, shift, shift, -shift);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drive) > Math.abs(shift))
-            {
-                functions.driveTeleop(drive);
+            if (Math.abs(drive) > Math.abs(shift)) {
+                setDriveMotorPowers(-drive, -drive, -drive, -drive);
+            }
+
+            if (drive == 0 && shift == 0) {
+                setDriveMotorPowers(0,0,0,0);
             }
 
 
             //If the left trigger is pushed, turn left at that power
-            if (leftTurn > 0)
-            {
-                functions.leftTurnTeleop(leftTurn);
+            if (leftTurn > 0) {
+                setDriveMotorPowers(-leftTurn, -leftTurn, leftTurn, leftTurn);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (rightTurn > 0)
-            {
-                functions.rightTurnTeleop(rightTurn);
+            if (rightTurn > 0) {
+                setDriveMotorPowers(rightTurn, rightTurn, -rightTurn, -rightTurn);
             }
 
-<<<<<<< Updated upstream
-            if (gamepad1.y) {
-                yPress++;
-=======
-<<<<<<< HEAD
             //If the "y" button is pressed, grab the glyph
-            if (gamepad1.y) {
+            if (gamepad1.dpad_right) {
                 glyphGrab.setPower(0.2);
                 Thread.sleep((long) 500);
                 glyphGrab.setPower(0.0);
-=======
-            if (gamepad1.y) {
-                yPress++;
->>>>>>> origin/master
->>>>>>> Stashed changes
             }
 
-            //If the "y" button is pressed, grab/drop a glyph
-            if (yPress %2 == 0 && yPress>=0) {
-                functions.glyphDoor("close");
-            }
-            else if (yPress %2 == 1 && yPress>=0) {
-                functions.glyphDoor("open");
+            //If the "a" button is pressed, release the glyph
+            if (gamepad1.dpad_left) {
+                glyphGrab.setPower(-0.2);
+                Thread.sleep((long) 500);
+                glyphGrab.setPower(0.0);
             }
 
-            //Stop driving when any "b" button is pressed
             if ((gamepad1.b) || (gamepad2.b)) {
-                functions.stopDriving();
+                setDriveMotorPowers(0,0,0,0);
+            }
+
+            if (gamepad1.dpad_up) {
+                glyphLift.setPower(1.0);
+                Thread.sleep(500);
+                glyphLift.setPower(0.0);
+            }
+
+            if (gamepad1.dpad_down) {
+                glyphLift.setPower(-1.0);
+                Thread.sleep(500);
+                glyphLift.setPower(0.0);
             }
 
             //Count time

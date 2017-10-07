@@ -73,6 +73,7 @@ public class autoBlue extends LinearOpMode {
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
+
             //Go to jewels
             functions.driveAutonomous(-drivePower, -400);
 
@@ -84,6 +85,7 @@ public class autoBlue extends LinearOpMode {
 
             //Use Vuforia to read the picture
             //INSERT VUFORIA HERE
+            functions.vuforia();
 
             //Move towards cryptobox
             functions.leftShiftAutonomous(shiftPower, 800);
