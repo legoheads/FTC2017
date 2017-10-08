@@ -11,8 +11,9 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="teleFLOP") //Name the class
-public class testBot extends LinearOpMode {
+@TeleOp(name="tele LeBron") //Name the class
+public class testBot extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -90,7 +91,8 @@ public class testBot extends LinearOpMode {
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Set float variables as the inputs from the joysticks and the triggers
             drive = -gamepad1.left_stick_y;
             shift = - gamepad1.left_stick_x;
@@ -106,58 +108,68 @@ public class testBot extends LinearOpMode {
 //            }
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shift) > Math.abs(drive)) {
+            if (Math.abs(shift) > Math.abs(drive))
+            {
                 setDriveMotorPowers(-shift, shift, shift, -shift);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drive) > Math.abs(shift)) {
+            if (Math.abs(drive) > Math.abs(shift))
+            {
                 setDriveMotorPowers(-drive, -drive, -drive, -drive);
             }
 
-            if (drive == 0 && shift == 0) {
+            if (drive == 0 && shift == 0)
+            {
                 setDriveMotorPowers(0,0,0,0);
             }
 
 
             //If the left trigger is pushed, turn left at that power
-            if (leftTurn > 0) {
+            if (leftTurn > 0)
+            {
                 setDriveMotorPowers(-leftTurn, -leftTurn, leftTurn, leftTurn);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (rightTurn > 0) {
+            if (rightTurn > 0)
+            {
                 setDriveMotorPowers(rightTurn, rightTurn, -rightTurn, -rightTurn);
             }
 
             //If the "y" button is pressed, grab the glyph
-            if (gamepad1.dpad_right) {
+            if (gamepad1.dpad_right)
+            {
                 glyphGrab.setPower(0.2);
                 Thread.sleep((long) 500);
                 glyphGrab.setPower(0.0);
             }
 
             //If the "a" button is pressed, release the glyph
-            if (gamepad1.dpad_left) {
+            if (gamepad1.dpad_left)
+            {
                 glyphGrab.setPower(-0.2);
                 Thread.sleep((long) 500);
                 glyphGrab.setPower(0.0);
             }
 
-            if ((gamepad1.b) || (gamepad2.b)) {
-                setDriveMotorPowers(0,0,0,0);
-            }
-
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpad_up)
+            {
                 glyphLift.setPower(1.0);
-                Thread.sleep(500);
+                Thread.sleep(1500);
                 glyphLift.setPower(0.0);
             }
 
-            if (gamepad1.dpad_down) {
+            if (gamepad1.dpad_down)
+            {
                 glyphLift.setPower(-1.0);
-                Thread.sleep(500);
+                Thread.sleep(1500);
                 glyphLift.setPower(0.0);
+            }
+
+            if ((gamepad1.b) || (gamepad2.b))
+            {
+                setDriveMotorPowers(0,0,0,0);
             }
 
             //Count time

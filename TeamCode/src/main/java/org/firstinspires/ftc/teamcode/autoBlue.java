@@ -85,7 +85,7 @@ public class autoBlue extends LinearOpMode {
 
             //Use Vuforia to read the picture
             //INSERT VUFORIA HERE
-            functions.vuforia();
+//            functions.vuforia();
 
             //Move towards cryptobox
             functions.leftShiftAutonomous(shiftPower, 800);
