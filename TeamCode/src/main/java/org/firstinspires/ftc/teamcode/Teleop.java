@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp") //Name the class
-public class Teleop extends LinearOpMode {
+public class Teleop extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -46,7 +47,8 @@ public class Teleop extends LinearOpMode {
     //***********************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -41,6 +42,8 @@ public class testBot extends LinearOpMode
     float rightTurn;
     float leftTurn;
 
+    int yPressCount = 0;
+
     public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
         //Use the entered powers and feed them to the motors
         leftMotorFront.setPower(leftFrontPower);
@@ -54,7 +57,8 @@ public class testBot extends LinearOpMode
     //***********************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -65,6 +69,11 @@ public class testBot extends LinearOpMode
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
+
+        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
 //        relicGrab = hardwareMap.servo.get("relicGrab");
 //        relicLift = hardwareMap.dcMotor.get("relicLift");
 
@@ -137,21 +146,38 @@ public class testBot extends LinearOpMode
                 setDriveMotorPowers(rightTurn, rightTurn, -rightTurn, -rightTurn);
             }
 
-            //If the "y" button is pressed, grab the glyph
-            if (gamepad1.dpad_right)
+            if (gamepad1.y)
             {
-                glyphGrab.setPower(0.2);
-                Thread.sleep((long) 500);
-                glyphGrab.setPower(0.0);
-            }
+                yPressCount++;
+                if (yPressCount % 2 == 1)
+                {
+                    glyphGrab.setPower(0.2);
+                    Thread.sleep((long) 500);
+                    glyphGrab.setPower(0.0);
+                }
+                if (yPressCount % 2 == 0)
+                {
+                    glyphGrab.setPower(-0.2);
+                    Thread.sleep((long) 500);
+                    glyphGrab.setPower(0.0);
+                }
 
-            //If the "a" button is pressed, release the glyph
-            if (gamepad1.dpad_left)
-            {
-                glyphGrab.setPower(-0.2);
-                Thread.sleep((long) 500);
-                glyphGrab.setPower(0.0);
             }
+//            //If the "y" button is pressed, grab the glyph
+//            if (gamepad1.dpad_right)
+//            {
+//                glyphGrab.setPower(0.2);
+//                Thread.sleep((long) 500);
+//                glyphGrab.setPower(0.0);
+//            }
+//
+//            //If the "a" button is pressed, release the glyph
+//            if (gamepad1.dpad_left)
+//            {
+//                glyphGrab.setPower(-0.2);
+//                Thread.sleep((long) 500);
+//                glyphGrab.setPower(0.0);
+//            }
 
             if (gamepad1.dpad_up)
             {
