@@ -32,7 +32,6 @@ public class Teleop extends LinearOpMode
 
     //Define Sensors and the CDI
     ColorSensor colorSensor;
-    DeviceInterfaceModule CDI;
 
     //Define floats to be used as joystick and trigger inputs
     float drive;
@@ -67,10 +66,9 @@ public class Teleop extends LinearOpMode
 
         //Get references to the sensors and the CDI from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -83,88 +81,76 @@ public class Teleop extends LinearOpMode
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Set float variables as the inputs from the joysticks and the triggers
-<<<<<<< Updated upstream
             drive = - gamepad1.left_stick_y;
             shift = - gamepad1.left_stick_x;
-=======
-            drive = -gamepad1.left_stick_y;
-            shift = -gamepad1.left_stick_x;
->>>>>>> Stashed changes
             leftTurn = gamepad1.left_trigger;
             rightTurn = gamepad1.right_trigger;
 
             //Do nothing if joystick is stationary
             //Drive vs Shift on left joystick:
-            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0)) {
+            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
+            {
                 functions.stopDriving();
             }
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shift) > Math.abs(drive)) {
+            if (Math.abs(shift) > Math.abs(drive))
+            {
                 functions.shiftTeleop(shift);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drive) > Math.abs(shift)) {
+            if (Math.abs(drive) > Math.abs(shift))
+            {
                 functions.driveTeleop(drive);
             }
 
 
             //If the left trigger is pushed, turn left at that power
-            if (leftTurn > 0) {
+            if (leftTurn > 0)
+            {
                 functions.leftTurnTeleop(leftTurn);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (rightTurn > 0) {
+            if (rightTurn > 0)
+            {
                 functions.rightTurnTeleop(rightTurn);
             }
 
-            if (gamepad1.y) {
+            if (gamepad1.y)
+            {
+                //Increase the increment operator
                 yPress++;
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
-                //If the "y" button is pressed, grab the glyph
-                if (gamepad1.y) {
-                    glyphGrab.setPower(0.2);
-                    Thread.sleep((long) 500);
-                    glyphGrab.setPower(0.0);
+                //If the "y" button is pressed, grab/drop a glyph
+                if (yPress % 2 == 0 && yPress >= 0)
+                {
+                    functions.glyphDoor("close");
+                }
+                else if (yPress % 2 == 1 && yPress >= 0)
+                {
+                    functions.glyphDoor("open");
+                }
+            }
 
-                    if (gamepad1.y) {
-                        yPress++;
-                    }
+            //Stop driving when any "b" button is pressed
+            if ((gamepad1.b) || (gamepad2.b))
+            {
+                functions.stopDriving();
+            }
 
-                    //If the "y" button is pressed, grab/drop a glyph
-                    if (yPress % 2 == 0 && yPress >= 0) {
-                        functions.glyphDoor("close");
-                    } else if (yPress % 2 == 1 && yPress >= 0) {
-                        functions.glyphDoor("open");
-                    }
+            //Count time
+            //Update the data
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
 
-                    //Stop driving when any "b" button is pressed
-                    if ((gamepad1.b) || (gamepad2.b)) {
-                        functions.stopDriving();
-                    }
+            //Always call idle() at the bottom of your while(opModeIsActive()) loop
+            idle();
+        } //Close "while (opModeIsActive())" loop
+    } //Close main
+} //Close class and end program
 
-                    //Count time
-                    //Update the data
-                    telemetry.addData("Status", "Run Time: " + runtime.toString());
-                    telemetry.update();
-
-                    //Always call idle() at the bottom of your while(opModeIsActive()) loop
-                    idle();
-                } //Close "while (opModeIsActive())" loop
-            } //Close main
-<<<<<<< Updated upstream
-        } //Close class and end program
-    }
-}
-=======
-        }
-    }
-}//Close class and end program
->>>>>>> Stashed changes

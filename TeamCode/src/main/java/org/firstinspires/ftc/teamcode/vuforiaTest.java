@@ -53,7 +53,8 @@ public class vuforiaTest extends LinearOpMode
     VuforiaLocalizer vuforia;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -85,7 +86,8 @@ public class vuforiaTest extends LinearOpMode
 
         relicTrackables.activate();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
 
             /**
              * See if any of the instances of {@link relicTemplate} are currently visible.
@@ -94,12 +96,14 @@ public class vuforiaTest extends LinearOpMode
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN)
+            {
 
                 //Display which key is visible
                 telemetry.addData("VuMark", "%s visible", vuMark);
             }
-            else {
+            else
+            {
                 telemetry.addData("VuMark", "not visible");
             }
             telemetry.update();

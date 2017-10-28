@@ -39,7 +39,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Vuforia")
-public class Vuforia extends LinearOpMode {
+public class Vuforia extends LinearOpMode
+{
 
     public static final String TAG = "Vuforia VuMark Sample";
 
@@ -47,7 +48,8 @@ public class Vuforia extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
 
-    @Override public void runOpMode() {
+    @Override public void runOpMode()
+    {
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -74,13 +76,16 @@ public class Vuforia extends LinearOpMode {
 
         relicTrackables.activate();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN)
+            {
                 telemetry.addData("VuMark", "%s visible", vuMark);
             }
-            else {
+            else
+            {
                 telemetry.addData("VuMark", "not visible");
             }
             telemetry.update();

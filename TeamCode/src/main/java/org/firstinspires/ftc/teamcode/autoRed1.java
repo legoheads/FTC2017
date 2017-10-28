@@ -9,8 +9,9 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Auto Blue") //Name the program
-public class autoBlue extends LinearOpMode {
+@Autonomous(name="Auto Red1") //Name the program
+public class autoRed1 extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -30,20 +31,20 @@ public class autoBlue extends LinearOpMode {
 
     //Define Sensors and the CDI
     ColorSensor colorSensor;
-    DeviceInterfaceModule CDI;
 
-    String color = "Blue";
+    String color = "Red";
 
     //Define up drive powers to avoid magic numbers
     float drivePower = (float) 0.8;
     float shiftPower = (float) 0.6;
     float turnPower = (float) 0.6;
 
-//***************************************************************************************************************************
+    //***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException
     {
+        //Get references to the DC motors from the hardware map
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -59,10 +60,9 @@ public class autoBlue extends LinearOpMode {
 
         //Get references to the sensors and the CDI from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -73,7 +73,6 @@ public class autoBlue extends LinearOpMode {
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
-
             //Go to jewels
             functions.driveAutonomous(-drivePower, -400);
 
@@ -81,27 +80,22 @@ public class autoBlue extends LinearOpMode {
             functions.jewelPush(colorSensor, color);
 
             //Move to pictograph
-            functions.rightShiftAutonomous(shiftPower, 300);
+            functions.leftShiftAutonomous(shiftPower, 300);
 
             //Use Vuforia to read the picture
             //INSERT VUFORIA HERE
-<<<<<<< Updated upstream
-//            functions.vuforia();
-=======
-            //functions.vuforia();
->>>>>>> Stashed changes
 
             //Move towards cryptobox
-            functions.leftShiftAutonomous(shiftPower, 800);
+            functions.rightShiftAutonomous(shiftPower, 800);
 
             //Move away from the cryptobox
             functions.driveAutonomous(drivePower, 500);
 
             //Turn to face cryptobox
-            functions.leftTurnAutonomous(turnPower, 500);
+            functions.rightTurnAutonomous(turnPower, 500);
 
             //Align with the cryptobox
-            functions.rightShiftAutonomous(shiftPower, 600);
+            functions.leftShiftAutonomous(shiftPower, 600);
 
             //Drive into the cryptobox
             functions.driveAutonomous(drivePower, 1300);

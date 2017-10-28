@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TELE FLOP") //Name the class
+@TeleOp(name="Tele Lebron") //Name the class
 public class testBotTele extends LinearOpMode
 {
     //Define Drive Motors
@@ -21,11 +21,11 @@ public class testBotTele extends LinearOpMode
     DcMotor rightMotorBack;
 
     //Glyph Motors
-    //DcMotor glyphGrab;
+    DcMotor glyphGrab;
     //DcMotor glyphLift;
 
     //Relic Motors
-    Servo relicGrab;
+//    Servo relicGrab;
     DcMotor relicLift;
 
     //Jewel Motor
@@ -33,7 +33,6 @@ public class testBotTele extends LinearOpMode
 
     //Define Sensors and the CDI
     ColorSensor colorSensor;
-    DeviceInterfaceModule CDI;
 
     //Define floats to be used as joystick and trigger inputs
     float drive;
@@ -77,7 +76,6 @@ public class testBotTele extends LinearOpMode
 
         //Get references to the sensors and the CDI from the hardware map
         //colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        //CDI = hardwareMap.deviceInterfaceModule.get("CDI");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
         //DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
@@ -102,23 +100,18 @@ public class testBotTele extends LinearOpMode
         while (opModeIsActive())
         {
             //Set float variables as the inputs from the joysticks and the triggers
-            drive = -gamepad1.left_stick_y;
+            drive = - gamepad1.left_stick_y;
             shift = gamepad1.left_stick_x / 2;
             leftTurn = gamepad1.left_trigger;
             rightTurn = gamepad1.right_trigger;
 
 
             //Do nothing if joystick is stationary
-            //Drive vs Shift on left joystick:
-//            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
-//            {
-//                functions.stopDriving();
-//            }
 
             //Shift if pushed more on X than Y
             if (Math.abs(shift) > Math.abs(drive))
             {
-                setDriveMotorPowers(-shift, shift/ (float) 1.5, shift, -shift/(float) 1.5);
+                setDriveMotorPowers(- shift, shift / (float) 1.5, shift, - shift / (float) 1.5);
             }
 
             //Drive if joystick pushed more Y than X
@@ -129,44 +122,40 @@ public class testBotTele extends LinearOpMode
 
             if (drive == 0 && shift == 0)
             {
-                setDriveMotorPowers(0,0,0,0);
+                setDriveMotorPowers(0, 0, 0, 0);
             }
 
             //If the left trigger is pushed, turn left at that power
             if (leftTurn > 0)
             {
-                setDriveMotorPowers(-leftTurn, -leftTurn, leftTurn, leftTurn);
+                setDriveMotorPowers(- leftTurn, - leftTurn, leftTurn, leftTurn);
             }
 
             //If the right trigger is pushed, turn right at that power
             if (rightTurn > 0)
             {
-                setDriveMotorPowers(rightTurn, rightTurn, -rightTurn, -rightTurn);
+                setDriveMotorPowers(rightTurn, rightTurn, - rightTurn, - rightTurn);
             }
 
-//            if (gamepad1.y)
-//            {
-//                yPress++;
-//                if (yPress % 3 == 0)
-//                {
-//                    glyphGrab.setPower(0.0);
-//                }
-//                if (yPress % 3 == 1)
-//                {
-//                    glyphGrab.setPower(0.2);
-//                    Thread.sleep((long) 500);
-//                    glyphGrab.setPower(0.0);
-//                }
-//                if (yPress % 3 == 2)
-//                {
-//                    glyphGrab.setPower(-0.2);
-//                    Thread.sleep((long) 500);
-//                    glyphGrab.setPower(0.0);
-//                }
-//            }
+            if (gamepad1.y)
+            {
+                //Increase the increment operator
+                yPress++;
 
-            //If the "y" button is pressed, grab/drop a glyph
-
+                //If the "y" button is pressed, grab/drop a glyph
+                if (yPress % 2 == 0 && yPress >= 0)
+                {
+                    glyphGrab.setPower(0.2);
+                    Thread.sleep(500);
+                    glyphGrab.setPower(0.0);
+                }
+                else if (yPress % 2 == 1 && yPress >= 0)
+                {
+                    glyphGrab.setPower(- 0.2);
+                    Thread.sleep(500);
+                    glyphGrab.setPower(0.0);
+                }
+            }
 
             if ((gamepad1.b) || (gamepad2.b))
             {
