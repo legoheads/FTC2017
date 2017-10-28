@@ -2,18 +2,17 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="tele LeBron") //Name the class
-public class testBot extends LinearOpMode
+@TeleOp(name="TELE FLOP") //Name the class
+public class testBotTele extends LinearOpMode
 {
     //Define Drive Motors
     DcMotor leftMotorFront;
@@ -22,8 +21,8 @@ public class testBot extends LinearOpMode
     DcMotor rightMotorBack;
 
     //Glyph Motors
-    DcMotor glyphGrab;
-    DcMotor glyphLift;
+    //DcMotor glyphGrab;
+    //DcMotor glyphLift;
 
     //Relic Motors
     Servo relicGrab;
@@ -42,9 +41,8 @@ public class testBot extends LinearOpMode
     float rightTurn;
     float leftTurn;
 
-    int yPressCount = 0;
-
-    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
+    {
         //Use the entered powers and feed them to the motors
         leftMotorFront.setPower(leftFrontPower);
         leftMotorBack.setPower(leftBackPower);
@@ -53,6 +51,8 @@ public class testBot extends LinearOpMode
     }
 
     private ElapsedTime runtime = new ElapsedTime();
+
+    private int yPress = 0;
 
     //***********************************************************************************************************
     //MAIN BELOW
@@ -64,16 +64,11 @@ public class testBot extends LinearOpMode
 
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
-        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
+        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
-        glyphLift = hardwareMap.dcMotor.get("glyphLift");
-
-        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        //glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+//        glyphLift = hardwareMap.dcMotor.get("glyphLift");
 //        relicGrab = hardwareMap.servo.get("relicGrab");
 //        relicLift = hardwareMap.dcMotor.get("relicLift");
 
@@ -88,7 +83,11 @@ public class testBot extends LinearOpMode
         //DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor, CDI);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
-        //functions.initializeMotorsAndSensors();
+        //Reverse some motors and keep others forward
+        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Wait for start button to be clicked
         waitForStart();
@@ -104,7 +103,7 @@ public class testBot extends LinearOpMode
         {
             //Set float variables as the inputs from the joysticks and the triggers
             drive = -gamepad1.left_stick_y;
-            shift = - gamepad1.left_stick_x;
+            shift = gamepad1.left_stick_x / 2;
             leftTurn = gamepad1.left_trigger;
             rightTurn = gamepad1.right_trigger;
 
@@ -119,20 +118,19 @@ public class testBot extends LinearOpMode
             //Shift if pushed more on X than Y
             if (Math.abs(shift) > Math.abs(drive))
             {
-                setDriveMotorPowers(-shift, shift, shift, -shift);
+                setDriveMotorPowers(-shift, shift/ (float) 1.5, shift, -shift/(float) 1.5);
             }
 
             //Drive if joystick pushed more Y than X
             if (Math.abs(drive) > Math.abs(shift))
             {
-                setDriveMotorPowers(-drive, -drive, -drive, -drive);
+                setDriveMotorPowers(drive, drive, drive, drive);
             }
 
             if (drive == 0 && shift == 0)
             {
                 setDriveMotorPowers(0,0,0,0);
             }
-
 
             //If the left trigger is pushed, turn left at that power
             if (leftTurn > 0)
@@ -146,52 +144,29 @@ public class testBot extends LinearOpMode
                 setDriveMotorPowers(rightTurn, rightTurn, -rightTurn, -rightTurn);
             }
 
-            if (gamepad1.y)
-            {
-                yPressCount++;
-                if (yPressCount % 2 == 1)
-                {
-                    glyphGrab.setPower(0.2);
-                    Thread.sleep((long) 500);
-                    glyphGrab.setPower(0.0);
-                }
-                if (yPressCount % 2 == 0)
-                {
-                    glyphGrab.setPower(-0.2);
-                    Thread.sleep((long) 500);
-                    glyphGrab.setPower(0.0);
-                }
-
-            }
-//            //If the "y" button is pressed, grab the glyph
-//            if (gamepad1.dpad_right)
+//            if (gamepad1.y)
 //            {
-//                glyphGrab.setPower(0.2);
-//                Thread.sleep((long) 500);
-//                glyphGrab.setPower(0.0);
-//            }
-//
-//            //If the "a" button is pressed, release the glyph
-//            if (gamepad1.dpad_left)
-//            {
-//                glyphGrab.setPower(-0.2);
-//                Thread.sleep((long) 500);
-//                glyphGrab.setPower(0.0);
+//                yPress++;
+//                if (yPress % 3 == 0)
+//                {
+//                    glyphGrab.setPower(0.0);
+//                }
+//                if (yPress % 3 == 1)
+//                {
+//                    glyphGrab.setPower(0.2);
+//                    Thread.sleep((long) 500);
+//                    glyphGrab.setPower(0.0);
+//                }
+//                if (yPress % 3 == 2)
+//                {
+//                    glyphGrab.setPower(-0.2);
+//                    Thread.sleep((long) 500);
+//                    glyphGrab.setPower(0.0);
+//                }
 //            }
 
-            if (gamepad1.dpad_up)
-            {
-                glyphLift.setPower(1.0);
-                Thread.sleep(1500);
-                glyphLift.setPower(0.0);
-            }
+            //If the "y" button is pressed, grab/drop a glyph
 
-            if (gamepad1.dpad_down)
-            {
-                glyphLift.setPower(-1.0);
-                Thread.sleep(1500);
-                glyphLift.setPower(0.0);
-            }
 
             if ((gamepad1.b) || (gamepad2.b))
             {

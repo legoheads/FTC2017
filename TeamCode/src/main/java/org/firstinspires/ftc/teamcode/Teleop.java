@@ -85,8 +85,13 @@ public class Teleop extends LinearOpMode
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive()) {
             //Set float variables as the inputs from the joysticks and the triggers
+<<<<<<< Updated upstream
             drive = - gamepad1.left_stick_y;
             shift = - gamepad1.left_stick_x;
+=======
+            drive = -gamepad1.left_stick_y;
+            shift = -gamepad1.left_stick_x;
+>>>>>>> Stashed changes
             leftTurn = gamepad1.left_trigger;
             rightTurn = gamepad1.right_trigger;
 
@@ -119,6 +124,10 @@ public class Teleop extends LinearOpMode
 
             if (gamepad1.y) {
                 yPress++;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
                 //If the "y" button is pressed, grab the glyph
                 if (gamepad1.y) {
                     glyphGrab.setPower(0.2);
@@ -150,6 +159,12 @@ public class Teleop extends LinearOpMode
                     idle();
                 } //Close "while (opModeIsActive())" loop
             } //Close main
+<<<<<<< Updated upstream
         } //Close class and end program
     }
 }
+=======
+        }
+    }
+}//Close class and end program
+>>>>>>> Stashed changes
