@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -22,10 +21,10 @@ public class testBotTele extends LinearOpMode
 
     //Glyph Motors
     DcMotor glyphGrab;
-    //DcMotor glyphLift;
+    DcMotor glyphLift;
 
     //Relic Motors
-//    Servo relicGrab;
+    Servo relicGrab;
     DcMotor relicLift;
 
     //Jewel Motor
@@ -35,10 +34,13 @@ public class testBotTele extends LinearOpMode
     ColorSensor colorSensor;
 
     //Define floats to be used as joystick and trigger inputs
-    float drive;
-    float shift;
-    float rightTurn;
-    float leftTurn;
+    float drivePowerFast;
+    float shiftPowerFast;
+    float drivePowerSlow;
+    float shiftPowerSlow;
+    float rightTurnPower;
+    float leftTurnPower;
+    float liftPower;
 
     public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
     {
@@ -66,8 +68,8 @@ public class testBotTele extends LinearOpMode
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        //glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
-//        glyphLift = hardwareMap.dcMotor.get("glyphLift");
+        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+        glyphLift = hardwareMap.dcMotor.get("glyphLift");
 //        relicGrab = hardwareMap.servo.get("relicGrab");
 //        relicLift = hardwareMap.dcMotor.get("relicLift");
 
@@ -100,62 +102,102 @@ public class testBotTele extends LinearOpMode
         while (opModeIsActive())
         {
             //Set float variables as the inputs from the joysticks and the triggers
-            drive = - gamepad1.left_stick_y;
-            shift = gamepad1.left_stick_x / 2;
-            leftTurn = gamepad1.left_trigger;
-            rightTurn = gamepad1.right_trigger;
+            drivePowerFast = gamepad1.left_stick_y;
+            shiftPowerFast = gamepad1.left_stick_x;
+            drivePowerSlow = gamepad1.right_stick_y / 3;
+            shiftPowerSlow = gamepad1.right_stick_x / 3;
+            leftTurnPower = gamepad1.left_trigger / 4;
+            rightTurnPower = gamepad1.right_trigger / 4;
+            liftPower = -gamepad2.left_stick_y;
 
 
             //Do nothing if joystick is stationary
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shift) > Math.abs(drive))
+            if (Math.abs(shiftPowerFast) > Math.abs(drivePowerFast))
             {
-                setDriveMotorPowers(- shift, shift / (float) 1.5, shift, - shift / (float) 1.5);
+                setDriveMotorPowers(-shiftPowerFast, shiftPowerFast, shiftPowerFast, -shiftPowerFast);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drive) > Math.abs(shift))
+            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast))
             {
-                setDriveMotorPowers(drive, drive, drive, drive);
+                setDriveMotorPowers(drivePowerFast, drivePowerFast, drivePowerFast, drivePowerFast);
             }
 
-            if (drive == 0 && shift == 0)
+            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
             {
                 setDriveMotorPowers(0, 0, 0, 0);
             }
 
-            //If the left trigger is pushed, turn left at that power
-            if (leftTurn > 0)
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
             {
-                setDriveMotorPowers(- leftTurn, - leftTurn, leftTurn, leftTurn);
+                setDriveMotorPowers(-shiftPowerSlow, shiftPowerSlow, shiftPowerSlow, -shiftPowerSlow);
+            }
+
+            //Drive if joystick pushed more Y than X
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
+            {
+                setDriveMotorPowers(drivePowerSlow, drivePowerSlow, drivePowerSlow, drivePowerSlow);
+            }
+
+            //If the left trigger is pushed, turn left at that power
+            if (leftTurnPower > 0)
+            {
+                setDriveMotorPowers(leftTurnPower, leftTurnPower, -leftTurnPower, -leftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (rightTurn > 0)
+            if (rightTurnPower > 0)
             {
-                setDriveMotorPowers(rightTurn, rightTurn, - rightTurn, - rightTurn);
+                setDriveMotorPowers(-rightTurnPower, -rightTurnPower, rightTurnPower, rightTurnPower);
             }
 
-            if (gamepad1.y)
+            if (gamepad2.y)
             {
                 //Increase the increment operator
                 yPress++;
 
                 //If the "y" button is pressed, grab/drop a glyph
-                if (yPress % 2 == 0 && yPress >= 0)
+                if (yPress % 2 == 0)
                 {
                     glyphGrab.setPower(0.2);
-                    Thread.sleep(500);
+                    Thread.sleep(700);
                     glyphGrab.setPower(0.0);
                 }
-                else if (yPress % 2 == 1 && yPress >= 0)
+                else if (yPress % 2 == 1)
                 {
                     glyphGrab.setPower(- 0.2);
-                    Thread.sleep(500);
+                    Thread.sleep(700);
                     glyphGrab.setPower(0.0);
+                    if (!gamepad2.y)
+                    {
+                        glyphGrab.setPower(-0.2);
+                    }
                 }
             }
+
+            if (Math.abs(liftPower)>=0.1)
+            {
+                glyphLift.setPower(liftPower);
+            }
+            if (Math.abs(liftPower) < 0.1)
+            {
+                glyphLift.setPower(0.0);
+            }
+
+//            if (gamepad2.dpad_up)
+//            {
+//                glyphLift.setPower(0.7);
+//                Thread.sleep(1700);
+//                glyphLift.setPower(0.0);
+//            }
+//            if (gamepad2.dpad_down)
+//            {
+//                glyphLift.setPower(-0.7);
+//                Thread.sleep(750);
+//                glyphLift.setPower(0.0);
+//            }
 
             if ((gamepad1.b) || (gamepad2.b))
             {
