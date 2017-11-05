@@ -1,19 +1,19 @@
 //Run from the package
-package org.firstinspires.ftc.teamcode;
+package org.usfirst.ftc.exampleteam.yourcodehere;
 
 //Import necessary items
-import android.graphics.Color;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="AutoBlue1") //Name the program
-public class autoBlue1 extends LinearOpMode
+import org.firstinspires.ftc.teamcode.DriveFunctions;
+
+@TeleOp(name = "Data Logging Program") //Name the program
+public class dataLogging extends LinearOpMode
 {
     //Define Drive Motors
     DcMotor leftMotorFront;
@@ -26,24 +26,16 @@ public class autoBlue1 extends LinearOpMode
     DcMotor glyphLift;
 
     //Relic Motors
-//    Servo relicGrab;
-//    DcMotor relicLift;
+    Servo relicGrab;
+    DcMotor relicLift;
 
     //Jewel Motor
     Servo jewelArm;
 
-    //Define Sensor
+    //Define Sensors and the CDI
     ColorSensor colorSensor;
 
-    String color = "Blue";
-    String colorSeen;
-
-    //Define up drive powers to avoid magic numbers
-    float drivePower = (float) 0.3;
-    float shiftPower = (float) 0.2;
-    float turnPower = (float) 0.2;
-
-//***************************************************************************************************************************
+    //***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException
@@ -74,37 +66,36 @@ public class autoBlue1 extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
+        //While the op mode is active, loop and read the RGB data.
+        //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive())
         {
-            //Do jewels
-            functions.jewelPush(colorSensor, color, colorSeen);
+            if (gamepad1.b)
+            {
+                //If "b" is pressed, reset the encoders
+                leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-//            //Move to pictograph
-//            functions.rightShiftAutonomous(shiftPower, 300);
-//
-//            //Use Vuforia to read the picture
-//            //INSERT VUFORIA HERE
-//            //functions.vuforia();
-//
-//            //Move towards cryptobox
-//            functions.leftShiftAutonomous(shiftPower, 800);
-//
-//            //Move away from the cryptobox
-//            functions.driveAutonomous(drivePower, 500);
-//
-//            //Turn to face cryptobox
-//            functions.leftTurnAutonomous(turnPower, 500);
-//
-//            //Align with the cryptobox
-//            functions.rightShiftAutonomous(shiftPower, 600);
-//
-//            //Drive into the cryptobox
-//            functions.driveAutonomous(drivePower, 1300);
+                //Use the encoders
+                leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            //Show all the encoder values on the driver station
+            telemetry.addData("left front", leftMotorFront.getCurrentPosition());
+            telemetry.addData("left back", leftMotorBack.getCurrentPosition());
+            telemetry.addData("right front", rightMotorFront.getCurrentPosition());
+            telemetry.addData("right back", rightMotorBack.getCurrentPosition());
+
+            //Update the data if/when it changes
+            telemetry.update();
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
-            //Break the loop after one run
-            break;
-        }//Close while opModeIsActive loop
+        } //Close "while(opModeIsActive())" loop
     } //Close "run Opmode" loop
 } //Close class and end program

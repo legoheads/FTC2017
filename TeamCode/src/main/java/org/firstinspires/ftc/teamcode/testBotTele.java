@@ -104,11 +104,11 @@ public class testBotTele extends LinearOpMode
             //Set float variables as the inputs from the joysticks and the triggers
             drivePowerFast = gamepad1.left_stick_y;
             shiftPowerFast = gamepad1.left_stick_x;
-            drivePowerSlow = gamepad1.right_stick_y / 3;
-            shiftPowerSlow = gamepad1.right_stick_x / 3;
-            leftTurnPower = gamepad1.left_trigger / 4;
-            rightTurnPower = gamepad1.right_trigger / 4;
-            liftPower = -gamepad2.left_stick_y;
+            drivePowerSlow = gamepad2.left_stick_y / 3;
+            shiftPowerSlow = gamepad2.left_stick_x / 3;
+            leftTurnPower = gamepad1.left_trigger / 2;
+            rightTurnPower = gamepad1.right_trigger / 2;
+            liftPower = -gamepad2.right_stick_y;
 
 
             //Do nothing if joystick is stationary
@@ -185,19 +185,6 @@ public class testBotTele extends LinearOpMode
             {
                 glyphLift.setPower(0.0);
             }
-
-//            if (gamepad2.dpad_up)
-//            {
-//                glyphLift.setPower(0.7);
-//                Thread.sleep(1700);
-//                glyphLift.setPower(0.0);
-//            }
-//            if (gamepad2.dpad_down)
-//            {
-//                glyphLift.setPower(-0.7);
-//                Thread.sleep(750);
-//                glyphLift.setPower(0.0);
-//            }
 
             if ((gamepad1.b) || (gamepad2.b))
             {

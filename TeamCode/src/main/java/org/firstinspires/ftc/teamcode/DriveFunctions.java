@@ -30,9 +30,9 @@ public class DriveFunctions extends LinearOpMode
     DcMotor glyphGrab;
     DcMotor glyphLift;
 
-    //Relic Motors
-    Servo relicGrab;
-    DcMotor relicLift;
+//    //Relic Motors
+//    Servo relicGrab;
+//    DcMotor relicLift;
 
     //Jewel Motor
     Servo jewelArm;
@@ -49,7 +49,7 @@ public class DriveFunctions extends LinearOpMode
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, DcMotor relicLift, Servo relicGrab, Servo jewelArm, ColorSensor colorSensor)
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo jewelArm, ColorSensor colorSensor)
     {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
@@ -59,8 +59,8 @@ public class DriveFunctions extends LinearOpMode
         this.rightMotorBack = rightMotorBack;
         this.glyphGrab = glyphGrab;
         this.glyphLift = glyphLift;
-        this.relicGrab = relicGrab;
-        this.relicLift = relicLift;
+//        this.relicGrab = relicGrab;
+//        this.relicLift = relicLift;
         this.jewelArm = jewelArm;
 
         //Initialize sensors and CDI
@@ -110,7 +110,7 @@ public class DriveFunctions extends LinearOpMode
     public void driveTeleop(float drive)
     {
         //Send all the motors in the same direction
-        setDriveMotorPowers(-drive, -drive, -drive, -drive);
+        setDriveMotorPowers(drive, drive, drive, drive);
     }
 
     /**
@@ -119,7 +119,7 @@ public class DriveFunctions extends LinearOpMode
     public void rightTurnTeleop(float power)
     {
         //Turn the right motors backwards and the left motors forward so that it turns right
-        setDriveMotorPowers(power, power, -power, -power);
+        setDriveMotorPowers(-power, -power, power, power);
     }
 
     /**
@@ -128,7 +128,7 @@ public class DriveFunctions extends LinearOpMode
     public void leftTurnTeleop(float power)
     {
         //Turn the left motors backwards and the right motors forward so that it turns left
-        setDriveMotorPowers(-power, -power, power, power);
+        setDriveMotorPowers(power, power, -power, -power);
     }
 
     /**
@@ -247,34 +247,16 @@ public class DriveFunctions extends LinearOpMode
     {
         if (openOrClose == "open")
         {
-            glyphGrab.setPower(-0.2);
-            Thread.sleep(500);
+            glyphGrab.setPower(0.5);
+            Thread.sleep(700);
             glyphGrab.setPower(0.0);
         }
         if (openOrClose == "close")
         {
-            glyphGrab.setPower(0.2);
-            Thread.sleep(500);
-            glyphGrab.setPower(0.0);
+            glyphGrab.setPower(-0.5);
+            Thread.sleep(700);
+            glyphGrab.setPower(-0.2);
         }
-    }
-
-
-    public void hitJewelAndReset()
-    {
-        jewelArm.setPosition(1.0);
-
-        //Define a power to avoid magic number
-        float hitPower = (float) 0.7;
-
-        //Define distances to avoid magic numbers
-        int hitDistance = 400;
-
-        //Hit the ball
-        driveAutonomous(hitPower, hitDistance);
-
-        //Lift the arm
-        jewelArm.setPosition(0.5);
     }
 
     /**
@@ -369,58 +351,31 @@ public class DriveFunctions extends LinearOpMode
 //
 //    }
 
-    public void jewelPush(ColorSensor colorSensor, String color)
-    {
-        //Define powers to avoid magic numbers
-        float drivePower = (float) 0.4;
-        float shiftPower = (float) 0.2;
 
-        //Define distances to avoid magic numbers
+
+    public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
+    {
+        float shiftPower = (float) 0.3;
         int shiftDistance = 300;
 
-        //Drop the arm in
-        jewelArm.setPosition(0.5);
-
-        //If we don't see the ball, keep driving
-        while(!iSeeAColor(colorSensor))
+        jewelArm.setPosition(0.4);
+        if (iSeeAColor(colorSensor))
         {
-            driveTeleop(-drivePower);
+            colorSeen = whatColor(colorSensor);
         }
 
-        //Once we see the ball, if we see our color:
-        if (whatColor(colorSensor) == color)
+        if (colorSeen == color)
         {
-            if (color.equals("Blue"))
-            {
-                //Shift to the left to align with the other ball
-                rightShiftAutonomous(shiftPower, shiftDistance);
-
-                //Hit the ball and reset the arm
-                hitJewelAndReset();
-
-                //shift back to the original position
-                leftShiftAutonomous(shiftPower, shiftDistance);
-            }
-
-            if (color.equals("Red"))
-            {
-                //Shift to the left to align with the other ball
-                leftShiftAutonomous(shiftPower, shiftDistance);
-
-                //Hit the ball and reset the arm
-                hitJewelAndReset();
-
-                //shift back to the original position
-                rightShiftAutonomous(shiftPower, shiftDistance);
-            }
+            shiftTeleop(shiftPower);
+            Thread.sleep(500);
+            shiftTeleop((float) 0.0);
         }
-
-        //If we don't see our color:
         else
         {
-            //Hit the ball and reset the arm
-            hitJewelAndReset();
-        }
+            shiftTeleop(-shiftPower);
+            Thread.sleep(500);
+            shiftTeleop((float) 0.0);        }
+
     }
 
     //Empty main

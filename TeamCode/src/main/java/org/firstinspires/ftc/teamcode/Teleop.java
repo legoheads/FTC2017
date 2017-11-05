@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -33,15 +34,30 @@ public class Teleop extends LinearOpMode
     //Define Sensors and the CDI
     ColorSensor colorSensor;
 
-    //Define floats to be used as joystick and trigger inputs
-    float drive;
-    float shift;
-    float rightTurn;
-    float leftTurn;
+    //Define floats to be used as joystick inputs, trigger inputs, and constants
+    float drivePowerFast;
+    float shiftPowerFast;
+    float drivePowerSlow;
+    float shiftPowerSlow;
+    float fastLeftTurnPower;
+    float fastRightTurnPower;
+    float slowLeftTurnPower;
+    float slowRightTurnPower;
+    float liftPower;
+    float clampPower = (float) -0.2;
 
-    private int yPress = 0;
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
+    {
+        //Use the entered powers and feed them to the motors
+        leftMotorFront.setPower(leftFrontPower);
+        leftMotorBack.setPower(leftBackPower);
+        rightMotorFront.setPower(rightFrontPower);
+        rightMotorBack.setPower(rightBackPower);
+    }
 
     private ElapsedTime runtime = new ElapsedTime();
+
+    private int rightBumperPress = 0;
 
     //***********************************************************************************************************
     //MAIN BELOW
@@ -53,29 +69,35 @@ public class Teleop extends LinearOpMode
 
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
-        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
+        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-        relicGrab = hardwareMap.servo.get("relicGrab");
-        relicLift = hardwareMap.dcMotor.get("relicLift");
+//        relicGrab = hardwareMap.servo.get("relicGrab");
+//        relicLift = hardwareMap.dcMotor.get("relicLift");
 
         //Get references to the Servo Motors from the hardware map
-        jewelArm = hardwareMap.servo.get("jewelArm");
+        //jewelArm = hardwareMap.servo.get("jewelArm");
 
         //Get references to the sensors and the CDI from the hardware map
-        colorSensor = hardwareMap.colorSensor.get("colorSensor");
+        //colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, jewelArm, colorSensor);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
-        functions.initializeMotorsAndSensors();
+        //Reverse some motors and keep others forward
+        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Wait for start button to be clicked
         waitForStart();
         runtime.reset();
+
+
 
 //***********************************************************************************************************
         //LOOP BELOW
@@ -84,70 +106,106 @@ public class Teleop extends LinearOpMode
         while (opModeIsActive())
         {
             //Set float variables as the inputs from the joysticks and the triggers
-            drive = - gamepad1.left_stick_y;
-            shift = - gamepad1.left_stick_x;
-            leftTurn = gamepad1.left_trigger;
-            rightTurn = gamepad1.right_trigger;
+            drivePowerFast = gamepad1.left_stick_y;
+            shiftPowerFast = gamepad1.left_stick_x;
+            drivePowerSlow = gamepad2.left_stick_y / 3;
+            shiftPowerSlow = gamepad2.left_stick_x / 3;
+            fastLeftTurnPower = (float) (gamepad1.left_trigger / 1.5);
+            fastRightTurnPower = (float) (gamepad1.right_trigger / 1.5);
+            slowLeftTurnPower = gamepad2.left_trigger / 2;
+            slowRightTurnPower = gamepad2.right_trigger / 2;
+            liftPower = -gamepad2.right_stick_y;
+
 
             //Do nothing if joystick is stationary
-            //Drive vs Shift on left joystick:
-            if ((drive == 0) && (shift == 0) && (leftTurn == 0) && (rightTurn == 0))
-            {
-                functions.stopDriving();
-            }
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shift) > Math.abs(drive))
+            if (Math.abs(shiftPowerFast) > Math.abs(drivePowerFast))
             {
-                functions.shiftTeleop(shift);
+                functions.shiftTeleop(shiftPowerFast);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drive) > Math.abs(shift))
+            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast))
             {
-                functions.driveTeleop(drive);
+                functions.driveTeleop(drivePowerFast);
             }
 
+            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
+            {
+                setDriveMotorPowers(0, 0, 0, 0);
+            }
+
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
+            {
+                functions.shiftTeleop(shiftPowerSlow);
+            }
+
+            //Drive if joystick pushed more Y than X
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
+            {
+                functions.driveTeleop(drivePowerSlow);
+            }
 
             //If the left trigger is pushed, turn left at that power
-            if (leftTurn > 0)
+            if (fastLeftTurnPower > 0)
             {
-                functions.leftTurnTeleop(leftTurn);
+                functions.leftTurnTeleop(fastLeftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (rightTurn > 0)
+            if (fastRightTurnPower > 0)
             {
-                functions.rightTurnTeleop(rightTurn);
+                functions.rightTurnTeleop(fastRightTurnPower);
             }
 
-            if (gamepad1.y)
+            //If the left trigger is pushed, turn left at that power
+            if (slowLeftTurnPower > 0)
+            {
+                functions.leftTurnTeleop(slowLeftTurnPower);
+            }
+
+            //If the right trigger is pushed, turn right at that power
+            if (slowRightTurnPower > 0)
+            {
+                functions.rightTurnTeleop(slowRightTurnPower);
+            }
+
+
+            if (gamepad2.right_bumper)
             {
                 //Increase the increment operator
-                yPress++;
+                rightBumperPress++;
 
                 //If the "y" button is pressed, grab/drop a glyph
-                if (yPress % 2 == 0 && yPress >= 0)
-                {
-                    functions.glyphDoor("close");
-                }
-                else if (yPress % 2 == 1 && yPress >= 0)
+                if (rightBumperPress % 2 == 0)
                 {
                     functions.glyphDoor("open");
                 }
+                if (rightBumperPress % 2 == 1)
+                {
+                    functions.glyphDoor("close");
+                }
             }
 
-            //Stop driving when any "b" button is pressed
+            if (Math.abs(liftPower)>=0.1)
+            {
+                glyphLift.setPower(liftPower);
+            }
+            if (Math.abs(liftPower) < 0.1)
+            {
+                glyphLift.setPower(0.0);
+            }
+
             if ((gamepad1.b) || (gamepad2.b))
             {
-                functions.stopDriving();
+                functions.stop();
             }
 
             //Count time
             //Update the data
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
         } //Close "while (opModeIsActive())" loop

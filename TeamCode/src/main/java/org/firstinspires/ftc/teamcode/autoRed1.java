@@ -33,6 +33,7 @@ public class autoRed1 extends LinearOpMode
     ColorSensor colorSensor;
 
     String color = "Red";
+    String colorSeen;
 
     //Define up drive powers to avoid magic numbers
     float drivePower = (float) 0.8;
@@ -62,7 +63,7 @@ public class autoRed1 extends LinearOpMode
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicLift, relicGrab, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, jewelArm, colorSensor);
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -77,7 +78,7 @@ public class autoRed1 extends LinearOpMode
             functions.driveAutonomous(-drivePower, -400);
 
             //Do jewels
-            functions.jewelPush(colorSensor, color);
+            functions.jewelPush(colorSensor, color, colorSeen);
 
             //Move to pictograph
             functions.leftShiftAutonomous(shiftPower, 300);
