@@ -13,8 +13,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="AutoBlue1") //Name the program
-public class autoBlue1 extends LinearOpMode
-{
+public class autoBlue1 extends LinearOpMode {
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;

@@ -103,8 +103,7 @@ public class Teleop extends LinearOpMode
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Set float variables as the inputs from the joysticks and the triggers
             drivePowerFast = gamepad1.left_stick_y;
             shiftPowerFast = gamepad1.left_stick_x;
@@ -201,6 +200,16 @@ public class Teleop extends LinearOpMode
             {
                 functions.stop();
             }
+
+            if (gamepad1.dpad_up || gamepad2.dpad_up){
+                glyphLift.setPower(0.0);
+                functions.oneMotorEncoder(2600, 1.0, glyphLift);
+            }
+            if (gamepad1.dpad_down || gamepad2.dpad_down){
+                glyphLift.setPower(0.0);
+                functions.oneMotorEncoder(-2600, -1.0, glyphLift);
+            }
+
 
             //Count time
             //Update the data

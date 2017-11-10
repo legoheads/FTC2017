@@ -1,5 +1,5 @@
 //Run from the package
-package org.usfirst.ftc.exampleteam.yourcodehere;
+package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -12,9 +12,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.DriveFunctions;
 
+
+@Disabled
 @TeleOp(name = "Data Logging Program") //Name the program
-public class dataLogging extends LinearOpMode
-{
+public class dataLogging extends LinearOpMode {
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;

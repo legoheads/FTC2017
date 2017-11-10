@@ -159,8 +159,7 @@ public class DriveFunctions extends LinearOpMode
      * Takes in powers for 4 drive motors, as well as 4 encoder distances
      * Allows us to run at the entered power, for the entered distance
      */
-    public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
-    {
+    public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
         //Reset the encoders
         resetEncoders();
 
@@ -191,6 +190,18 @@ public class DriveFunctions extends LinearOpMode
         leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public static void oneMotorEncoder(int degrees, double power, DcMotor motor){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setTargetPosition(degrees);
+        motor.setPower(power);
+        while (motor.isBusy())
+        { }
+        motor.setPower(0.0);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
@@ -247,15 +258,17 @@ public class DriveFunctions extends LinearOpMode
     {
         if (openOrClose == "open")
         {
-            glyphGrab.setPower(0.5);
+            glyphGrab.setPower(-0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.0);
+            oneMotorEncoder(-200, -1.0, glyphLift);
         }
         if (openOrClose == "close")
         {
-            glyphGrab.setPower(-0.5);
+            glyphGrab.setPower(0.5);
             Thread.sleep(700);
-            glyphGrab.setPower(-0.2);
+            glyphGrab.setPower(0.2);
+            oneMotorEncoder(200, 1.0, glyphLift);
         }
     }
 
