@@ -75,6 +75,9 @@ public class autoBlue1 extends LinearOpMode {
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
+            //Close door
+            functions.glyphDoor("close");
+
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 

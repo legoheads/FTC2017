@@ -76,9 +76,9 @@ public class DriveFunctions extends LinearOpMode
         colorSensor.enableLed(true);
 
         //Reverse some motors and keep others forward
-        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -159,7 +159,8 @@ public class DriveFunctions extends LinearOpMode
      * Takes in powers for 4 drive motors, as well as 4 encoder distances
      * Allows us to run at the entered power, for the entered distance
      */
-    public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
+    public void moveDriveMotorsWithEncoders(int leftFrontDegrees, int leftBackDegrees, int rightFrontDegrees, int rightBackDegrees, float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
+    {
         //Reset the encoders
         resetEncoders();
 
@@ -192,7 +193,8 @@ public class DriveFunctions extends LinearOpMode
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public static void oneMotorEncoder(int degrees, double power, DcMotor motor){
+    public static void oneMotorEncoder(int degrees, float power, DcMotor motor)
+    {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -261,14 +263,14 @@ public class DriveFunctions extends LinearOpMode
             glyphGrab.setPower(-0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.0);
-            oneMotorEncoder(-200, -1.0, glyphLift);
+            oneMotorEncoder(-200, (float) -1.0, glyphLift);
         }
         if (openOrClose == "close")
         {
             glyphGrab.setPower(0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.2);
-            oneMotorEncoder(200, 1.0, glyphLift);
+            oneMotorEncoder(200, (float) 1.0, glyphLift);
         }
     }
 
@@ -368,26 +370,29 @@ public class DriveFunctions extends LinearOpMode
 
     public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
     {
-        float shiftPower = (float) 0.3;
-        int shiftDistance = 300;
+        float turnPower = (float) 0.3;
+        int turnDistance = 300;
 
-        jewelArm.setPosition(0.4);
+        jewelArm.setPosition(1.0);
+        Thread.sleep(1000);
         if (iSeeAColor(colorSensor))
         {
             colorSeen = whatColor(colorSensor);
         }
-
         if (colorSeen == color)
         {
-            shiftTeleop(shiftPower);
-            Thread.sleep(500);
-            shiftTeleop((float) 0.0);
+            rightTurnAutonomous(turnPower, turnDistance);
+            jewelArm.setPosition(0.5);
+            Thread.sleep(1000);
+            leftTurnAutonomous(turnPower, turnDistance);
         }
         else
         {
-            shiftTeleop(-shiftPower);
-            Thread.sleep(500);
-            shiftTeleop((float) 0.0);        }
+            leftTurnAutonomous(turnPower, turnDistance);
+            jewelArm.setPosition(0.5);
+            Thread.sleep(1000);
+            rightTurnAutonomous(turnPower, turnDistance);
+        }
 
     }
 

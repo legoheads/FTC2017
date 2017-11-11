@@ -44,16 +44,6 @@ public class Teleop extends LinearOpMode
     float slowLeftTurnPower;
     float slowRightTurnPower;
     float liftPower;
-    float clampPower = (float) -0.2;
-
-    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
-    {
-        //Use the entered powers and feed them to the motors
-        leftMotorFront.setPower(leftFrontPower);
-        leftMotorBack.setPower(leftBackPower);
-        rightMotorFront.setPower(rightFrontPower);
-        rightMotorBack.setPower(rightBackPower);
-    }
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -88,10 +78,7 @@ public class Teleop extends LinearOpMode
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         //Reverse some motors and keep others forward
-        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        functions.initializeMotorsAndSensors();
 
         //Wait for start button to be clicked
         waitForStart();
@@ -103,7 +90,8 @@ public class Teleop extends LinearOpMode
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Set float variables as the inputs from the joysticks and the triggers
             drivePowerFast = gamepad1.left_stick_y;
             shiftPowerFast = gamepad1.left_stick_x;
@@ -132,7 +120,7 @@ public class Teleop extends LinearOpMode
 
             if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
             {
-                setDriveMotorPowers(0, 0, 0, 0);
+                functions.setDriveMotorPowers(0, 0, 0, 0);
             }
 
             if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
@@ -171,43 +159,37 @@ public class Teleop extends LinearOpMode
             }
 
 
-            if (gamepad2.right_bumper)
-            {
+            if (gamepad2.right_bumper){
                 //Increase the increment operator
                 rightBumperPress++;
 
                 //If the "y" button is pressed, grab/drop a glyph
-                if (rightBumperPress % 2 == 0)
-                {
+                if (rightBumperPress % 2 == 0) {
                     functions.glyphDoor("open");
                 }
-                if (rightBumperPress % 2 == 1)
-                {
+                if (rightBumperPress % 2 == 1) {
                     functions.glyphDoor("close");
                 }
             }
 
-            if (Math.abs(liftPower)>=0.1)
-            {
+            if (Math.abs(liftPower)>=0.1) {
                 glyphLift.setPower(liftPower);
             }
-            if (Math.abs(liftPower) < 0.1)
-            {
+            if (Math.abs(liftPower) < 0.1) {
                 glyphLift.setPower(0.0);
             }
 
-            if ((gamepad1.b) || (gamepad2.b))
-            {
+            if ((gamepad1.b) || (gamepad2.b)) {
                 functions.stop();
             }
 
-            if (gamepad1.dpad_up || gamepad2.dpad_up){
+            if (gamepad1.dpad_up || gamepad2.dpad_up) {
                 glyphLift.setPower(0.0);
-                functions.oneMotorEncoder(2600, 1.0, glyphLift);
+                functions.oneMotorEncoder(650, (float) 1.0, glyphLift);
             }
-            if (gamepad1.dpad_down || gamepad2.dpad_down){
+            if (gamepad1.dpad_down || gamepad2.dpad_down) {
                 glyphLift.setPower(0.0);
-                functions.oneMotorEncoder(-2600, -1.0, glyphLift);
+                functions.oneMotorEncoder(-650, (float) -1.0, glyphLift);
             }
 
 
@@ -220,4 +202,3 @@ public class Teleop extends LinearOpMode
         } //Close "while (opModeIsActive())" loop
     } //Close main
 } //Close class and end program
-
