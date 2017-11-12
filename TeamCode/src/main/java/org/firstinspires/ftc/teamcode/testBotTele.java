@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,8 +11,10 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Disabled
 @TeleOp(name="Tele Lebron") //Name the class
-public class testBotTele extends LinearOpMode {
+public class testBotTele extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -24,7 +27,7 @@ public class testBotTele extends LinearOpMode {
 
     //Relic Motors
     //Servo relicGrab;
-    //DcMotor relicLift;
+    //DcMotor relicSpool;
 
     //Jewel Motor
     Servo jewelArm;
@@ -96,7 +99,8 @@ public class testBotTele extends LinearOpMode {
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Set float variables as the inputs from the joysticks and the triggers
             drivePowerFast = gamepad1.left_stick_y;
             shiftPowerFast = gamepad1.left_stick_x;
@@ -110,66 +114,80 @@ public class testBotTele extends LinearOpMode {
             //Do nothing if joystick is stationary
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shiftPowerFast) > Math.abs(drivePowerFast)) {
+            if (Math.abs(shiftPowerFast) > Math.abs(drivePowerFast))
+            {
                 setDriveMotorPowers(-shiftPowerFast, shiftPowerFast, shiftPowerFast, -shiftPowerFast);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast)) {
+            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast))
+            {
                 setDriveMotorPowers(drivePowerFast, drivePowerFast, drivePowerFast, drivePowerFast);
             }
 
-            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0) {
+            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
+            {
                 setDriveMotorPowers(0, 0, 0, 0);
             }
 
-            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow)) {
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
+            {
                 setDriveMotorPowers(-shiftPowerSlow, shiftPowerSlow, shiftPowerSlow, -shiftPowerSlow);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow)) {
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
+            {
                 setDriveMotorPowers(drivePowerSlow, drivePowerSlow, drivePowerSlow, drivePowerSlow);
             }
 
             //If the left trigger is pushed, turn left at that power
-            if (leftTurnPower > 0) {
+            if (leftTurnPower > 0)
+            {
                 setDriveMotorPowers(leftTurnPower, leftTurnPower, -leftTurnPower, -leftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (rightTurnPower > 0) {
+            if (rightTurnPower > 0)
+            {
                 setDriveMotorPowers(-rightTurnPower, -rightTurnPower, rightTurnPower, rightTurnPower);
             }
 
-            if (gamepad2.y) {
+            if (gamepad2.y)
+            {
                 //Increase the increment operator
                 yPress++;
 
                 //If the "y" button is pressed, grab/drop a glyph
-                if (yPress % 2 == 0) {
+                if (yPress % 2 == 0)
+                {
                     glyphGrab.setPower(0.2);
                     Thread.sleep(700);
                     glyphGrab.setPower(0.0);
                 }
-                else if (yPress % 2 == 1) {
+                else if (yPress % 2 == 1)
+                {
                     glyphGrab.setPower(- 0.2);
                     Thread.sleep(700);
                     glyphGrab.setPower(0.0);
-                    if (!gamepad2.y) {
+                    if (!gamepad2.y)
+                    {
                         glyphGrab.setPower(-0.2);
                     }
                 }
             }
 
-            if (Math.abs(liftPower)>=0.1) {
+            if (Math.abs(liftPower)>=0.1)
+            {
                 glyphLift.setPower(liftPower);
             }
-            if (Math.abs(liftPower) < 0.1) {
+            if (Math.abs(liftPower) < 0.1)
+            {
                 glyphLift.setPower(0.0);
             }
 
-            if ((gamepad1.b) || (gamepad2.b)) {
+            if ((gamepad1.b) || (gamepad2.b))
+            {
                 setDriveMotorPowers(0,0,0,0);
             }
 

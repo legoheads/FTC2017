@@ -13,7 +13,8 @@ import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 @Disabled
-public class DriveFunctions extends LinearOpMode {
+public class DriveFunctions extends LinearOpMode
+{
 
     //Define Drive Motors
     DcMotor leftMotorFront;
@@ -45,7 +46,8 @@ public class DriveFunctions extends LinearOpMode {
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicSpool, Servo relicFlip, Servo jewelArm, ColorSensor colorSensor) {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicSpool, Servo relicFlip, Servo jewelArm, ColorSensor colorSensor)
+    {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
@@ -66,7 +68,8 @@ public class DriveFunctions extends LinearOpMode {
     /**
      * Set sensor addresses, modes and DC motor directions
      */
-    public void initializeMotorsAndSensors() {
+    public void initializeMotorsAndSensors()
+    {
         //Set the sensor to the mode that we want, and set their addresses
         colorSensor.enableLed(true);
 
@@ -322,24 +325,27 @@ public class DriveFunctions extends LinearOpMode {
 
     public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException {
         float turnPower = (float) 0.3;
-        int turnDistance = 300;
+        int turnDistance = 100;
 
         jewelArm.setPosition(1.0);
         Thread.sleep(1000);
-        if (iSeeAColor(colorSensor)) {
+        if (iSeeAColor(colorSensor))
+        {
             colorSeen = whatColor(colorSensor);
         }
-        if (colorSeen == color) {
-            leftTurnAutonomous(turnPower, turnDistance);
+        if (colorSeen == color)
+        {
+            rightTurnAutonomous(turnPower, turnDistance);
             jewelArm.setPosition(0.1);
             Thread.sleep(1000);
-            rightTurnAutonomous(turnPower, turnDistance);
+            leftTurnAutonomous(turnPower, turnDistance);
         }
-        else {
-            rightTurnAutonomous(turnPower, turnDistance);
+        else
+        {
+            leftTurnAutonomous(turnPower, turnDistance);
             jewelArm.setPosition(0.1);
             Thread.sleep(1000);
-            leftTurnAutonomous(turnPower, turnDistance);
+            rightTurnAutonomous(turnPower, turnDistance);
         }
 
     }

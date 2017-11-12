@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="AutoBlue1") //Name the program
-public class autoBlue1 extends LinearOpMode {
+public class autoBlue1 extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -44,7 +45,8 @@ public class autoBlue1 extends LinearOpMode {
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -74,14 +76,15 @@ public class autoBlue1 extends LinearOpMode {
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Close door
             functions.glyphDoor("close");
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
 
-            vuforia.runVuforia();
+//            vuforia.runVuforia();
 
 //            //Move to pictograph
 //            functions.rightShiftAutonomous(shiftPower, 300);

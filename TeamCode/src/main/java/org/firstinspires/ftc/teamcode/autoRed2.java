@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Auto Red2") //Name the program
-public class autoRed2 extends LinearOpMode {
+public class autoRed2 extends LinearOpMode
+{
 
     //Define Drive Motors
     DcMotor leftMotorFront;
@@ -45,7 +46,8 @@ public class autoRed2 extends LinearOpMode {
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -74,34 +76,47 @@ public class autoRed2 extends LinearOpMode {
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive())
-        {
-            //Go to jewels
-            functions.driveAutonomous(-drivePower, -400);
-
+        while (opModeIsActive()) {
+            //Close door
+            functions.glyphDoor("close");
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
-            //Move to pictograph
-            functions.leftShiftAutonomous(shiftPower, 300);
-
-            //Use Vuforia to read the picture
-            //INSERT VUFORIA HERE
-
-            //Move towards cryptobox
-            functions.rightShiftAutonomous(shiftPower, 800);
-
-            //Move away from the cryptobox
+            //Go to jewels
             functions.driveAutonomous(drivePower, 500);
 
-            //Turn to face cryptobox
-            functions.rightTurnAutonomous(turnPower, 500);
+            functions.rightTurnAutonomous(turnPower, 300);
 
-            //Align with the cryptobox
-            functions.leftShiftAutonomous(shiftPower, 600);
+            functions.driveAutonomous(drivePower, 300);
 
-            //Drive into the cryptobox
-            functions.driveAutonomous(drivePower, 1300);
+            functions.glyphDoor("open");
+
+//            //Go to jewels
+//            functions.driveAutonomous(-drivePower, -400);
+//
+//            //Do jewels
+//            functions.jewelPush(colorSensor, color, colorSeen);
+//
+//            //Move to pictograph
+//            functions.leftShiftAutonomous(shiftPower, 300);
+//
+//            //Use Vuforia to read the picture
+//            //INSERT VUFORIA HERE
+//
+//            //Move towards cryptobox
+//            functions.rightShiftAutonomous(shiftPower, 800);
+//
+//            //Move away from the cryptobox
+//            functions.driveAutonomous(drivePower, 500);
+//
+//            //Turn to face cryptobox
+//            functions.rightTurnAutonomous(turnPower, 500);
+//
+//            //Align with the cryptobox
+//            functions.leftShiftAutonomous(shiftPower, 600);
+//
+//            //Drive into the cryptobox
+//            functions.driveAutonomous(drivePower, 1300);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

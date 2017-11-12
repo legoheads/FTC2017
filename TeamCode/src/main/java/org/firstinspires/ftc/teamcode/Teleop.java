@@ -23,7 +23,7 @@ public class Teleop extends LinearOpMode {
 
     //Relic Motors
     Servo relicGrab;
-    Servo relicLift;
+    Servo relicSpool;
     Servo relicFlip;
 
     //Jewel Motor
@@ -47,6 +47,9 @@ public class Teleop extends LinearOpMode {
 
     private int rightBumperPress = 0;
 
+    int relicFlipToggle = -1;
+    int relicDropToggle = -1;
+
     //***********************************************************************************************************
     //MAIN BELOW
     @Override
@@ -62,7 +65,7 @@ public class Teleop extends LinearOpMode {
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicLift = hardwareMap.servo.get("relicSpool");
+        relicSpool = hardwareMap.servo.get("relicSpool");
         relicFlip = hardwareMap.servo.get("relicFlip");
 
         //Get references to the Servo Motors from the hardware map
@@ -71,7 +74,7 @@ public class Teleop extends LinearOpMode {
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicLift, relicFlip, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
 
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
@@ -90,15 +93,13 @@ public class Teleop extends LinearOpMode {
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive()) {
             //Set float variables as the inputs from the joysticks and the triggers
-            drivePowerFast = gamepad1.left_stick_y;
+            drivePowerFast = gamepad1.left_stick_y * (float) 0.8;
             shiftPowerFast = gamepad1.left_stick_x;
-            drivePowerSlow = gamepad2.left_stick_y / 3;
-            shiftPowerSlow = gamepad2.left_stick_x / 3;
-            fastLeftTurnPower = (float) (gamepad1.left_trigger / 2.5);
-            fastRightTurnPower = (float) (gamepad1.right_trigger / 2.5);
-            slowLeftTurnPower = gamepad2.left_trigger / 3;
-            slowRightTurnPower = gamepad2.right_trigger / 3;
-            liftPower = -gamepad2.right_stick_y;
+            fastLeftTurnPower = (float) (gamepad1.left_trigger / 2);
+            fastRightTurnPower = (float) (gamepad1.right_trigger / 2);
+            jewelArm.setPosition(0.1);
+            liftPower = gamepad1.right_stick_y;
+
 
 
             //Do nothing if joystick is stationary
@@ -117,37 +118,43 @@ public class Teleop extends LinearOpMode {
                 functions.setDriveMotorPowers(0, 0, 0, 0);
             }
 
-            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow)) {
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
+            {
                 functions.shiftTeleop(shiftPowerSlow);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow)) {
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
+            {
                 functions.driveTeleop(drivePowerSlow);
             }
 
             //If the left trigger is pushed, turn left at that power
-            if (fastLeftTurnPower > 0) {
+            if (fastLeftTurnPower > 0)
+            {
                 functions.leftTurnTeleop(fastLeftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (fastRightTurnPower > 0) {
+            if (fastRightTurnPower > 0)
+            {
                 functions.rightTurnTeleop(fastRightTurnPower);
             }
 
             //If the left trigger is pushed, turn left at that power
-            if (slowLeftTurnPower > 0) {
+            if (slowLeftTurnPower > 0)
+            {
                 functions.leftTurnTeleop(slowLeftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (slowRightTurnPower > 0) {
+            if (slowRightTurnPower > 0)
+            {
                 functions.rightTurnTeleop(slowRightTurnPower);
             }
 
 
-            if (gamepad2.right_bumper){
+            if ((gamepad1.right_bumper)) {
                 //Increase the increment operator
                 rightBumperPress++;
 
@@ -171,14 +178,34 @@ public class Teleop extends LinearOpMode {
                 functions.stop();
             }
 
-            if (gamepad1.dpad_up || gamepad2.dpad_up) {
+            if (gamepad1.dpad_up) {
                 glyphLift.setPower(0.0);
                 functions.oneMotorEncoder(650, (float) 1.0, glyphLift);
             }
-            if (gamepad1.dpad_down || gamepad2.dpad_down) {
+            if (gamepad1.dpad_down) {
                 glyphLift.setPower(0.0);
                 functions.oneMotorEncoder(-650, (float) -1.0, glyphLift);
             }
+            if (gamepad2.x){
+                relicDropToggle++;
+            }
+            if (relicDropToggle %2 == 0){
+                relicGrab.setPosition(0);
+            }
+            if (relicDropToggle %2 == 1){
+                relicGrab.setPosition(1.0);
+            }
+
+            if (gamepad2.y){
+                relicFlipToggle++;
+            }
+            if (relicFlipToggle % 2 == 0){
+                relicFlip.setPosition(1.0);
+            }
+            if (relicFlipToggle % 2 == 1){
+                relicFlip.setPosition(0);
+            }
+
 
 
             //Count time
