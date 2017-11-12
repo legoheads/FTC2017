@@ -7,8 +7,6 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -25,8 +23,9 @@ public class autoBlue1 extends LinearOpMode {
     DcMotor glyphLift;
 
     //Relic Motors
-//    Servo relicGrab;
-//    DcMotor relicLift;
+    Servo relicGrab;
+    Servo relicSpool;
+    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -42,11 +41,10 @@ public class autoBlue1 extends LinearOpMode {
     float shiftPower = (float) 0.2;
     float turnPower = (float) 0.2;
 
-//***************************************************************************************************************************
+    //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -54,8 +52,9 @@ public class autoBlue1 extends LinearOpMode {
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-//        relicGrab = hardwareMap.servo.get("relicGrab");
-//        relicLift = hardwareMap.dcMotor.get("relicLift");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicSpool = hardwareMap.servo.get("relicSpool");
+        relicFlip = hardwareMap.servo.get("relicFlip");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
@@ -64,7 +63,9 @@ public class autoBlue1 extends LinearOpMode {
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
+
+        Vuforia vuforia = new Vuforia();
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -73,13 +74,23 @@ public class autoBlue1 extends LinearOpMode {
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Close door
             functions.glyphDoor("close");
 
-            //Do jewels
-            functions.jewelPush(colorSensor, color, colorSeen);
+
+
+
+            while (opModeIsActive()) {
+
+
+
+
+
+                //Do jewels
+                //functions.jewelPush(colorSensor, color, colorSeen);
+
+                vuforia.runOpMode();
 
 //            //Move to pictograph
 //            functions.rightShiftAutonomous(shiftPower, 300);
@@ -103,10 +114,11 @@ public class autoBlue1 extends LinearOpMode {
 //            //Drive into the cryptobox
 //            functions.driveAutonomous(drivePower, 1300);
 
-            //Always call idle() at the bottom of your while(opModeIsActive()) loop
-            idle();
-            //Break the loop after one run
-            break;
-        }//Close while opModeIsActive loop
-    } //Close "run Opmode" loop
-} //Close class and end program
+                //Always call idle() at the bottom of your while(opModeIsActive()) loop
+                idle();
+                //Break the loop after one run
+                break;
+            }//Close while opModeIsActive loop
+        } //Close "run Opmode" loop
+    } //Close class and end program
+}

@@ -6,12 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.DriveFunctions;
-
+@Disabled
 @TeleOp(name = "Data Logging Program") //Name the program
 public class dataLogging extends LinearOpMode {
     //Define Drive Motors
@@ -26,7 +24,8 @@ public class dataLogging extends LinearOpMode {
 
     //Relic Motors
     Servo relicGrab;
-    DcMotor relicLift;
+    Servo relicSpool;
+    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -37,8 +36,7 @@ public class dataLogging extends LinearOpMode {
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -46,8 +44,9 @@ public class dataLogging extends LinearOpMode {
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-//        relicGrab = hardwareMap.servo.get("relicGrab");
-//        relicLift = hardwareMap.dcMotor.get("relicLift");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicSpool = hardwareMap.servo.get("relicSpool");
+        relicSpool = hardwareMap.servo.get("relicFlip");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
@@ -56,7 +55,9 @@ public class dataLogging extends LinearOpMode {
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
+
+        Vuforia vuforia = new Vuforia();
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -67,10 +68,8 @@ public class dataLogging extends LinearOpMode {
 //***************************************************************************************************************************
         //While the op mode is active, loop and read the RGB data.
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive())
-        {
-            if (gamepad1.b)
-            {
+        while (opModeIsActive()) {
+            if (gamepad1.b) {
                 //If "b" is pressed, reset the encoders
                 leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

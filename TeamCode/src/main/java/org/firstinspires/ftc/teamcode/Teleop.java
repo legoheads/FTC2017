@@ -5,15 +5,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp") //Name the class
-public class Teleop extends LinearOpMode
-{
+public class Teleop extends LinearOpMode {
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -26,7 +23,8 @@ public class Teleop extends LinearOpMode
 
     //Relic Motors
     Servo relicGrab;
-    DcMotor relicLift;
+    Servo relicLift;
+    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -52,29 +50,29 @@ public class Teleop extends LinearOpMode
     //***********************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
-        leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
+        leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-//        relicGrab = hardwareMap.servo.get("relicGrab");
-//        relicLift = hardwareMap.dcMotor.get("relicLift");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicLift = hardwareMap.servo.get("relicSpool");
+        relicFlip = hardwareMap.servo.get("relicFlip");
 
         //Get references to the Servo Motors from the hardware map
-        //jewelArm = hardwareMap.servo.get("jewelArm");
-
+        jewelArm = hardwareMap.servo.get("jewelArm");
         //Get references to the sensors and the CDI from the hardware map
-        //colorSensor = hardwareMap.colorSensor.get("colorSensor");
+        colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicLift, relicFlip, jewelArm, colorSensor);
+
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         //Reverse some motors and keep others forward
@@ -107,54 +105,45 @@ public class Teleop extends LinearOpMode
             //Do nothing if joystick is stationary
 
             //Shift if pushed more on X than Y
-            if (Math.abs(shiftPowerFast) > Math.abs(drivePowerFast))
-            {
+            if (Math.abs(shiftPowerFast) > Math.abs(drivePowerFast)) {
                 functions.shiftTeleop(shiftPowerFast);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast))
-            {
+            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast)) {
                 functions.driveTeleop(drivePowerFast);
             }
 
-            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
-            {
+            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0) {
                 functions.setDriveMotorPowers(0, 0, 0, 0);
             }
 
-            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
-            {
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow)) {
                 functions.shiftTeleop(shiftPowerSlow);
             }
 
             //Drive if joystick pushed more Y than X
-            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
-            {
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow)) {
                 functions.driveTeleop(drivePowerSlow);
             }
 
             //If the left trigger is pushed, turn left at that power
-            if (fastLeftTurnPower > 0)
-            {
+            if (fastLeftTurnPower > 0) {
                 functions.leftTurnTeleop(fastLeftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (fastRightTurnPower > 0)
-            {
+            if (fastRightTurnPower > 0) {
                 functions.rightTurnTeleop(fastRightTurnPower);
             }
 
             //If the left trigger is pushed, turn left at that power
-            if (slowLeftTurnPower > 0)
-            {
+            if (slowLeftTurnPower > 0) {
                 functions.leftTurnTeleop(slowLeftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (slowRightTurnPower > 0)
-            {
+            if (slowRightTurnPower > 0) {
                 functions.rightTurnTeleop(slowRightTurnPower);
             }
 

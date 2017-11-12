@@ -9,16 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Disabled
-public class DriveFunctions extends LinearOpMode
-{
+public class DriveFunctions extends LinearOpMode {
 
     //Define Drive Motors
     DcMotor leftMotorFront;
@@ -30,9 +25,10 @@ public class DriveFunctions extends LinearOpMode
     DcMotor glyphGrab;
     DcMotor glyphLift;
 
-//    //Relic Motors
-//    Servo relicGrab;
-//    DcMotor relicLift;
+    //Relic Motors
+    Servo relicGrab;
+    Servo relicSpool;
+    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -49,8 +45,7 @@ public class DriveFunctions extends LinearOpMode
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo jewelArm, ColorSensor colorSensor)
-    {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicSpool, Servo relicFlip, Servo jewelArm, ColorSensor colorSensor) {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
@@ -59,8 +54,9 @@ public class DriveFunctions extends LinearOpMode
         this.rightMotorBack = rightMotorBack;
         this.glyphGrab = glyphGrab;
         this.glyphLift = glyphLift;
-//        this.relicGrab = relicGrab;
-//        this.relicLift = relicLift;
+        this.relicGrab = relicGrab;
+        this.relicSpool = relicSpool;
+        this.relicFlip = relicFlip;
         this.jewelArm = jewelArm;
 
         //Initialize sensors and CDI
@@ -70,8 +66,7 @@ public class DriveFunctions extends LinearOpMode
     /**
      * Set sensor addresses, modes and DC motor directions
      */
-    public void initializeMotorsAndSensors()
-    {
+    public void initializeMotorsAndSensors() {
         //Set the sensor to the mode that we want, and set their addresses
         colorSensor.enableLed(true);
 
@@ -325,62 +320,16 @@ public class DriveFunctions extends LinearOpMode
         return "Red";
     }
 
-//    public String vuforia(){
-//        /*
-//         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
-//         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
-//         */
-//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-//
-//        //License key from vuforia website
-//        parameters.vuforiaLicenseKey = "Adp/KFX/////AAAAGYMHgTasR0y/o1XMGBLR4bwahfNzuw2DQMMYq7vh4UvYHleflzPtt5rN2kFp7NCyO6Ikkqhj/20qTYc9ex+340/hvC49r4mphdmd6lI/Ip64CbMTB8Vo53jBHlGMkGr0xq/+C0SKL1hRXj5EkXtSe6q9F9T/nAIcg9Jr+OfAcifXPH9UJYG8WmbLlvpqN+QuVA5KQ6ve1USpxYhcimV9xWCBrq5hFk1hGLbeveHrKDG3wYRdwBeYv3Yo5qYTsotfB4CgJT9CX/fDR/0JUL7tE29d1v1eEF/VXCgQP4EPUoDNBtNE6jpKJhtQ8HJ2KjmJnW55f9OqNc6SsULV3bkQ52PY+lPLt1y4muyMrixCT7Lu";
-//
-//        //Which camera?
-//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-//        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-//
-//
-//        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-//        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-//        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-//
-//        telemetry.addData(">", "Press Play to start");
-//        telemetry.update();
-//        waitForStart();
-//
-//        relicTrackables.activate();
-//
-//
-//
-//        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-//        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-//            telemetry.addData("VuMark", "%s visible", vuMark);
-//            return vuMark + "";
-//        }
-//        else {
-//            telemetry.addData("VuMark", "not visible");
-//            return "";
-//        }
-//        telemetry.update();
-//
-//    }
-
-
-
-    public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
-    {
+    public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException {
         float turnPower = (float) 0.3;
         int turnDistance = 300;
 
         jewelArm.setPosition(1.0);
         Thread.sleep(1000);
-        if (iSeeAColor(colorSensor))
-        {
+        if (iSeeAColor(colorSensor)) {
             colorSeen = whatColor(colorSensor);
         }
-        if (colorSeen == color)
-        {
+        if (colorSeen == color) {
             rightTurnAutonomous(turnPower, turnDistance);
             jewelArm.setPosition(0.5);
             Thread.sleep(1000);

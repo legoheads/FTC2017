@@ -11,8 +11,7 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Auto Red2") //Name the program
-public class autoRed2 extends LinearOpMode
-{
+public class autoRed2 extends LinearOpMode {
 
     //Define Drive Motors
     DcMotor leftMotorFront;
@@ -26,7 +25,8 @@ public class autoRed2 extends LinearOpMode
 
     //Relic Motors
     Servo relicGrab;
-    DcMotor relicLift;
+    Servo relicSpool;
+    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -45,9 +45,7 @@ public class autoRed2 extends LinearOpMode
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
-        //Get references to the DC motors from the hardware map
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -56,7 +54,7 @@ public class autoRed2 extends LinearOpMode
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicLift = hardwareMap.dcMotor.get("relicLift");
+        relicSpool = hardwareMap.servo.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
@@ -65,7 +63,9 @@ public class autoRed2 extends LinearOpMode
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
+
+        Vuforia vuforia = new Vuforia();
 
         //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
         functions.initializeMotorsAndSensors();
