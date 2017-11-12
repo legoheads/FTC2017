@@ -1,7 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -10,8 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Disabled
-@Autonomous(name="Vuforia")
+
 public class Vuforia extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
@@ -20,7 +16,7 @@ public class Vuforia extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
 
-    @Override public void runOpMode() {
+    public String runVuforia() {
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -41,8 +37,8 @@ public class Vuforia extends LinearOpMode {
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
-        telemetry.addData(">", "Press Play to start");
-        telemetry.update();
+        //telemetry.addData(">", "Press Play to start");
+        //telemetry.update();
         waitForStart();
 
         relicTrackables.activate();
@@ -52,11 +48,15 @@ public class Vuforia extends LinearOpMode {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);
+                return vuMark + "";
             }
             else {
                 telemetry.addData("VuMark", "not visible");
             }
             telemetry.update();
         }
+        return "";
     }
+
+    public void runOpMode(){}
 }

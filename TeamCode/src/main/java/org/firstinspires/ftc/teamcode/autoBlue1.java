@@ -77,20 +77,11 @@ public class autoBlue1 extends LinearOpMode {
         while (opModeIsActive()) {
             //Close door
             functions.glyphDoor("close");
+            //Do jewels
+            functions.jewelPush(colorSensor, color, colorSeen);
 
 
-
-
-            while (opModeIsActive()) {
-
-
-
-
-
-                //Do jewels
-                //functions.jewelPush(colorSensor, color, colorSeen);
-
-                vuforia.runOpMode();
+            vuforia.runVuforia();
 
 //            //Move to pictograph
 //            functions.rightShiftAutonomous(shiftPower, 300);
@@ -114,11 +105,10 @@ public class autoBlue1 extends LinearOpMode {
 //            //Drive into the cryptobox
 //            functions.driveAutonomous(drivePower, 1300);
 
-                //Always call idle() at the bottom of your while(opModeIsActive()) loop
-                idle();
-                //Break the loop after one run
-                break;
-            }//Close while opModeIsActive loop
-        } //Close "run Opmode" loop
-    } //Close class and end program
-}
+            //Always call idle() at the bottom of your while(opModeIsActive()) loop
+            idle();
+            //Break the loop after one run
+            break;
+        }//Close while opModeIsActive loop
+    } //Close "run Opmode" loop
+} //Close class and end program

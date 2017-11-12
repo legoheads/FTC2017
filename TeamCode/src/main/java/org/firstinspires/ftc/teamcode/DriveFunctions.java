@@ -330,17 +330,16 @@ public class DriveFunctions extends LinearOpMode {
             colorSeen = whatColor(colorSensor);
         }
         if (colorSeen == color) {
-            rightTurnAutonomous(turnPower, turnDistance);
-            jewelArm.setPosition(0.5);
-            Thread.sleep(1000);
             leftTurnAutonomous(turnPower, turnDistance);
+            jewelArm.setPosition(0.1);
+            Thread.sleep(1000);
+            rightTurnAutonomous(turnPower, turnDistance);
         }
-        else
-        {
-            leftTurnAutonomous(turnPower, turnDistance);
-            jewelArm.setPosition(0.5);
-            Thread.sleep(1000);
+        else {
             rightTurnAutonomous(turnPower, turnDistance);
+            jewelArm.setPosition(0.1);
+            Thread.sleep(1000);
+            leftTurnAutonomous(turnPower, turnDistance);
         }
 
     }
