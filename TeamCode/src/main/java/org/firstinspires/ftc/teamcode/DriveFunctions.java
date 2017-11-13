@@ -325,11 +325,7 @@ public class DriveFunctions extends LinearOpMode
 
     public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException {
         float turnPower = (float) 0.3;
-<<<<<<< Updated upstream
         int turnDistance = 100;
-=======
-        int turnDistance = 120;
->>>>>>> Stashed changes
 
         jewelArm.setPosition(1.0);
         Thread.sleep(1000);
@@ -351,7 +347,6 @@ public class DriveFunctions extends LinearOpMode
             Thread.sleep(1000);
             rightTurnAutonomous(turnPower, turnDistance);
         }
-        jewelArm.setPosition(0.0);
 
     }
 

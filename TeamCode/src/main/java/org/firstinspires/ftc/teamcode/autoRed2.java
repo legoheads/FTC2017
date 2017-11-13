@@ -77,16 +77,11 @@ public class autoRed2 extends LinearOpMode
 
 //***************************************************************************************************************************
         while (opModeIsActive()) {
-<<<<<<< Updated upstream
             //Close door
-=======
-
->>>>>>> Stashed changes
             functions.glyphDoor("close");
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
-<<<<<<< Updated upstream
             //Go to jewels
             functions.driveAutonomous(drivePower, 500);
 
@@ -97,13 +92,6 @@ public class autoRed2 extends LinearOpMode
             functions.glyphDoor("open");
 
 //            //Go to jewels
-=======
-
-            vuforia.runVuforia();
-
-
-            //Go to jewels
->>>>>>> Stashed changes
 //            functions.driveAutonomous(-drivePower, -400);
 //
 //            //Do jewels
