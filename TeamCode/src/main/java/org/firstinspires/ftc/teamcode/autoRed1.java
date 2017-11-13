@@ -75,14 +75,27 @@ public class autoRed1 extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
+<<<<<<< Updated upstream
         while (opModeIsActive())
         {
             //Close door
+=======
+        while (opModeIsActive()) {
+
+>>>>>>> Stashed changes
             functions.glyphDoor("close");
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
+<<<<<<< Updated upstream
 //            //Go to jewels
+=======
+
+            vuforia.runVuforia();
+
+
+            //Go to jewels
+>>>>>>> Stashed changes
 //            functions.driveAutonomous(-drivePower, -400);
 //
 //            //Do jewels

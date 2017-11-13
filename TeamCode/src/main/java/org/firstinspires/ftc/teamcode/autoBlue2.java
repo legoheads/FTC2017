@@ -77,11 +77,16 @@ public class autoBlue2 extends LinearOpMode
 
 //***************************************************************************************************************************
         while (opModeIsActive()) {
+<<<<<<< Updated upstream
             //Close door
+=======
+
+>>>>>>> Stashed changes
             functions.glyphDoor("close");
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
+<<<<<<< Updated upstream
             //Go to jewels
             functions.driveAutonomous(drivePower, 500);
 
@@ -90,6 +95,14 @@ public class autoBlue2 extends LinearOpMode
             functions.driveAutonomous(drivePower, 300);
 
             functions.glyphDoor("open");
+=======
+
+            vuforia.runVuforia();
+
+
+            //Go to jewels
+//            functions.driveAutonomous(-drivePower, -400);
+>>>>>>> Stashed changes
 //
 //            //Do jewels
 //            functions.jewelPush(colorSensor, color, colorSeen);
@@ -106,6 +119,10 @@ public class autoBlue2 extends LinearOpMode
 //            functions.driveAutonomous(drivePower, 500);
 //
 //            //Turn to face cryptobox
+<<<<<<< Updated upstream
+=======
+//            functions.leftTurnAutonomous(turnPower, 500);
+>>>>>>> Stashed changes
 //
 //            //Align with the cryptobox
 //            functions.rightShiftAutonomous(shiftPower, 600);
