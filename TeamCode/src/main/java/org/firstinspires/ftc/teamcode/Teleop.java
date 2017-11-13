@@ -148,8 +148,7 @@ public class Teleop extends LinearOpMode {
             }
 
             //If the right trigger is pushed, turn right at that power
-            if (slowRightTurnPower > 0)
-            {
+            if (slowRightTurnPower > 0) {
                 functions.rightTurnTeleop(slowRightTurnPower);
             }
 
@@ -204,6 +203,13 @@ public class Teleop extends LinearOpMode {
             }
             if (relicFlipToggle % 2 == 1){
                 relicFlip.setPosition(0);
+            }
+
+            if (gamepad2.dpad_up){
+                relicSpool.setPosition(1.0);
+            }
+            if (gamepad2.dpad_down){
+                relicSpool.setPosition(0.5);
             }
 
 

@@ -45,8 +45,7 @@ public class autoBlue1 extends LinearOpMode
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -76,8 +75,7 @@ public class autoBlue1 extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Close door
             functions.glyphDoor("close");
             //Do jewels

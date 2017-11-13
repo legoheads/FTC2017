@@ -82,14 +82,14 @@ public class autoBlue2 extends LinearOpMode
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
-            //Go to jewels
-            functions.driveAutonomous(drivePower, 500);
-
-            functions.leftTurnAutonomous(turnPower, 300);
-
-            functions.driveAutonomous(drivePower, 300);
-
-            functions.glyphDoor("open");
+//            //Go to jewels
+//            functions.driveAutonomous(drivePower, 500);
+//
+//            functions.leftTurnAutonomous(turnPower, 300);
+//
+//            functions.driveAutonomous(drivePower, 300);
+//
+//            functions.glyphDoor("open");
 //
 //            //Do jewels
 //            functions.jewelPush(colorSensor, color, colorSeen);
