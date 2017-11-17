@@ -38,9 +38,9 @@ public class autoBlue1 extends LinearOpMode
     String colorSeen;
 
     //Define up drive powers to avoid magic numbers
-    float drivePower = (float) 0.3;
-    float shiftPower = (float) 0.2;
-    float turnPower = (float) 0.2;
+    float drivePower = (float) 0.5;
+    float shiftPower = (float) 0.5;
+    float turnPower = (float) 0.5;
 
     //***************************************************************************************************************************
     //MAIN BELOW
@@ -75,11 +75,34 @@ public class autoBlue1 extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Close door
             functions.glyphDoor("close");
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
+
+            functions.leftTurnAutonomous(turnPower, 1500);
+
+            functions.leftTurnAutonomous(-turnPower * 2, -50);
+
+            functions.driveAutonomous(-drivePower, -1000);
+
+            Thread.sleep(200);
+
+            functions.driveAutonomous(drivePower, 2000);
+
+            functions.driveAutonomous(-drivePower * 2, -50);
+
+            functions.leftTurnAutonomous(turnPower, 1200);
+
+            functions.leftTurnAutonomous(-turnPower * 2, -50);
+
+            functions.driveAutonomous(drivePower, 1700);
+
+            functions.driveAutonomous(-drivePower * 2, -50);
+
+            functions.glyphDoor("open");
 
 
 //            vuforia.runVuforia();

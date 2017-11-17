@@ -221,7 +221,7 @@ public class DriveFunctions extends LinearOpMode
     public void leftTurnAutonomous(float power, int degrees)
     {
         //Left motors backwards and right motors forwards gives us a left turn
-        moveDriveMotorsWithEncoders(-degrees, -degrees, degrees, degrees, -power, -power, power, power);
+        moveDriveMotorsWithEncoders(degrees, degrees, -degrees, -degrees, power, power, -power, -power);
     }
 
     /**
@@ -231,7 +231,7 @@ public class DriveFunctions extends LinearOpMode
     public void rightTurnAutonomous(float power, int degrees)
     {
         //Right motors backwards and left motors forwards gives us a right turn
-        moveDriveMotorsWithEncoders(degrees, degrees, -degrees, -degrees, power, power, -power, -power);
+        moveDriveMotorsWithEncoders(-degrees, -degrees, degrees, degrees, -power, -power, power, power);
     }
 
     /**
@@ -241,7 +241,7 @@ public class DriveFunctions extends LinearOpMode
     public void leftShiftAutonomous(float power, int degrees)
     {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift left
-        moveDriveMotorsWithEncoders(-degrees, degrees, degrees, -degrees, -power, power, power, -power);
+        moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
     }
 
     /**
@@ -251,7 +251,7 @@ public class DriveFunctions extends LinearOpMode
     public void rightShiftAutonomous(float power, int degrees)
     {
         //This sequence of forwards, backwards, backwards, forwards makes the robot shift right
-        moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
+        moveDriveMotorsWithEncoders(-degrees, degrees, degrees, -degrees, -power, power, power, -power);
     }
 
     public void glyphDoor(String openOrClose) throws InterruptedException
@@ -261,14 +261,14 @@ public class DriveFunctions extends LinearOpMode
             glyphGrab.setPower(-0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.0);
-            oneMotorEncoder(-200, (float) -1.0, glyphLift);
+            oneMotorEncoder(-800, (float) -1.0, glyphLift);
         }
         if (openOrClose == "close")
         {
             glyphGrab.setPower(0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.2);
-            oneMotorEncoder(200, (float) 1.0, glyphLift);
+            oneMotorEncoder(800, (float) 1.0, glyphLift);
         }
     }
 
@@ -324,27 +324,37 @@ public class DriveFunctions extends LinearOpMode
     }
 
     public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException {
-        float turnPower = (float) 0.3;
-        int turnDistance = 100;
+        float power = (float) 0.3;
+        int shortDistance = 70;
+        int longDistance = 140;
 
         jewelArm.setPosition(1.0);
         Thread.sleep(1000);
-        if (iSeeAColor(colorSensor)) {
+        while (!iSeeAColor(colorSensor))
+        { }
+
+        if (iSeeAColor(colorSensor))
+        {
             colorSeen = whatColor(colorSensor);
         }
-        if (colorSeen == color) {
-            rightTurnAutonomous(turnPower, turnDistance);
-            jewelArm.setPosition(0.1);
-            Thread.sleep(1000);
-            leftTurnAutonomous(turnPower, turnDistance);
-        }
-        else
+        if (colorSeen.equals(color))
         {
-            leftTurnAutonomous(turnPower, turnDistance);
+            rightTurnAutonomous(power, longDistance);
             jewelArm.setPosition(0.1);
             Thread.sleep(1000);
-            rightTurnAutonomous(turnPower, turnDistance);
+            leftTurnAutonomous(power, longDistance);
         }
+        if (!colorSeen.equals(color))
+        {
+            leftTurnAutonomous(power, shortDistance);
+            jewelArm.setPosition(0.1);
+            Thread.sleep(1000);
+            rightTurnAutonomous(power, shortDistance);
+        }
+
+        driveAutonomous(power, 1400);
+
+        driveAutonomous((float) -0.7, -10);
 
     }
 
