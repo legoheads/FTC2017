@@ -13,34 +13,35 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name="Auto Blue2") //Name the program
 public class autoBlue2 extends LinearOpMode
 {
-    //Define Drive Motors
+    //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
 
-    //Glyph Motors
+    //Define glyph motors
     DcMotor glyphGrab;
     DcMotor glyphLift;
 
-    //Relic Motors
+    //Define relic motors
     Servo relicGrab;
-    Servo relicSpool;
     Servo relicFlip;
+    DcMotor relicSpool;
 
-    //Jewel Motor
+    //Define the jewel motor
     Servo jewelArm;
 
-    //Define Sensors and the CDI
+    //Define the color sensor
     ColorSensor colorSensor;
 
+    //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
 
-    //Define up drive powers to avoid magic numbers
-    float drivePower = (float) 0.8;
-    float shiftPower = (float) 0.6;
-    float turnPower = (float) 0.6;
+    //Define powers to avoid magic numbers
+    float drivePower = (float) 0.5;
+    float shiftPower = (float) 0.5;
+    float turnPower = (float) 0.5;
 
 //***************************************************************************************************************************
     //MAIN BELOW
@@ -54,29 +55,31 @@ public class autoBlue2 extends LinearOpMode
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-        relicGrab = hardwareMap.servo.get("relicGrab");
-        relicSpool = hardwareMap.servo.get("relicSpool");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicFlip = hardwareMap.servo.get("relicFlip");
 
-        //Get references to the sensors and the CDI from the hardware map
+        //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
-        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
+        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
+        //Define vuforia
         Vuforia vuforia = new Vuforia();
 
-        //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
+        //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
 
         //Wait for start button to be clicked
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Close door
             functions.glyphDoor("close");
             //Do jewels

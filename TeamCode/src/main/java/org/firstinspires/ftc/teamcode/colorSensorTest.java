@@ -14,37 +14,34 @@ import android.graphics.Color;
 @TeleOp(name="Color Sensor Test") //Name the class
 public class colorSensorTest extends LinearOpMode
 {
-    //Define Drive Motors
+    //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
 
-    //Glyph Motors
+    //Define glyph motors
     DcMotor glyphGrab;
     DcMotor glyphLift;
 
-    //Relic Motors
+    //Define relic motors
     Servo relicGrab;
-    Servo relicSpool;
     Servo relicFlip;
+    DcMotor relicSpool;
 
-    //Jewel Motor
+    //Define the jewel motor
     Servo jewelArm;
 
-    //Define Sensors and the CDI
+    //Define the color sensor
     ColorSensor colorSensor;
 
     float hsvValues[] = {0F, 0F, 0F};
 
-    //***********************************************************************************************************
+//***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException
     {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -52,21 +49,20 @@ public class colorSensorTest extends LinearOpMode
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-        relicGrab = hardwareMap.servo.get("relicGrab");
-        relicSpool = hardwareMap.servo.get("relicSpool");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
-        //Get references to the sensors and the CDI from the hardware map
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+
+        //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
-        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
+        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
-
-        //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
-        //Reverse some motors and keep others forward
+        //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
 
         //Wait for start button to be clicked

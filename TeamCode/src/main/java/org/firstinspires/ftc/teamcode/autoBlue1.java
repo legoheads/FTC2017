@@ -13,39 +13,41 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name="AutoBlue1") //Name the program
 public class autoBlue1 extends LinearOpMode
 {
-    //Define Drive Motors
+    //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
 
-    //Glyph Motors
+    //Define glyph motors
     DcMotor glyphGrab;
     DcMotor glyphLift;
 
-    //Relic Motors
+    //Define relic motors
     Servo relicGrab;
-    Servo relicSpool;
     Servo relicFlip;
+    DcMotor relicSpool;
 
-    //Jewel Motor
+    //Define the jewel motor
     Servo jewelArm;
 
-    //Define Sensor
+    //Define the color sensor
     ColorSensor colorSensor;
 
+    //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
 
-    //Define up drive powers to avoid magic numbers
+    //Define powers to avoid magic numbers
     float drivePower = (float) 0.5;
     float shiftPower = (float) 0.5;
     float turnPower = (float) 0.5;
 
-    //***************************************************************************************************************************
+//***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -53,22 +55,23 @@ public class autoBlue1 extends LinearOpMode
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
         glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
-        relicGrab = hardwareMap.servo.get("relicGrab");
-        relicSpool = hardwareMap.servo.get("relicSpool");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicFlip = hardwareMap.servo.get("relicFlip");
 
-        //Get references to the sensors and the CDI from the hardware map
+        //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
-        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors, CDI)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicSpool, relicFlip, jewelArm, colorSensor);
+        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
+        //Define vuforia
         Vuforia vuforia = new Vuforia();
 
-        //Set the sensors to the modes that we want, and set their addresses. Also set the directions of the motors
+        //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
 
         //Wait for start button to be clicked
@@ -79,55 +82,27 @@ public class autoBlue1 extends LinearOpMode
         {
             //Close door
             functions.glyphDoor("close");
+
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
-            functions.leftTurnAutonomous(turnPower, 1500);
+            //Turn left 90 degrees to position towards cryptobox
+            functions.leftTurnAutonomous(turnPower, 1000);
 
-            functions.leftTurnAutonomous(-turnPower * 2, -50);
-
+            //Align on wall
             functions.driveAutonomous(-drivePower, -1000);
 
-            Thread.sleep(200);
-
+            //Drive towards cryptobox
             functions.driveAutonomous(drivePower, 2000);
 
-            functions.driveAutonomous(-drivePower * 2, -50);
+            //Turn to be aligned with crytobox
+            functions.leftTurnAutonomous(turnPower, 1000);
 
-            functions.leftTurnAutonomous(turnPower, 1200);
-
-            functions.leftTurnAutonomous(-turnPower * 2, -50);
-
+            //Go to the cryptobox
             functions.driveAutonomous(drivePower, 1700);
 
-            functions.driveAutonomous(-drivePower * 2, -50);
-
+            //Drop the glyph in the cryptobox while ending in the safe zone
             functions.glyphDoor("open");
-
-
-//            vuforia.runVuforia();
-
-//            //Move to pictograph
-//            functions.rightShiftAutonomous(shiftPower, 300);
-//
-//            //Use Vuforia to read the picture
-//            //INSERT VUFORIA HERE
-//            //functions.vuforia();
-//
-//            //Move towards cryptobox
-//            functions.leftShiftAutonomous(shiftPower, 800);
-//
-//            //Move away from the cryptobox
-//            functions.driveAutonomous(drivePower, 500);
-//
-//            //Turn to face cryptobox
-//            functions.leftTurnAutonomous(turnPower, 500);
-//
-//            //Align with the cryptobox
-//            functions.rightShiftAutonomous(shiftPower, 600);
-//
-//            //Drive into the cryptobox
-//            functions.driveAutonomous(drivePower, 1300);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
