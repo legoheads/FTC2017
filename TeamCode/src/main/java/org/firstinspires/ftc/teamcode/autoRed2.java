@@ -69,7 +69,7 @@ public class autoRed2 extends LinearOpMode
         DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
         //Define vuforia
-        Vuforia vuforia = new Vuforia();
+//        Vuforia vuforia = new Vuforia();
 
         //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
