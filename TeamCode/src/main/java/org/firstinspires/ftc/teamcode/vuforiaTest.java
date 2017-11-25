@@ -2,16 +2,16 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
+import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Auto Red2") //Name the program
-public class autoRed2 extends LinearOpMode
+@Autonomous(name="Vuforia Test") //Name the program
+public class vuforiaTest extends LinearOpMode
 {
     //Define drive motors
     DcMotor leftMotorFront;
@@ -34,16 +34,17 @@ public class autoRed2 extends LinearOpMode
     //Define the color sensor
     ColorSensor colorSensor;
 
-    //Define strings to use, as our team color, and the color we see with the sensor
-    String color = "Red";
+    //Define strings to use, as our team color, the color we see with the sensor, and what we see with the vuforia reading
+    String color = "Blue";
     String colorSeen;
+    String vuforiaReading;
 
     //Define powers to avoid magic numbers
     float drivePower = (float) 0.5;
     float shiftPower = (float) 0.5;
     float turnPower = (float) 0.5;
 
-//***************************************************************************************************************************
+    //***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException
@@ -80,8 +81,7 @@ public class autoRed2 extends LinearOpMode
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
-            functions.leftTurnAutonomous(turnPower/2, 1040);
-
+            vuforiaReading = functions.vuforiaRead();
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run
@@ -89,3 +89,4 @@ public class autoRed2 extends LinearOpMode
         }//Close while opModeIsActive loop
     } //Close "run Opmode" loop
 } //Close class and end program
+

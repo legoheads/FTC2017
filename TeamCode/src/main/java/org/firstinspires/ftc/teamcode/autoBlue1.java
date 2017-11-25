@@ -37,6 +37,10 @@ public class autoBlue1 extends LinearOpMode
     //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
+    String vuforiaReading;
+
+    int vuforiaValues[] = {1400, 1750, 2100};
+    int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
     float drivePower = (float) 0.5;
@@ -83,26 +87,53 @@ public class autoBlue1 extends LinearOpMode
             //Close door
             functions.glyphDoor("close");
 
-            //Do jewels
+            vuforiaReading = functions.vuforiaRead();
+
+            if (vuforiaReading == "Left")
+            {
+                distanceToCryptobox = vuforiaValues[0];
+            }
+            if (vuforiaReading == "Center")
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
+            if (vuforiaReading == "Right")
+            {
+                distanceToCryptobox = vuforiaValues[2];
+            }
+
+            //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
 
-            //Turn left 90 degrees to position towards cryptobox
-            functions.leftTurnAutonomous(turnPower, 1000);
+            functions.driveAutonomous(drivePower, distanceToCryptobox);
 
-            //Align on wall
-            functions.driveAutonomous(-drivePower, -1000);
+//            //Turn left 90 degrees to position towards cryptobox
+//            functions.leftTurnAutonomous(turnPower, 1000);
+//
+//            //Align on wall
+//            functions.driveAutonomous(-drivePower, -700);
+//
+//            Thread.sleep(300);
+//
+//            //Drive towards cryptobox
+//            functions.driveAutonomous(drivePower/2, 2300);
 
-            //Drive towards cryptobox
-            functions.driveAutonomous(drivePower, 2000);
+            Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower, 1000);
+            functions.leftTurnAutonomous(turnPower/2, 1040);
+
+            Thread.sleep(300);
 
             //Go to the cryptobox
-            functions.driveAutonomous(drivePower, 1700);
+            functions.driveAutonomous(drivePower, 600);
 
             //Drop the glyph in the cryptobox while ending in the safe zone
             functions.glyphDoor("open");
+
+            functions.rightTurnAutonomous(turnPower, 300);
+
+            functions.driveAutonomous(drivePower, 400);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
