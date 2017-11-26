@@ -110,7 +110,7 @@ public class vuforiaTest extends LinearOpMode {
             }
             if (vuforiaReading == RelicRecoveryVuMark.UNKNOWN)
             {
-                functions.driveAutonomous((float) -0.2, -100);
+                vuforiaReading = vuf.go(cameraMonitorViewId);
             }
 
 //            telemetry.update();
