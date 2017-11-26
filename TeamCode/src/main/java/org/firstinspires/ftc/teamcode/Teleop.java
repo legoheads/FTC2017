@@ -10,8 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp") //Name the class
-public class Teleop extends LinearOpMode
-{
+public class Teleop extends LinearOpMode {
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;

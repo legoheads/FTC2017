@@ -10,9 +10,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 @Autonomous(name="AutoBlue1") //Name the program
-public class autoBlue1 extends LinearOpMode
-{
+public class autoBlue1 extends LinearOpMode {
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -37,7 +38,7 @@ public class autoBlue1 extends LinearOpMode
     //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
-    String vuforiaReading;
+    RelicRecoveryVuMark vuforiaReading;
 
     int vuforiaValues[] = {1400, 1750, 2100};
     int distanceToCryptobox;
@@ -50,8 +51,7 @@ public class autoBlue1 extends LinearOpMode
 //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -72,6 +72,8 @@ public class autoBlue1 extends LinearOpMode
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
         DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
+        vuforiaTest vuforia = new vuforiaTest();
+
         //Define vuforia
 //        Vuforia vuforia = new Vuforia();
 
@@ -82,25 +84,23 @@ public class autoBlue1 extends LinearOpMode
         waitForStart();
 
 //***************************************************************************************************************************
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Close door
             functions.glyphDoor("close");
 
-            vuforiaReading = functions.vuforiaRead();
+            distanceToCryptobox = vuforiaValues[1];
 
-            if (vuforiaReading == "Left")
-            {
-                distanceToCryptobox = vuforiaValues[0];
-            }
-            if (vuforiaReading == "Center")
-            {
-                distanceToCryptobox = vuforiaValues[1];
-            }
-            if (vuforiaReading == "Right")
-            {
-                distanceToCryptobox = vuforiaValues[2];
-            }
+//            vuforiaReading = functions.vuforia();
+//
+//            if (vuforiaReading == RelicRecoveryVuMark.LEFT) {
+//                distanceToCryptobox = vuforiaValues[0];
+//            }
+//            if (vuforiaReading == RelicRecoveryVuMark.CENTER) {
+//                distanceToCryptobox = vuforiaValues[1];
+//            }
+//            if (vuforiaReading == RelicRecoveryVuMark.RIGHT) {
+//                distanceToCryptobox = vuforiaValues[2];
+//            }
 
             //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
