@@ -63,8 +63,7 @@ public class DriveFunctions extends LinearOpMode
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor)
-    {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor) {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
@@ -486,37 +485,6 @@ public class DriveFunctions extends LinearOpMode
             }
 
     }
-
-    public RelicRecoveryVuMark vuforia() {
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        parameters.vuforiaLicenseKey = "Adp/KFX/////AAAAGYMHgTasR0y/o1XMGBLR4bwahfNzuw2DQMMYq7vh4UvYHleflzPtt5rN2kFp7NCyO6Ikkqhj/20qTYc9ex+340/hvC49r4mphdmd6lI/Ip64CbMTB8Vo53jBHlGMkGr0xq/+C0SKL1hRXj5EkXtSe6q9F9T/nAIcg9Jr+OfAcifXPH9UJYG8WmbLlvpqN+QuVA5KQ6ve1USpxYhcimV9xWCBrq5hFk1hGLbeveHrKDG3wYRdwBeYv3Yo5qYTsotfB4CgJT9CX/fDR/0JUL7tE29d1v1eEF/VXCgQP4EPUoDNBtNE6jpKJhtQ8HJ2KjmJnW55f9OqNc6SsULV3bkQ52PY+lPLt1y4muyMrixCT7Lu";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-
-
-        relicTrackables.activate();
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
-        while (vuMark != RelicRecoveryVuMark.UNKNOWN){}
-
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
-            telemetry.addData("VuMark", "%s visible", vuMark);
-            return vuMark;
-        }
-        return null;
-
-    }
-
-
     //Empty main
     @Override
     public void runOpMode() throws InterruptedException

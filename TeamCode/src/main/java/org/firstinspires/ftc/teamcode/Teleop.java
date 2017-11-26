@@ -217,13 +217,13 @@ public class Teleop extends LinearOpMode {
             //If it is pushed to the left, rewind the spool
             if (gamepad1.dpad_left)
             {
-                relicSpool.setPower(0.6);
+                relicSpool.setPower(1.0);
                 Thread.sleep(1000);
                 relicSpool.setPower(0.0);
             }
             if (gamepad1.dpad_right)
             {
-                relicSpool.setPower(-0.6);
+                relicSpool.setPower(-1.0);
                 Thread.sleep(1000);
                 relicSpool.setPower(0.0);
             }

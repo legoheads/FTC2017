@@ -1,62 +1,123 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
+@Autonomous(name="Vuforia Test") //Name the program
 public class vuforiaTest extends LinearOpMode {
+    //Define drive motors
+    DcMotor leftMotorFront;
+    DcMotor rightMotorFront;
+    DcMotor leftMotorBack;
+    DcMotor rightMotorBack;
 
-    public static final String TAG = "Vuforia VuMark Sample";
+    //Define glyph motors
+    DcMotor glyphGrab;
+    DcMotor glyphLift;
 
-    OpenGLMatrix lastLocation = null;
+    //Define relic motors
+    Servo relicGrab;
+    Servo relicFlip;
+    DcMotor relicSpool;
 
-    VuforiaLocalizer vuforia;
+    //Define the jewel motor
+    Servo jewelArm;
 
-    public String runVuforia() {
+    //Define the color sensor
+    ColorSensor colorSensor;
 
-        /*
-         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
-         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
-         */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+    //Define strings to use, as our team color, and the color we see with the sensor
+    String color = "Blue";
+    String colorSeen;
+    RelicRecoveryVuMark vuforiaReading;
 
-        //License key from vuphoria website
-        parameters.vuforiaLicenseKey = "Adp/KFX/////AAAAGYMHgTasR0y/o1XMGBLR4bwahfNzuw2DQMMYq7vh4UvYHleflzPtt5rN2kFp7NCyO6Ikkqhj/20qTYc9ex+340/hvC49r4mphdmd6lI/Ip64CbMTB8Vo53jBHlGMkGr0xq/+C0SKL1hRXj5EkXtSe6q9F9T/nAIcg9Jr+OfAcifXPH9UJYG8WmbLlvpqN+QuVA5KQ6ve1USpxYhcimV9xWCBrq5hFk1hGLbeveHrKDG3wYRdwBeYv3Yo5qYTsotfB4CgJT9CX/fDR/0JUL7tE29d1v1eEF/VXCgQP4EPUoDNBtNE6jpKJhtQ8HJ2KjmJnW55f9OqNc6SsULV3bkQ52PY+lPLt1y4muyMrixCT7Lu";
+    int vuforiaValues[] = {1400, 1750, 2100};
+    int distanceToCryptobox;
 
-        //Which camera?
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+    //Define powers to avoid magic numbers
+    float drivePower = (float) 0.5;
+    float shiftPower = (float) 0.5;
+    float turnPower = (float) 0.5;
+
+    int cameraMonitorViewId;
 
 
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+    //***************************************************************************************************************************
+    //MAIN BELOW
+    @Override
+    public void runOpMode() throws InterruptedException {
+        //Get references to the DC motors from the hardware map
+        leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
+        rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
+        leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
+        rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
+        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+        glyphLift = hardwareMap.dcMotor.get("glyphLift");
+        relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
-        //telemetry.addData(">", "Press Play to start");
-        //telemetry.update();
+        //Get references to the Servo Motors from the hardware map
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        relicGrab = hardwareMap.servo.get("relicGrab");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+
+
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
+        //Get references to the sensor from the hardware map
+        colorSensor = hardwareMap.colorSensor.get("colorSensor");
+
+        //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
+
+        //vuforia vuforia = new vuforia(viewID, vuforiaLocal);
+
+        vuforiaClass vuf = new vuforiaClass();
+
+        //Set the sensor to active mode and set the directions of the motors
+        functions.initializeMotorsAndSensors();
+
+        //Wait for start button to be clicked
         waitForStart();
 
-        relicTrackables.activate();
 
+
+//****************************************************************************************************************************************
         while (opModeIsActive()) {
+            vuforiaReading = vuf.go(cameraMonitorViewId);
+//            telemetry.addData("Vuforia Reading", vuforiaReading);
 
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("VuMark", "%s visible", vuMark);
-                return vuMark + "";
+            if (vuforiaReading == RelicRecoveryVuMark.LEFT)
+            {
+                functions.leftTurnAutonomous((float) 0.2, 100);
             }
-            else {
-                telemetry.addData("VuMark", "not visible");
+            if (vuforiaReading == RelicRecoveryVuMark.CENTER)
+            {
+                functions.driveAutonomous((float) 0.2, 100);
             }
-            telemetry.update();
+            if (vuforiaReading == RelicRecoveryVuMark.RIGHT)
+            {
+                functions.rightTurnAutonomous((float) 0.2, 100);
+            }
+            if (vuforiaReading == RelicRecoveryVuMark.UNKNOWN)
+            {
+                functions.driveAutonomous((float) -0.2, -100);
+            }
+
+//            telemetry.update();
+            //Always call idle() at the bottom of your while(opModeIsActive()) loop
+            idle();
+            //Break the loop after one run
+            break;
         }
-        return "";
     }
-
-    public void runOpMode(){}
 }
