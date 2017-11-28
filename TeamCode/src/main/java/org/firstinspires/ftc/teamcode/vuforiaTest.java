@@ -92,31 +92,28 @@ public class vuforiaTest extends LinearOpMode {
 
 
 //****************************************************************************************************************************************
-        while (opModeIsActive()) {
-            vuforiaReading = vuf.go(cameraMonitorViewId);
-//            telemetry.addData("Vuforia Reading", vuforiaReading);
-
+        vuforiaReading = vuf.go(cameraMonitorViewId);
+        Thread.sleep(3000);
+        while (opModeIsActive())
+        {
+//            telemetry.addData("Vuforia Reading", vuforiaReading)
             if (vuforiaReading == RelicRecoveryVuMark.LEFT)
             {
                 functions.leftTurnAutonomous((float) 0.2, 100);
+                break;
             }
             if (vuforiaReading == RelicRecoveryVuMark.CENTER)
             {
                 functions.driveAutonomous((float) 0.2, 100);
+                break;
             }
             if (vuforiaReading == RelicRecoveryVuMark.RIGHT)
             {
                 functions.rightTurnAutonomous((float) 0.2, 100);
+                break;
             }
-            if (vuforiaReading == RelicRecoveryVuMark.UNKNOWN)
-            {
-                vuforiaReading = vuf.go(cameraMonitorViewId);
-            }
-
-//            telemetry.update();
-            //Always call idle() at the bottom of your while(opModeIsActive()) loop
-            idle();
-            //Break the loop after one run
+            else
+            { }
             break;
         }
     }
