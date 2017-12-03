@@ -14,7 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Vuforia Test") //Name the program
-public class vuforiaTest extends LinearOpMode {
+public class vuforiaTest extends LinearOpMode
+{
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -52,7 +53,7 @@ public class vuforiaTest extends LinearOpMode {
     int cameraMonitorViewId;
 
 
-    //***************************************************************************************************************************
+//***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException {
@@ -92,28 +93,25 @@ public class vuforiaTest extends LinearOpMode {
 
 
 //****************************************************************************************************************************************
-        vuforiaReading = vuf.go(cameraMonitorViewId);
-        Thread.sleep(3000);
+
         while (opModeIsActive())
         {
-//            telemetry.addData("Vuforia Reading", vuforiaReading)
+            vuforiaReading = vuf.go(cameraMonitorViewId);
+            Thread.sleep(3000);
+            telemetry.addData("Vuforia Reading", vuforiaReading);
             if (vuforiaReading == RelicRecoveryVuMark.LEFT)
             {
                 functions.leftTurnAutonomous((float) 0.2, 100);
-                break;
             }
             if (vuforiaReading == RelicRecoveryVuMark.CENTER)
             {
                 functions.driveAutonomous((float) 0.2, 100);
-                break;
             }
             if (vuforiaReading == RelicRecoveryVuMark.RIGHT)
             {
                 functions.rightTurnAutonomous((float) 0.2, 100);
-                break;
             }
-            else
-            { }
+            telemetry.update();
             break;
         }
     }

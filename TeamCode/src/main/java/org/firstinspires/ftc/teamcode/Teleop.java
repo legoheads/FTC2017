@@ -47,9 +47,10 @@ public class Teleop extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //Define ints to be used as toggles
-    int rightBumperPress = 0;
-    int relicFlipToggle = -1;
-    int relicDropToggle = -1;
+    int glyphGrabToggle = 0;
+    int relicFlipToggle = 0;
+    int relicDropToggle = 0;
+    int relicSpoolToggle = 0;
 
 //***********************************************************************************************************
     //MAIN BELOW
@@ -161,14 +162,14 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.right_bumper)
             {
                 //Increase the increment operator
-                rightBumperPress++;
+                glyphGrabToggle++;
 
                 //If the right bumper is pressed, open/close the door
-                if (rightBumperPress % 2 == 0)
+                if (glyphGrabToggle % 2 == 0)
                 {
                     functions.glyphDoor("open");
                 }
-                if (rightBumperPress % 2 == 1)
+                if (glyphGrabToggle % 2 == 1)
                 {
                     functions.glyphDoor("close");
                 }
@@ -191,11 +192,12 @@ public class Teleop extends LinearOpMode {
                 relicDropToggle++;
                 if (relicDropToggle %2 == 0)
                 {
-                    relicGrab.setPosition(0);
+                    relicGrab.setPosition(1.0);
                 }
                 if (relicDropToggle %2 == 1)
                 {
-                    relicGrab.setPosition(1.0);
+                    relicGrab.setPosition(0.0);
+
                 }
             }
 
@@ -205,27 +207,30 @@ public class Teleop extends LinearOpMode {
                 relicFlipToggle++;
                 if (relicFlipToggle % 2 == 0)
                 {
-                    relicFlip.setPosition(0.6);
+                    relicFlip.setPosition(0.0);
+
                 }
                 if (relicFlipToggle % 2 == 1)
                 {
-                    relicFlip.setPosition(0.0);
+                    relicFlip.setPosition(0.7);
                 }
+            }
+
+            if (gamepad1.a)
+            {
+                relicFlip.setPosition(0.6);
             }
 
             //If the dpad is pushed to the left, unwind the spool
             //If it is pushed to the left, rewind the spool
-            if (gamepad1.dpad_left)
-            {
-                relicSpool.setPower(1.0);
-                Thread.sleep(1000);
-                relicSpool.setPower(0.0);
-            }
-            if (gamepad1.dpad_right)
-            {
-                relicSpool.setPower(-1.0);
-                Thread.sleep(1000);
-                relicSpool.setPower(0.0);
+            if (gamepad1.dpad_left) {
+                relicSpoolToggle++;
+                if (relicSpoolToggle % 2 == 1) {
+                    relicSpool.setPower(- 1.0);
+                }
+                if (relicSpoolToggle % 2 == 0) {
+                    relicSpool.setPower(0.0);
+                }
             }
 
             //Count time

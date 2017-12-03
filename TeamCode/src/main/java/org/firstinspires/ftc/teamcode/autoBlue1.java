@@ -94,7 +94,7 @@ public class autoBlue1 extends LinearOpMode {
 //***************************************************************************************************************************
         while (opModeIsActive()) {
             //Close door
-            functions.glyphDoor("close");
+//            functions.glyphDoor("close");
 
             distanceToCryptobox = vuforiaValues[1];
 
@@ -111,7 +111,7 @@ public class autoBlue1 extends LinearOpMode {
 //            }
 
             //Do jewels and get off platform
-//            functions.jewelPush(colorSensor, color, colorSeen);
+            functions.jewelPush(colorSensor, color, colorSeen);
 
             functions.driveAutonomous(drivePower, distanceToCryptobox);
 
@@ -129,7 +129,7 @@ public class autoBlue1 extends LinearOpMode {
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower/2, 1040);
+            functions.leftTurnAutonomous(turnPower/2, 1080);
 
             Thread.sleep(300);
 
@@ -137,7 +137,7 @@ public class autoBlue1 extends LinearOpMode {
             functions.driveAutonomous(drivePower, 600);
 
             //Drop the glyph in the cryptobox while ending in the safe zone
-            functions.glyphDoor("open");
+//            functions.glyphDoor("open");
 
             functions.rightTurnAutonomous(turnPower, 300);
 

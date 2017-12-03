@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -47,12 +46,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
-
-
-
-@Autonomous(name="Concept: VuMark Id", group ="Concept")
 @Disabled
+@Autonomous(name="Concept: VuMark Id", group ="Concept")
 public class vuforiaClass extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
@@ -65,8 +60,7 @@ public class vuforiaClass extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
-    public RelicRecoveryVuMark go(int cameraMonitorViewId)
-    {
+    public RelicRecoveryVuMark go(int cameraMonitorViewId) {
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
@@ -121,9 +115,7 @@ public class vuforiaClass extends LinearOpMode {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
 
-        }
-        else if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
+        } else {
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
@@ -132,7 +124,7 @@ public class vuforiaClass extends LinearOpMode {
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
-            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
 
                 /* We further illustrate how to decompose the pose into useful rotational and
                  * translational components */
@@ -152,61 +144,9 @@ public class vuforiaClass extends LinearOpMode {
             }
 
             return vuMark;
-
-//            if (vuMark == RelicRecoveryVuMark.LEFT) {
-//                return "Left";
-//            }
-//            if (vuMark == RelicRecoveryVuMark.CENTER)
-//            {
-//                return "Center";
-//            }
-//            if (vuMark == RelicRecoveryVuMark.RIGHT)
-//            {
-//                return "Right";
-//            }
-        }
-        else
-        {
-//            go(cameraMonitorViewId);
         }
         return null;
-//        telemetry.update();
     }
-
-//
-//    while (opModeIsActive()) {
-//
-//        /**
-//         * See if any of the instances of {@link relicTemplate} are currently visible.
-//         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-//         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-//         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
-//         */
-//        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-//        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-//
-//                /* Found an instance of the template. In the actual game, you will probably
-//                 * loop until this condition occurs, then move on to act accordingly depending
-//                 * on which VuMark was visible. */
-//            telemetry.addData("VuMark", "%s visible", vuMark);
-//
-//                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
-//                 * it is perhaps unlikely that you will actually need to act on this pose information, but
-//                 * we illustrate it nevertheless, for completeness. */
-//            telemetry.addData("Pose", format(pose));
-//
-//                /* We further illustrate how to decompose the pose into useful rotational and
-//                 * translational components */
-//
-//        }
-//        else {
-//            telemetry.addData("VuMark", "not visible");
-//        }
-//
-//    }
-
-
-
-    public void runOpMode(){}
-
+    public void runOpMode()
+    { }
 }

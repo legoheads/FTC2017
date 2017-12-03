@@ -80,8 +80,15 @@ public class autoRed2 extends LinearOpMode
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
-            functions.leftTurnAutonomous(turnPower/2, 1040);
+            functions.jewelPush(colorSensor, color, colorSeen);
 
+            functions.driveAutonomous(-drivePower, -1000);
+
+            functions.rightTurnAutonomous(turnPower, 2160);
+
+            functions.leftShiftAutonomous(shiftPower, 600);
+
+            functions.driveAutonomous(drivePower, 450);
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run
