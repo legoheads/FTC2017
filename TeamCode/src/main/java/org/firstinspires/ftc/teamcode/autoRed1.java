@@ -48,7 +48,7 @@ public class autoRed1 extends LinearOpMode {
     String colorSeen;
     RelicRecoveryVuMark vuforiaReading;
 
-    int vuforiaValues[] = {1400, 1750, 2100};
+    int vuforiaValues[] = {1200, 1550, 1900};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
@@ -129,7 +129,7 @@ public class autoRed1 extends LinearOpMode {
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.rightTurnAutonomous(turnPower/2, 1080);
+            functions.leftTurnAutonomous(turnPower/2, 1000);
 
             Thread.sleep(300);
 
@@ -141,7 +141,7 @@ public class autoRed1 extends LinearOpMode {
 
             functions.leftTurnAutonomous(turnPower, 300);
 
-            functions.driveAutonomous(-drivePower, -400);
+            functions.driveAutonomous(drivePower, 400);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

@@ -86,7 +86,7 @@ public class autoRed2 extends LinearOpMode
 
             functions.rightTurnAutonomous(turnPower, 2160);
 
-            functions.leftShiftAutonomous(shiftPower, 600);
+            functions.leftShiftAutonomous(shiftPower, 700);
 
             functions.driveAutonomous(drivePower, 450);
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
