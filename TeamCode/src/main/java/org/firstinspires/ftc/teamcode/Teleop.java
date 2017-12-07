@@ -192,12 +192,12 @@ public class Teleop extends LinearOpMode {
                 relicDropToggle++;
                 if (relicDropToggle %2 == 0)
                 {
-                    relicGrab.setPosition(1.0);
+                    relicGrab.setPosition(0.0);
+
                 }
                 if (relicDropToggle %2 == 1)
                 {
-                    relicGrab.setPosition(0.0);
-
+                    relicGrab.setPosition(1.0);
                 }
             }
 
@@ -207,18 +207,21 @@ public class Teleop extends LinearOpMode {
                 relicFlipToggle++;
                 if (relicFlipToggle % 2 == 0)
                 {
-                    relicFlip.setPosition(0.0);
+                    relicFlip.setPosition(1.0);
 
                 }
                 if (relicFlipToggle % 2 == 1)
                 {
-                    relicFlip.setPosition(0.7);
+                    relicFlip.setPosition(0.3);
+
                 }
             }
 
             if (gamepad1.a)
             {
-                relicFlip.setPosition(0.6);
+                relicFlip.setPosition(0.0);
+                relicGrab.setPosition(1.0);
+
             }
 
             //If the dpad is pushed to the left, unwind the spool
@@ -226,7 +229,7 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.dpad_left) {
                 relicSpoolToggle++;
                 if (relicSpoolToggle % 2 == 1) {
-                    relicSpool.setPower(- 1.0);
+                    relicSpool.setPower(1.0);
                 }
                 if (relicSpoolToggle % 2 == 0) {
                     relicSpool.setPower(0.0);
