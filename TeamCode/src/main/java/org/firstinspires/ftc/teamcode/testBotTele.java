@@ -10,8 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Disabled
 @TeleOp(name="Tele Op Test") //Name the class
-public class testBotTele extends LinearOpMode
-{
+public class testBotTele extends LinearOpMode {
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -24,8 +23,7 @@ public class testBotTele extends LinearOpMode
     float rightTurnPower;
     float leftTurnPower;
 
-    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
-    {
+    public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
         //Use the entered powers and feed them to the motors
         leftMotorFront.setPower(leftFrontPower);
         leftMotorBack.setPower(leftBackPower);
