@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 //Import necessary items
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -23,7 +24,7 @@ public class Teleop extends LinearOpMode {
 
     //Define relic motors
     Servo relicGrab;
-    Servo relicFlip;
+    CRServo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -69,7 +70,7 @@ public class Teleop extends LinearOpMode {
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicFlip = hardwareMap.crservo.get("relicFlip");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
@@ -165,14 +166,15 @@ public class Teleop extends LinearOpMode {
                 glyphGrabToggle++;
 
                 //If the right bumper is pressed, open/close the door
-                if (glyphGrabToggle % 2 == 0)
-                {
-                    functions.glyphDoor("open");
-                }
                 if (glyphGrabToggle % 2 == 1)
                 {
                     functions.glyphDoor("close");
                 }
+                if (glyphGrabToggle % 2 == 0)
+                {
+                    functions.glyphDoor("open");
+                }
+
             }
 
             //If the right joystick is moved significantly, move the lifter up or down depending on how it is pushed
@@ -190,14 +192,13 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.x)
             {
                 relicDropToggle++;
-                if (relicDropToggle %2 == 0)
-                {
-                    relicGrab.setPosition(0.0);
-
-                }
                 if (relicDropToggle %2 == 1)
                 {
                     relicGrab.setPosition(1.0);
+                }
+                if (relicDropToggle %2 == 0)
+                {
+                    relicGrab.setPosition(0.0);
                 }
             }
 
@@ -205,33 +206,43 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.y)
             {
                 relicFlipToggle++;
-                if (relicFlipToggle % 2 == 0)
-                {
-                    relicFlip.setPosition(1.0);
-
-                }
                 if (relicFlipToggle % 2 == 1)
                 {
-                    relicFlip.setPosition(0.3);
-
+                    relicFlip.setPower(0.2);
+                    Thread.sleep(1000);
+                    relicFlip.setPower(0.0);
+                }
+                if (relicFlipToggle % 2 == 0)
+                {
+                    relicFlip.setPower(-0.2);
+                    Thread.sleep(1000);
+                    relicFlip.setPower(0.0);
                 }
             }
 
             if (gamepad1.a)
             {
-                relicFlip.setPosition(0.0);
+                relicFlip.setPower(-0.2);
+                Thread.sleep(1000);
+                relicFlip.setPower(0.0);
                 relicGrab.setPosition(1.0);
-
+                relicGrab.setPosition(1.0);
+                relicGrab.setPosition(1.0);
             }
 
             //If the dpad is pushed to the left, unwind the spool
             //If it is pushed to the left, rewind the spool
-            if (gamepad1.dpad_left) {
+            if (gamepad1.dpad_left)
+            {
                 relicSpoolToggle++;
-                if (relicSpoolToggle % 2 == 1) {
+                if (relicSpoolToggle % 2 == 1)
+                {
                     relicSpool.setPower(1.0);
+                    Thread.sleep(1000);
+                    relicSpool.setPower(0.0);
                 }
-                if (relicSpoolToggle % 2 == 0) {
+                if (relicSpoolToggle % 2 == 0)
+                {
                     relicSpool.setPower(0.0);
                 }
             }

@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -32,7 +33,7 @@ public class autoRed2 extends LinearOpMode
 
     //Define relic motors
     Servo relicGrab;
-    Servo relicFlip;
+    CRServo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -72,7 +73,7 @@ public class autoRed2 extends LinearOpMode
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicFlip = hardwareMap.crservo.get("relicFlip");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
