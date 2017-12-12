@@ -46,7 +46,7 @@ public class DriveFunctions extends LinearOpMode {
     //Relic Motors
     Servo relicGrab;
     DcMotor relicSpool;
-    CRServo relicFlip;
+    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -63,7 +63,7 @@ public class DriveFunctions extends LinearOpMode {
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, CRServo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor) {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor) {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;

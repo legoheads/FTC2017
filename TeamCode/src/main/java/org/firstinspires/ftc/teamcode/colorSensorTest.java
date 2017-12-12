@@ -28,7 +28,7 @@ public class colorSensorTest extends LinearOpMode
 
     //Define relic motors
     Servo relicGrab;
-    CRServo relicFlip;
+    Servo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -56,7 +56,7 @@ public class colorSensorTest extends LinearOpMode
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.crservo.get("relicFlip");
+        relicFlip = hardwareMap.servo.get("relicFlip");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
