@@ -5,9 +5,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,7 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
 @Autonomous(name="AutoBlue1") //Name the program
-public class autoBlue1 extends LinearOpMode {
+public class autoBlue1 extends LinearOpMode
+{
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -47,26 +46,25 @@ public class autoBlue1 extends LinearOpMode {
     //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
-    RelicRecoveryVuMark vuforiaReading;
 
-    int vuforiaValues[] = {1400, 1750, 2100};
+    int vuforiaValues[] = {1200, 1550, 1900};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
-    float drivePower = (float) 0.5;
-    float shiftPower = (float) 0.5;
-    float turnPower = (float) 0.5;
+    float drivePower = (float) 0.2;
+    float shiftPower = (float) 0.2;
+    float turnPower = (float) 0.2;
 
     //Vuforia Initialization
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
     int count = 0;
 
-
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -87,11 +85,8 @@ public class autoBlue1 extends LinearOpMode {
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
         DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
-
-
         //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
-
 
         //Vuforia Initialization
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -105,7 +100,6 @@ public class autoBlue1 extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-
         //Wait for start button to be clicked
         waitForStart();
 
@@ -113,12 +107,14 @@ public class autoBlue1 extends LinearOpMode {
         relicTrackables.activate();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Close door
-//            functions.glyphDoor("close");
+            functions.glyphDoor("close");
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500) {
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
+            {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 telemetry.update();
@@ -126,38 +122,34 @@ public class autoBlue1 extends LinearOpMode {
                 count++;
             }
 
-            if (vuMark == RelicRecoveryVuMark.LEFT){
+            if (vuMark == RelicRecoveryVuMark.LEFT)
+            {
                 distanceToCryptobox = vuforiaValues[0];
             }
-
-            if (vuMark == RelicRecoveryVuMark.CENTER){
+            if (vuMark == RelicRecoveryVuMark.CENTER)
+            {
                 distanceToCryptobox = vuforiaValues[1];
             }
-
-            if (vuMark == RelicRecoveryVuMark.RIGHT){
+            if (vuMark == RelicRecoveryVuMark.RIGHT)
+            {
                 distanceToCryptobox = vuforiaValues[2];
+            }
+            if (vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                distanceToCryptobox = vuforiaValues[1];
             }
 
             //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
+            Thread.sleep(1000);
+            jewelArm.setPosition(0.9);
 
             functions.driveAutonomous(drivePower, distanceToCryptobox);
-
-//            //Turn left 90 degrees to position towards cryptobox
-//            functions.leftTurnAutonomous(turnPower, 1000);
-//
-//            //Align on wall
-//            functions.driveAutonomous(-drivePower, -700);
-//
-//            Thread.sleep(300);
-//
-//            //Drive towards cryptobox
-//            functions.driveAutonomous(drivePower/2, 2300);
 
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower / 2, 1080);
+            functions.leftTurnAutonomous(turnPower, 1040);
 
             Thread.sleep(300);
 
@@ -165,7 +157,7 @@ public class autoBlue1 extends LinearOpMode {
             functions.driveAutonomous(drivePower, 600);
 
             //Drop the glyph in the cryptobox while ending in the safe zone
-//            functions.glyphDoor("open");
+            functions.glyphDoor("open");
 
             functions.rightTurnAutonomous(turnPower, 300);
 
@@ -176,9 +168,5 @@ public class autoBlue1 extends LinearOpMode {
             //Break the loop after one run
             break;
         }//Close while opModeIsActive loop
-
-
-
     } //Close "run Opmode" loop
-    //Close class and end program
-}
+}//Close class and end program

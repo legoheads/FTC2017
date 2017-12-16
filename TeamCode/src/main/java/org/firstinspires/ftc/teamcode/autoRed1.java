@@ -49,15 +49,14 @@ public class autoRed1 extends LinearOpMode {
     //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Red";
     String colorSeen;
-    RelicRecoveryVuMark vuforiaReading;
 
-    int vuforiaValues[] = {1200, 1550, 1900};
+    int vuforiaValues[] = {1400, 1750, 2100};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
-    float drivePower = (float) 0.5;
-    float shiftPower = (float) 0.5;
-    float turnPower = (float) 0.5;
+    float drivePower = (float) 0.2;
+    float shiftPower = (float) 0.2;
+    float turnPower = (float) 0.2;
 
     //Vuforia Initialization
     OpenGLMatrix lastLocation = null;
@@ -66,7 +65,8 @@ public class autoRed1 extends LinearOpMode {
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -109,12 +109,14 @@ public class autoRed1 extends LinearOpMode {
         relicTrackables.activate();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Close door
-//            functions.glyphDoor("close");
+            functions.glyphDoor("close");
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500) {
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
+            {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 telemetry.update();
@@ -122,40 +124,34 @@ public class autoRed1 extends LinearOpMode {
                 count++;
             }
 
-
-
-//            vuforiaReading = functions.vuforia();
-//
-//            if (vuforiaReading == RelicRecoveryVuMark.LEFT) {
-//                distanceToCryptobox = vuforiaValues[0];
-//            }
-//            if (vuforiaReading == RelicRecoveryVuMark.CENTER) {
-//                distanceToCryptobox = vuforiaValues[1];
-//            }
-//            if (vuforiaReading == RelicRecoveryVuMark.RIGHT) {
-//                distanceToCryptobox = vuforiaValues[2];
-//            }
+            if (vuMark == RelicRecoveryVuMark.LEFT)
+            {
+                distanceToCryptobox = vuforiaValues[0];
+            }
+            if (vuMark == RelicRecoveryVuMark.CENTER)
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
+            if (vuMark == RelicRecoveryVuMark.RIGHT)
+            {
+                distanceToCryptobox = vuforiaValues[2];
+            }
+            if (vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
 
             //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
+            Thread.sleep(1000);
+            jewelArm.setPosition(0.9);
 
             functions.driveAutonomous(-drivePower, -distanceToCryptobox);
-
-//            //Turn left 90 degrees to position towards cryptobox
-//            functions.leftTurnAutonomous(turnPower, 1000);
-//
-//            //Align on wall
-//            functions.driveAutonomous(-drivePower, -700);
-//
-//            Thread.sleep(300);
-//
-//            //Drive towards cryptobox
-//            functions.driveAutonomous(drivePower/2, 2300);
 
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower/2, 1000);
+            functions.leftTurnAutonomous(turnPower, 1040);
 
             Thread.sleep(300);
 
@@ -163,7 +159,7 @@ public class autoRed1 extends LinearOpMode {
             functions.driveAutonomous(drivePower, 600);
 
             //Drop the glyph in the cryptobox while ending in the safe zone
-//            functions.glyphDoor("open");
+            functions.glyphDoor("open");
 
             functions.leftTurnAutonomous(turnPower, 300);
 

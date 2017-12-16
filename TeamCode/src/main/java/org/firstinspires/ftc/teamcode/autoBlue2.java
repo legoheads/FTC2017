@@ -41,14 +41,17 @@ public class autoBlue2 extends LinearOpMode {
     //Define the color sensor
     ColorSensor colorSensor;
 
+    int vuforiaValues[] = {500, 700, 900};
+    int distanceToCryptobox;
+
     //Define strings to use, as our team color, and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
 
     //Define powers to avoid magic numbers
-    float drivePower = (float) 0.5;
-    float shiftPower = (float) 0.5;
-    float turnPower = (float) 0.5;
+    float drivePower = (float) 0.2;
+    float shiftPower = (float) 0.2;
+    float turnPower = (float) 0.2;
 
     //Vuforia Initialization
     OpenGLMatrix lastLocation = null;
@@ -102,12 +105,14 @@ public class autoBlue2 extends LinearOpMode {
         relicTrackables.activate();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
-            //Do jewels
-            functions.jewelPush(colorSensor, color, colorSeen);
+        while (opModeIsActive())
+        {
+            //Close door
+            functions.glyphDoor("close");
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500) {
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
+            {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 telemetry.update();
@@ -115,43 +120,39 @@ public class autoBlue2 extends LinearOpMode {
                 count++;
             }
 
+            if (vuMark == RelicRecoveryVuMark.LEFT)
+            {
+                distanceToCryptobox = vuforiaValues[0];
+            }
+            if (vuMark == RelicRecoveryVuMark.CENTER)
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
+            if (vuMark == RelicRecoveryVuMark.RIGHT)
+            {
+                distanceToCryptobox = vuforiaValues[2];
+            }
+            if (vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
+
+            //Do jewels and get off platform
+            functions.jewelPush(colorSensor, color, colorSeen);
+            Thread.sleep(2000);
+            jewelArm.setPosition(0.9);
+
             functions.driveAutonomous(drivePower, 1000);
 
-            functions.rightShiftAutonomous(shiftPower, 700);
+            functions.rightShiftAutonomous(shiftPower, distanceToCryptobox);
 
             functions.driveAutonomous(drivePower, 700);
 
-//            //Go to jewels
-//            functions.driveAutonomous(drivePower, 500);
-//
-//            functions.leftTurnAutonomous(turnPower, 300);
-//
-//            functions.driveAutonomous(drivePower, 300);
-//
-//            functions.glyphDoor("open");
-//
-//            //Do jewels
-//            functions.jewelPush(colorSensor, color, colorSeen);
-//
-//            //Move to pictograph
-//            functions.rightShiftAutonomous(shiftPower, 300);
-//
-//            vuforia.runOpMode();
-//
-//            //Move towards cryptobox
-//            functions.leftShiftAutonomous(shiftPower, 800);
-//
-//            //Move away from the cryptobox
-//            functions.driveAutonomous(drivePower, 500);
-//
-//            //Turn to face cryptobox
-//
-//            //Align with the cryptobox
-//            functions.rightShiftAutonomous(shiftPower, 600);
-//
-//            //Drive into the cryptobox
-//            functions.driveAutonomous(drivePower, 1300);
+            functions.glyphDoor("open");
 
+            functions.leftTurnAutonomous(turnPower, 300);
+
+            functions.driveAutonomous(drivePower, 400);
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run

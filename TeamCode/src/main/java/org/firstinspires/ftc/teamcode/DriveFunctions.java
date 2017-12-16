@@ -301,14 +301,14 @@ public class DriveFunctions extends LinearOpMode {
             glyphGrab.setPower(-0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.0);
-            oneMotorEncoder(-800, (float) -1.0, glyphLift);
+            oneMotorEncoder(-1000, (float) -1.0, glyphLift);
         }
         if (openOrClose == "close")
         {
             glyphGrab.setPower(0.5);
             Thread.sleep(700);
             glyphGrab.setPower(0.2);
-            oneMotorEncoder(800, (float) 1.0, glyphLift);
+            oneMotorEncoder(1000, (float) 1.0, glyphLift);
         }
     }
 
@@ -368,7 +368,7 @@ public class DriveFunctions extends LinearOpMode {
         int shortDistance = 100;
         int longDistance = 140;
 
-        jewelArm.setPosition(1.0);
+        jewelArm.setPosition(0.0);
         Thread.sleep(1000);
         while (!iSeeAColor(colorSensor))
         { }
@@ -380,14 +380,14 @@ public class DriveFunctions extends LinearOpMode {
         if (colorSeen.equals(color))
         {
             rightTurnAutonomous(power, longDistance);
-            jewelArm.setPosition(0.1);
+            jewelArm.setPosition(0.9);
             Thread.sleep(1000);
             leftTurnAutonomous(power, longDistance);
         }
         if (!colorSeen.equals(color))
         {
             leftTurnAutonomous(power, shortDistance);
-            jewelArm.setPosition(0.1);
+            jewelArm.setPosition(0.9);
             Thread.sleep(1000);
             rightTurnAutonomous(power, shortDistance);
         }

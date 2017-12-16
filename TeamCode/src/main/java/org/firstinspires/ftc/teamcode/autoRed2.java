@@ -46,10 +46,13 @@ public class autoRed2 extends LinearOpMode
     String color = "Red";
     String colorSeen;
 
+    int vuforiaValues[] = {500, 700, 900};
+    int distanceToCryptobox;
+
     //Define powers to avoid magic numbers
-    float drivePower = (float) 0.5;
-    float shiftPower = (float) 0.5;
-    float turnPower = (float) 0.5;
+    float drivePower = (float) 0.2;
+    float shiftPower = (float) 0.2;
+    float turnPower = (float) 0.2;
 
     //Vuforia Initialization
     OpenGLMatrix lastLocation = null;
@@ -106,9 +109,14 @@ public class autoRed2 extends LinearOpMode
         relicTrackables.activate();
 
 //***************************************************************************************************************************
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
+            //Close door
+            functions.glyphDoor("close");
+
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500) {
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
+            {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 telemetry.update();
@@ -116,16 +124,41 @@ public class autoRed2 extends LinearOpMode
                 count++;
             }
 
+            if (vuMark == RelicRecoveryVuMark.LEFT)
+            {
+                distanceToCryptobox = vuforiaValues[0];
+            }
+            if (vuMark == RelicRecoveryVuMark.CENTER)
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
+            if (vuMark == RelicRecoveryVuMark.RIGHT)
+            {
+                distanceToCryptobox = vuforiaValues[2];
+            }
+            if (vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                distanceToCryptobox = vuforiaValues[1];
+            }
 
+            //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
+            Thread.sleep(1000);
+            jewelArm.setPosition(0.9);
 
             functions.driveAutonomous(-drivePower, -1000);
 
-            functions.rightTurnAutonomous(turnPower, 2160);
+            functions.rightTurnAutonomous(turnPower, distanceToCryptobox);
 
-            functions.leftShiftAutonomous(shiftPower, 700);
+            functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
             functions.driveAutonomous(drivePower, 450);
+
+            functions.glyphDoor("open");
+
+            functions.leftTurnAutonomous(turnPower, 300);
+
+            functions.driveAutonomous(drivePower, 400);
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run
