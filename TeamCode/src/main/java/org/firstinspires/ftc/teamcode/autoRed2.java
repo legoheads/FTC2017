@@ -33,7 +33,7 @@ public class autoRed2 extends LinearOpMode
 
     //Define relic motors
     Servo relicGrab;
-    Servo relicFlip;
+    CRServo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -46,7 +46,7 @@ public class autoRed2 extends LinearOpMode
     String color = "Red";
     String colorSeen;
 
-    int vuforiaValues[] = {500, 700, 900};
+    int vuforiaValues[] = {800, 500, 200};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
@@ -76,7 +76,7 @@ public class autoRed2 extends LinearOpMode
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicFlip = hardwareMap.crservo.get("relicFlip");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
@@ -142,13 +142,13 @@ public class autoRed2 extends LinearOpMode
             }
 
             //Do jewels and get off platform
-            functions.jewelPush(colorSensor, color, colorSeen);
+            functions.jewelPushBlue(colorSensor, color, colorSeen);
             Thread.sleep(1000);
             jewelArm.setPosition(0.9);
 
-            functions.driveAutonomous(-drivePower, -1000);
+            functions.driveAutonomous(-drivePower, -1100);
 
-            functions.rightTurnAutonomous(turnPower, distanceToCryptobox);
+            functions.rightTurnAutonomous(turnPower / 2, 2000);
 
             functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
@@ -158,7 +158,7 @@ public class autoRed2 extends LinearOpMode
 
             functions.leftTurnAutonomous(turnPower, 300);
 
-            functions.driveAutonomous(drivePower, 400);
+            functions.driveAutonomous(drivePower, 300);
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run

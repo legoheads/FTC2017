@@ -30,7 +30,7 @@ public class vuforiaTest extends LinearOpMode {
 
     //Define relic motors
     Servo relicGrab;
-    Servo relicFlip;
+    CRServo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -75,7 +75,7 @@ public class vuforiaTest extends LinearOpMode {
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicFlip = hardwareMap.crservo.get("relicFlip");
 
 
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());

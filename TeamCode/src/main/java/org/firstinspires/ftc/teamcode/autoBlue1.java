@@ -6,6 +6,7 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -34,7 +35,7 @@ public class autoBlue1 extends LinearOpMode
 
     //Define relic motors
     Servo relicGrab;
-    Servo relicFlip;
+    CRServo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -47,7 +48,7 @@ public class autoBlue1 extends LinearOpMode
     String color = "Blue";
     String colorSeen;
 
-    int vuforiaValues[] = {1200, 1550, 1900};
+    int vuforiaValues[] = {1300, 1650, 2000};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
@@ -77,7 +78,7 @@ public class autoBlue1 extends LinearOpMode
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicFlip = hardwareMap.crservo.get("relicFlip");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
@@ -140,7 +141,7 @@ public class autoBlue1 extends LinearOpMode
             }
 
             //Do jewels and get off platform
-            functions.jewelPush(colorSensor, color, colorSeen);
+            functions.jewelPushBlue(colorSensor, color, colorSeen);
             Thread.sleep(1000);
             jewelArm.setPosition(0.9);
 
@@ -149,7 +150,7 @@ public class autoBlue1 extends LinearOpMode
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower, 1040);
+            functions.leftTurnAutonomous(turnPower, 1000);
 
             Thread.sleep(300);
 

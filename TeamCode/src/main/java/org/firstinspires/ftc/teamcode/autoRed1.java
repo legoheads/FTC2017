@@ -37,7 +37,7 @@ public class autoRed1 extends LinearOpMode {
 
     //Define relic motors
     Servo relicGrab;
-    Servo relicFlip;
+    CRServo relicFlip;
     DcMotor relicSpool;
 
     //Define the jewel motor
@@ -50,7 +50,7 @@ public class autoRed1 extends LinearOpMode {
     String color = "Red";
     String colorSeen;
 
-    int vuforiaValues[] = {1400, 1750, 2100};
+    int vuforiaValues[] = {1900, 1550, 1200};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
@@ -79,7 +79,7 @@ public class autoRed1 extends LinearOpMode {
         //Get references to the Servo Motors from the hardware map
         jewelArm = hardwareMap.servo.get("jewelArm");
         relicGrab = hardwareMap.servo.get("relicGrab");
-        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicFlip = hardwareMap.crservo.get("relicFlip");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
@@ -142,7 +142,7 @@ public class autoRed1 extends LinearOpMode {
             }
 
             //Do jewels and get off platform
-            functions.jewelPush(colorSensor, color, colorSeen);
+            functions.jewelPushBlue(colorSensor, color, colorSeen);
             Thread.sleep(1000);
             jewelArm.setPosition(0.9);
 
@@ -151,7 +151,7 @@ public class autoRed1 extends LinearOpMode {
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower, 1040);
+            functions.leftTurnAutonomous(turnPower / 2, 1000);
 
             Thread.sleep(300);
 

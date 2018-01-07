@@ -45,8 +45,8 @@ public class DriveFunctions extends LinearOpMode {
 
     //Relic Motors
     Servo relicGrab;
+    CRServo relicFlip;
     DcMotor relicSpool;
-    Servo relicFlip;
 
     //Jewel Motor
     Servo jewelArm;
@@ -63,7 +63,8 @@ public class DriveFunctions extends LinearOpMode {
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, Servo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor) {
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, CRServo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor)
+    {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
         this.leftMotorFront = leftMotorFront;
@@ -363,7 +364,8 @@ public class DriveFunctions extends LinearOpMode {
         return "Red";
     }
 
-    public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException {
+    public void jewelPushBlue(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
+    {
         float power = (float) 0.3;
         int shortDistance = 100;
         int longDistance = 140;
@@ -390,6 +392,37 @@ public class DriveFunctions extends LinearOpMode {
             jewelArm.setPosition(0.9);
             Thread.sleep(1000);
             rightTurnAutonomous(power, shortDistance);
+        }
+    }
+
+    public void jewelPushRed(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
+    {
+        float power = (float) 0.3;
+        int shortDistance = 100;
+        int longDistance = 140;
+
+        jewelArm.setPosition(0.0);
+        Thread.sleep(1000);
+        while (!iSeeAColor(colorSensor))
+        { }
+
+        if (iSeeAColor(colorSensor))
+        {
+            colorSeen = whatColor(colorSensor);
+        }
+        if (colorSeen.equals(color))
+        {
+            leftTurnAutonomous(power, longDistance);
+            jewelArm.setPosition(0.9);
+            Thread.sleep(1000);
+            rightTurnAutonomous(power, longDistance);
+        }
+        if (!colorSeen.equals(color))
+        {
+            rightTurnAutonomous(power, shortDistance);
+            jewelArm.setPosition(0.9);
+            Thread.sleep(1000);
+            leftTurnAutonomous(power, shortDistance);
         }
     }
     //Empty main
