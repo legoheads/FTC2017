@@ -87,7 +87,7 @@ public class DriveFunctions extends LinearOpMode {
      */
     public void initializeMotorsAndSensors()
     {
-        //Set the sensor to the mode that we want, and set their addresses
+        //Set the sensor to the mode that we want
         colorSensor.enableLed(true);
 
         //Reverse some motors and keep others forward

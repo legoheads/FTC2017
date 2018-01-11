@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="TeleOp") //Name the class
 public class Teleop extends LinearOpMode
@@ -182,14 +181,14 @@ public class Teleop extends LinearOpMode
 
             //If the right joystick is moved significantly, move the lifter up or down depending on how it is pushed
             //If it is not pushed significantly, don't move it
-            if (Math.abs(liftPower)>=0.1)
-            {
-                glyphLift.setPower(liftPower);
-            }
-            if (Math.abs(liftPower) < 0.1)
-            {
-                glyphLift.setPower(0.0);
-            }
+//            if (Math.abs(liftPower)>=0.1)
+//            {
+//                glyphLift.setPower(liftPower);
+//            }
+//            if (Math.abs(liftPower) < 0.1)
+//            {
+//                glyphLift.setPower(0.0);
+//            }
 
             //If the x button is pressed, grab/drop the relic
             if (gamepad1.x)
@@ -197,45 +196,63 @@ public class Teleop extends LinearOpMode
                 relicDropToggle++;
                 if (relicDropToggle %2 == 1)
                 {
-                    relicGrab.setPosition(0.32);
+                    relicGrab.setPosition(1.0);
                 }
                 if (relicDropToggle %2 == 0)
                 {
-                    relicGrab.setPosition(1.0);
+                    relicGrab.setPosition(0.32);
                 }
             }
 
             if (gamepad1.y)
             {
                 yPressCount++;
-                if (yPressCount % 2 == 1)
+                //DOWN
+                if (yPressCount == 1)
                 {
-                    relicFlip.setPower(0.4);
-                    Thread.sleep(1500);
+                    relicFlip.setPower(1.0);
+                    Thread.sleep(600);
                     relicFlip.setPower(0.0);
+                    relicGrab.setPosition(0.32);
                 }
+                //UP
                 if (yPressCount % 2 == 0)
                 {
                     relicFlip.setPower(-1.0);
+                    
                     Thread.sleep(3000);
                     relicFlip.setPower(0.0);
                 }
+                //DOWN
+                if ((yPressCount % 2 == 1) && (yPressCount != 1))
+                {
+                    relicFlip.setPower(1.0);
+                    Thread.sleep(600);
+                    relicFlip.setPower(0.0);
+                }
+
             }
 
-            if (gamepad1.a)
-            {
-                relicFlip.setPower(0.7);
-                Thread.sleep(400);
-                relicFlip.setPower(0.0);
-                relicGrab.setPosition(0.0);
-            }
+//            if (gamepad1.a)
+//            {
+//                relicFlip.setPower(0.7);
+//                Thread.sleep(400);
+//                relicFlip.setPower(0.0);
+//                relicGrab.setPosition(0.0);
+//            }
 
             //If the dpad is pushed to the left, unwind the spool
             //If it is pushed to the left, rewind the spool
-            if (gamepad1.dpad_left)
+            if (gamepad1.dpad_right)
             {
                 relicSpool.setPower(1.0);
-                Thread.sleep(400);
+                Thread.sleep(900);
+                relicSpool.setPower(0.0);
+            }
+            if (gamepad1.dpad_left)
+            {
+                relicSpool.setPower(-1.0);
+                Thread.sleep(900);
                 relicSpool.setPower(0.0);
             }
 
