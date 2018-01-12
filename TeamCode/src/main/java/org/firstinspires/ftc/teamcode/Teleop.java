@@ -179,16 +179,16 @@ public class Teleop extends LinearOpMode
                 }
             }
 
-            //If the right joystick is moved significantly, move the lifter up or down depending on how it is pushed
-            //If it is not pushed significantly, don't move it
-//            if (Math.abs(liftPower)>=0.1)
-//            {
-//                glyphLift.setPower(liftPower);
-//            }
-//            if (Math.abs(liftPower) < 0.1)
-//            {
-//                glyphLift.setPower(0.0);
-//            }
+//            If the right joystick is moved significantly, move the lifter up or down depending on how it is pushed
+//            If it is not pushed significantly, don't move it
+            if (Math.abs(liftPower)>=0.1)
+            {
+                glyphLift.setPower(liftPower);
+            }
+            if (Math.abs(liftPower) < 0.1)
+            {
+                glyphLift.setPower(0.0);
+            }
 
             //If the x button is pressed, grab/drop the relic
             if (gamepad1.x)
@@ -210,7 +210,7 @@ public class Teleop extends LinearOpMode
                 //DOWN
                 if (yPressCount == 1)
                 {
-                    relicFlip.setPower(1.0);
+                    relicFlip.setPower(-1.0);
                     Thread.sleep(600);
                     relicFlip.setPower(0.0);
                     relicGrab.setPosition(0.32);
@@ -218,15 +218,15 @@ public class Teleop extends LinearOpMode
                 //UP
                 if (yPressCount % 2 == 0)
                 {
-                    relicFlip.setPower(-1.0);
-                    
-                    Thread.sleep(3000);
+                    relicFlip.setPower(1.0);
+//                    sleep(3000);
+                    Thread.sleep(12000);
                     relicFlip.setPower(0.0);
                 }
                 //DOWN
                 if ((yPressCount % 2 == 1) && (yPressCount != 1))
                 {
-                    relicFlip.setPower(1.0);
+                    relicFlip.setPower(-1.0);
                     Thread.sleep(600);
                     relicFlip.setPower(0.0);
                 }
