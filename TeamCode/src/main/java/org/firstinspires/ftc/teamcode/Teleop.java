@@ -59,8 +59,7 @@ public class Teleop extends LinearOpMode
 //***********************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
@@ -94,15 +93,14 @@ public class Teleop extends LinearOpMode
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Set float variables as the inputs from the joysticks and the triggers
             drivePowerFast = gamepad1.left_stick_y * (float) 0.8;
             shiftPowerFast = gamepad1.left_stick_x;
             drivePowerSlow = gamepad2.left_stick_y / 3;
             shiftPowerSlow = gamepad2.left_stick_x / 3;
-            fastLeftTurnPower = gamepad1.left_trigger / 2;
-            fastRightTurnPower = gamepad1.right_trigger / 2;
+            fastLeftTurnPower = gamepad1.left_trigger;
+            fastRightTurnPower = gamepad1.right_trigger;
             slowLeftTurnPower = gamepad2.left_trigger / 3;
             slowRightTurnPower = gamepad2.right_trigger / 3;
             liftPower = -gamepad1.right_stick_y;
@@ -204,55 +202,51 @@ public class Teleop extends LinearOpMode
                 }
             }
 
-            if (gamepad1.y)
-            {
+            if (gamepad1.y) {
                 yPressCount++;
-                //DOWN
-                if (yPressCount == 1)
-                {
+
+                //First Down
+                if (yPressCount == 1) {
                     relicFlip.setPower(-1.0);
-                    Thread.sleep(600);
+                    Thread.sleep(1200);
                     relicFlip.setPower(0.0);
-                    relicGrab.setPosition(0.32);
+                    //relicGrab.setPosition(0.32);
                 }
-                //UP
-                if (yPressCount % 2 == 0)
-                {
-                    relicFlip.setPower(1.0);
-//                    sleep(3000);
-                    Thread.sleep(12000);
-                    relicFlip.setPower(0.0);
-                }
-                //DOWN
-                if ((yPressCount % 2 == 1) && (yPressCount != 1))
-                {
+
+                //Up
+                if ((yPressCount % 2 == 1  && yPressCount != 1)) {
                     relicFlip.setPower(-1.0);
-                    Thread.sleep(600);
+                    Thread.sleep(700);
                     relicFlip.setPower(0.0);
                 }
 
+                //Down
+                if ((yPressCount % 2 == 0 )) {
+                    relicFlip.setPower(1.0);
+                    Thread.sleep(700);
+                    relicFlip.setPower(0.0);
+                }
             }
 
-//            if (gamepad1.a)
-//            {
-//                relicFlip.setPower(0.7);
-//                Thread.sleep(400);
-//                relicFlip.setPower(0.0);
-//                relicGrab.setPosition(0.0);
-//            }
+            if (gamepad1.a){
+                //Up while holding relic
+                relicFlip.setPower(1.0);
+                Thread.sleep(2500);
+                relicFlip.setPower(0.0);
+            }
 
             //If the dpad is pushed to the left, unwind the spool
             //If it is pushed to the left, rewind the spool
             if (gamepad1.dpad_right)
             {
                 relicSpool.setPower(1.0);
-                Thread.sleep(900);
+                Thread.sleep(700);
                 relicSpool.setPower(0.0);
             }
             if (gamepad1.dpad_left)
             {
                 relicSpool.setPower(-1.0);
-                Thread.sleep(900);
+                Thread.sleep(700);
                 relicSpool.setPower(0.0);
             }
 

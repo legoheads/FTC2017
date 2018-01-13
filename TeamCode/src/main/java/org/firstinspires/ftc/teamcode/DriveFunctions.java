@@ -295,18 +295,15 @@ public class DriveFunctions extends LinearOpMode {
         Thread.sleep(100);
     }
 
-    public void glyphDoor(String openOrClose) throws InterruptedException
-    {
-        if (openOrClose == "open")
-        {
-            glyphGrab.setPower(-0.5);
+    public void glyphDoor(String openOrClose) throws InterruptedException {
+        if (openOrClose == "open") {
+            glyphGrab.setPower(-0.8);
             Thread.sleep(700);
             glyphGrab.setPower(0.0);
             oneMotorEncoder(-1000, (float) -1.0, glyphLift);
         }
-        if (openOrClose == "close")
-        {
-            glyphGrab.setPower(0.5);
+        if (openOrClose == "close") {
+            glyphGrab.setPower(0.8);
             Thread.sleep(700);
             glyphGrab.setPower(0.2);
             oneMotorEncoder(1000, (float) 1.0, glyphLift);
