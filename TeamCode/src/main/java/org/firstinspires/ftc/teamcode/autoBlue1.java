@@ -48,7 +48,7 @@ public class autoBlue1 extends LinearOpMode
     String color = "Blue";
     String colorSeen;
 
-    int vuforiaValues[] = {1300, 1650, 2000};
+    int vuforiaValues[] = {1290, 1650, 2010};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers

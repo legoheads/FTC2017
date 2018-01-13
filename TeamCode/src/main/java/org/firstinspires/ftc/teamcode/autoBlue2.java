@@ -41,7 +41,7 @@ public class autoBlue2 extends LinearOpMode {
     //Define the color sensor
     ColorSensor colorSensor;
 
-    int vuforiaValues[] = {500, 700, 900};
+    int vuforiaValues[] = {400, 700, 1000};
     int distanceToCryptobox;
 
     //Define strings to use, as our team color, and the color we see with the sensor
