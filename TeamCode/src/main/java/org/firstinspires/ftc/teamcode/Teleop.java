@@ -13,8 +13,7 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @TeleOp(name="TeleOp") //Name the class
-public class Teleop extends LinearOpMode
-{
+public class Teleop extends LinearOpMode {
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -189,17 +188,12 @@ public class Teleop extends LinearOpMode
             }
 
             //If the x button is pressed, grab/drop the relic
-            if (gamepad1.x)
-            {
-                relicDropToggle++;
-                if (relicDropToggle %2 == 1)
-                {
-                    relicGrab.setPosition(1.0);
-                }
-                if (relicDropToggle %2 == 0)
-                {
+            if (gamepad1.x) {
                     relicGrab.setPosition(0.32);
-                }
+            }
+
+            if (gamepad1.b){
+                relicGrab.setPosition(1.00);
             }
 
             if (gamepad1.y) {
@@ -231,7 +225,7 @@ public class Teleop extends LinearOpMode
             if (gamepad1.a){
                 //Up while holding relic
                 relicFlip.setPower(1.0);
-                Thread.sleep(2500);
+                Thread.sleep(2300);
                 relicFlip.setPower(0.0);
             }
 
