@@ -22,10 +22,10 @@ public class Teleop extends LinearOpMode
     DcMotor rightMotorBack;
 
     //Define glyph motors
-    DcMotor glyphGrabLeft;
-    DcMotor glyphGrabRight;
+    DcMotor glyphWheelLeft;
+    DcMotor glyphWheelRight;
     DcMotor glyphLift;
-    CRServo glyphFlip;
+    Servo glyphFlip;
 
     //Define relic motors
     Servo relicGrab;
@@ -68,13 +68,13 @@ public class Teleop extends LinearOpMode
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphGrabLeft = hardwareMap.dcMotor.get("glyphGrabLeft");
-        glyphGrabRight = hardwareMap.dcMotor.get("glyphGrabRight");
+        glyphWheelLeft = hardwareMap.dcMotor.get("glyphWheelLeft");
+        glyphWheelRight = hardwareMap.dcMotor.get("glyphWheelRight");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
-        glyphFlip = hardwareMap.crservo.get("glyphFlip");
+        glyphFlip = hardwareMap.servo.get("glyphFlip");
         relicGrab = hardwareMap.servo.get("relicGrab");
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");
@@ -83,7 +83,7 @@ public class Teleop extends LinearOpMode
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrabLeft, glyphGrabRight, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphWheelLeft, glyphWheelRight, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
         //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -103,7 +103,7 @@ public class Teleop extends LinearOpMode
 
     //ARM CONTROLS
             //Lift the arm for the whole teleop phase so that it doesn't fall out of the robot
-            jewelArm.setPosition(0.9);
+            jewelArm.setPosition(-0.3);
 
     //DRIVE MOTOR CONTROLS
             //Set float variables as the inputs from the joysticks and the triggers
@@ -115,7 +115,7 @@ public class Teleop extends LinearOpMode
             fastRightTurnPower = gamepad1.right_trigger;
             slowLeftTurnPower = gamepad2.left_trigger / 3;
             slowRightTurnPower = gamepad2.right_trigger / 3;
-            liftPower = gamepad1.right_stick_y;
+            liftPower = -gamepad1.right_stick_y;
 
             //Do nothing if joysticks are untouched
             if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
@@ -172,28 +172,32 @@ public class Teleop extends LinearOpMode
             }
 
     //GLYPH CONTROLS
-            //Intake system on/off on gamepad1 left bumper
-            if (gamepad1.left_bumper)
-            {
-                //Increase the increment operator
-                glyphGrabToggle++;
-
-                //If the left bumper is pressed an odd number of times, turn on the intake system wheels
-                if (glyphGrabToggle % 2 == 1)
-                {
-                    functions.intake((float) 0.0);
-                }
-
-                //If the left bumper is pressed an even number of times, turn off the intake system wheels
-                if (glyphGrabToggle % 2 == 0)
-                {
-                    functions.intake((float) 1.0);
-                }
-            }
+//            //Intake system on/off on gamepad1 left bumper
+//            if (gamepad1.left_bumper)
+//            {
+//                //Increase the increment operator
+//                glyphGrabToggle++;
+//
+//                //If the left bumper is pressed an odd number of times, turn on the intake system wheels
+//                if (glyphGrabToggle % 2 == 1)
+//                {
+//                    functions.intake((float) 1.0);
+//                }
+//
+//                //If the left bumper is pressed an even number of times, turn off the intake system wheels
+//                if (glyphGrabToggle % 2 == 0)
+//                {
+//                    functions.intake((float) 0.0);
+//                }
+//            }
+//            functions.intake((float) 1.0);
+            glyphWheelLeft.setPower(-1.0);
+            glyphWheelRight.setPower(1.0);
 
             //If the right joystick is pushed significantly, operate the lifter at the given power
             if (Math.abs(liftPower) >= 0.05)
             {
+                glyphFlip.setPosition(0.3);
                 functions.glyphLift(liftPower);
             }
 
@@ -204,42 +208,26 @@ public class Teleop extends LinearOpMode
             }
 
             //Glyph flipper forwards/backwards
-            if (gamepad1.right_bumper)
+            if (gamepad2.x)
             {
-                //Increase the increment operator
-                glyphFlipToggle++;
-
-                //If the right bumper is pressed an odd number of times, flip the glyphs into the cryptobox
-                if (glyphFlipToggle % 2 == 1)
-                {
-                    functions.glyphFlip((float) 1.0, 250);
-                }
-
-                //If the right bumper is pressed an even number of times, reset the glyph flipping mechanism
-                if (glyphFlipToggle % 2 == 0)
-                {
-                    functions.glyphFlip((float) -1.0, 250);
-                }
+                glyphFlip.setPosition(0.0);
+            }
+            if (gamepad2.b)
+            {
+                glyphFlip.setPosition(1.0);
             }
 
     //RELIC CONTROLS
             //If the x button is pressed, grab/drop the relic
             if (gamepad1.x)
             {
-                //Increase the increment operator
-                relicGrabToggle++;
+                relicGrab.setPosition(0.32);
+            }
 
-                //Close the claws to grab the relic
-                if (relicGrabToggle % 2 == 1)
-                {
-                    relicGrab.setPosition(0.32);
-                }
-
-                //Open the claws to drop the relic
-                if (relicGrabToggle % 2 == 0)
-                {
-                    relicGrab.setPosition(1.00);
-                }
+            //Open the claws to drop the relic
+            if (gamepad1.b)
+            {
+                relicGrab.setPosition(1.00);
             }
 
             //If the y button is pressed, operate the relic flipper
@@ -247,6 +235,7 @@ public class Teleop extends LinearOpMode
             {
                 //Increase the increment operator
                 relicFlipToggle++;
+
                 //First down movement, from the start position to perpendicular to the ground
                 if (relicFlipToggle == 1)
                 {
@@ -256,7 +245,7 @@ public class Teleop extends LinearOpMode
                 }
 
                 //Up movement
-                if ((relicFlipToggle % 2 == 0 ))
+                if (relicFlipToggle % 2 == 0)
                 {
                     relicFlip.setPower(1.0);
                     Thread.sleep(700);

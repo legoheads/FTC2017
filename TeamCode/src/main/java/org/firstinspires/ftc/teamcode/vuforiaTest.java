@@ -29,7 +29,7 @@ public class vuforiaTest extends LinearOpMode
     DcMotor glyphWheelLeft;
     DcMotor glyphWheelRight;
     DcMotor glyphLift;
-    CRServo glyphFlip;
+    Servo glyphFlip;
 
     //Define relic motors
     Servo relicGrab;
@@ -78,7 +78,7 @@ public class vuforiaTest extends LinearOpMode
         relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
-        glyphFlip = hardwareMap.crservo.get("glyphFlip");
+        glyphFlip = hardwareMap.servo.get("glyphFlip");
         relicGrab = hardwareMap.servo.get("relicGrab");
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");

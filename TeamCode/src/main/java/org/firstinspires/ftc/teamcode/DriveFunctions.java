@@ -43,7 +43,7 @@ public class DriveFunctions extends LinearOpMode
     DcMotor glyphWheelLeft;
     DcMotor glyphWheelRight;
     DcMotor glyphLift;
-    CRServo glyphFlip;
+    Servo glyphFlip;
 
     //Relic Motors
     Servo relicGrab;
@@ -64,7 +64,7 @@ public class DriveFunctions extends LinearOpMode
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphWheelLeft, DcMotor glyphWheelRight, DcMotor glyphLift, CRServo glyphFlip, Servo relicGrab, CRServo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor)
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphWheelLeft, DcMotor glyphWheelRight, DcMotor glyphLift, Servo glyphFlip, Servo relicGrab, CRServo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor)
     {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
@@ -73,7 +73,7 @@ public class DriveFunctions extends LinearOpMode
         this.rightMotorFront = rightMotorFront;
         this.rightMotorBack = rightMotorBack;
         this.glyphWheelLeft = glyphWheelLeft;
-        this.glyphWheelLeft = glyphWheelRight;
+        this.glyphWheelRight = glyphWheelRight;
         this.glyphLift = glyphLift;
         this.glyphFlip = glyphFlip;
         this.relicGrab = relicGrab;
@@ -339,20 +339,20 @@ public class DriveFunctions extends LinearOpMode
         Thread.sleep(100);
     }
 
-    public void intake(float power)
-    {
-        //Move the wheels in opposite directions to intake or shoot the glyphs out, depending on the power entered
-        glyphWheelLeft.setPower(power);
-        glyphWheelRight.setPower(-power);
-    }
+//    public void intake(float power)
+//    {
+//        //Move the wheels in opposite directions to intake or shoot the glyphs out, depending on the power entered
+//        glyphWheelLeft.setPower(power);
+//        glyphWheelRight.setPower(-power);
+//    }
 
-    public void glyphFlip (float power, long time) throws InterruptedException
-    {
-        //Activate the glyph flipper at the given power and for the given time
-        glyphFlip.setPower(power);
-        Thread.sleep(time);
-        glyphFlip.setPower(0.0);
-    }
+//    public void glyphFlip (float power, long time) throws InterruptedException
+//    {
+//        //Activate the glyph flipper at the given power and for the given time
+//        glyphFlip.setPower(power);
+//        Thread.sleep(time);
+//        glyphFlip.setPower(0.0);
+//    }
 
     public void glyphLift(float power)
     {
@@ -418,7 +418,7 @@ public class DriveFunctions extends LinearOpMode
         int longDistance = 140;
 
         //Drop the arm
-        jewelArm.setPosition(0.0);
+        jewelArm.setPosition(1.0);
 
         //Wait for 1 second
         Thread.sleep(1000);
@@ -440,7 +440,7 @@ public class DriveFunctions extends LinearOpMode
             rightTurnAutonomous(power, longDistance);
 
             //Lift the arm
-            jewelArm.setPosition(0.9);
+            jewelArm.setPosition(0.0);
 
             //Wait for 1 second
             Thread.sleep(1000);
@@ -456,7 +456,7 @@ public class DriveFunctions extends LinearOpMode
             leftTurnAutonomous(power, shortDistance);
 
             //Lift the arm
-            jewelArm.setPosition(0.9);
+            jewelArm.setPosition(0.0);
 
             //Wait for 1 second
             Thread.sleep(1000);

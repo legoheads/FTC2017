@@ -33,7 +33,7 @@ public class autoBlue1 extends LinearOpMode
     DcMotor glyphWheelLeft;
     DcMotor glyphWheelRight;
     DcMotor glyphLift;
-    CRServo glyphFlip;
+    Servo glyphFlip;
 
     //Define relic motors
     Servo relicGrab;
@@ -76,13 +76,13 @@ public class autoBlue1 extends LinearOpMode
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphWheelLeft = hardwareMap.dcMotor.get("glyphGrabLeft");
-        glyphWheelRight = hardwareMap.dcMotor.get("glyphGrabRight");
+        glyphWheelLeft = hardwareMap.dcMotor.get("glyphWheelLeft");
+        glyphWheelRight = hardwareMap.dcMotor.get("glyphWheelRight");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
-        glyphFlip = hardwareMap.crservo.get("glyphFlip");
+        glyphFlip = hardwareMap.servo.get("glyphFlip");
         relicGrab = hardwareMap.servo.get("relicGrab");
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");
@@ -164,7 +164,7 @@ public class autoBlue1 extends LinearOpMode
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.leftTurnAutonomous(turnPower, 1000);
+            functions.rightTurnAutonomous(turnPower, 1000);
 
             //Small delay
             Thread.sleep(300);
