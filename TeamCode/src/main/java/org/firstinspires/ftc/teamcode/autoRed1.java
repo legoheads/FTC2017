@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Autonomous(name="AutoRed1") //Name the program
-public class autoRed1 extends LinearOpMode {
+public class autoRed1 extends LinearOpMode
+{
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -32,8 +33,10 @@ public class autoRed1 extends LinearOpMode {
     DcMotor rightMotorBack;
 
     //Define glyph motors
-    DcMotor glyphGrab;
+    DcMotor glyphWheelLeft;
+    DcMotor glyphWheelRight;
     DcMotor glyphLift;
+    CRServo glyphFlip;
 
     //Define relic motors
     Servo relicGrab;
@@ -62,6 +65,7 @@ public class autoRed1 extends LinearOpMode {
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
     int count = 0;
+
     //***************************************************************************************************************************
     //MAIN BELOW
     @Override
@@ -72,20 +76,22 @@ public class autoRed1 extends LinearOpMode {
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+        glyphWheelLeft = hardwareMap.dcMotor.get("glyphGrabLeft");
+        glyphWheelRight = hardwareMap.dcMotor.get("glyphGrabRight");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
-        jewelArm = hardwareMap.servo.get("jewelArm");
+        glyphFlip = hardwareMap.crservo.get("glyphFlip");
         relicGrab = hardwareMap.servo.get("relicGrab");
         relicFlip = hardwareMap.crservo.get("relicFlip");
+        jewelArm = hardwareMap.servo.get("jewelArm");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphWheelLeft, glyphWheelRight, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
         //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();
@@ -108,13 +114,14 @@ public class autoRed1 extends LinearOpMode {
         //Activate Trackables
         relicTrackables.activate();
 
+
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
-            //Close door
-            functions.glyphDoor("close");
-
+            //Initialize the vuforia template
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+            //Look for the cryptobox key for 5 seconds, then move on. Set the key as equal to vuMark
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
             {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -124,25 +131,33 @@ public class autoRed1 extends LinearOpMode {
                 count++;
             }
 
+            //Access the first value if the key is left
             if (vuMark == RelicRecoveryVuMark.LEFT)
             {
                 distanceToCryptobox = vuforiaValues[0];
             }
+
+            //Access the second value if the key is center
             if (vuMark == RelicRecoveryVuMark.CENTER)
             {
                 distanceToCryptobox = vuforiaValues[1];
             }
+
+            //Access the third value if the key is right
             if (vuMark == RelicRecoveryVuMark.RIGHT)
             {
                 distanceToCryptobox = vuforiaValues[2];
             }
+
+            //If vuforia is not picked up, go for center because it is most consistent
             if (vuMark == RelicRecoveryVuMark.UNKNOWN)
             {
                 distanceToCryptobox = vuforiaValues[1];
             }
 
+
             //Do jewels and get off platform
-            functions.jewelPushBlue(colorSensor, color, colorSeen);
+            functions.jewelPush(colorSensor, color, colorSeen);
             Thread.sleep(1000);
             jewelArm.setPosition(0.9);
 
@@ -157,9 +172,6 @@ public class autoRed1 extends LinearOpMode {
 
             //Go to the cryptobox
             functions.driveAutonomous(drivePower, 600);
-
-            //Drop the glyph in the cryptobox while ending in the safe zone
-            functions.glyphDoor("open");
 
             functions.leftTurnAutonomous(turnPower, 300);
 

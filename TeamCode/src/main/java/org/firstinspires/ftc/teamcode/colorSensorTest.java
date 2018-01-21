@@ -23,8 +23,10 @@ public class colorSensorTest extends LinearOpMode
     DcMotor rightMotorBack;
 
     //Define glyph motors
-    DcMotor glyphGrab;
+    DcMotor glyphWheelLeft;
+    DcMotor glyphWheelRight;
     DcMotor glyphLift;
+    CRServo glyphFlip;
 
     //Define relic motors
     Servo relicGrab;
@@ -49,20 +51,22 @@ public class colorSensorTest extends LinearOpMode
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+        glyphWheelLeft = hardwareMap.dcMotor.get("glyphWheelLeft");
+        glyphWheelRight = hardwareMap.dcMotor.get("glyphWheelRight");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
-        jewelArm = hardwareMap.servo.get("jewelArm");
+        glyphFlip = hardwareMap.crservo.get("glyphFlip");
         relicGrab = hardwareMap.servo.get("relicGrab");
         relicFlip = hardwareMap.crservo.get("relicFlip");
+        jewelArm = hardwareMap.servo.get("jewelArm");
 
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphWheelLeft, glyphWheelLeft, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
         //Set the sensor to active mode and set the directions of the motors
         functions.initializeMotorsAndSensors();

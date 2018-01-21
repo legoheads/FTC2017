@@ -17,7 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Disabled
 @Autonomous(name="Vuforia Test") //Name the program
-public class vuforiaTest extends LinearOpMode {
+public class vuforiaTest extends LinearOpMode
+{
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -25,8 +26,10 @@ public class vuforiaTest extends LinearOpMode {
     DcMotor rightMotorBack;
 
     //Define glyph motors
-    DcMotor glyphGrab;
+    DcMotor glyphWheelLeft;
+    DcMotor glyphWheelRight;
     DcMotor glyphLift;
+    CRServo glyphFlip;
 
     //Define relic motors
     Servo relicGrab;
@@ -59,24 +62,26 @@ public class vuforiaTest extends LinearOpMode {
     int count = 0;
 
 
-    //***************************************************************************************************************************
+//***************************************************************************************************************************
     //MAIN BELOW
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //Get references to the DC motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
-        glyphGrab = hardwareMap.dcMotor.get("glyphGrab");
+        glyphWheelLeft = hardwareMap.dcMotor.get("glyphWheelLeft");
+        glyphWheelRight = hardwareMap.dcMotor.get("glyphWheelRight");
         glyphLift = hardwareMap.dcMotor.get("glyphLift");
         relicSpool = hardwareMap.dcMotor.get("relicSpool");
 
         //Get references to the Servo Motors from the hardware map
-        jewelArm = hardwareMap.servo.get("jewelArm");
+        glyphFlip = hardwareMap.crservo.get("glyphFlip");
         relicGrab = hardwareMap.servo.get("relicGrab");
         relicFlip = hardwareMap.crservo.get("relicFlip");
-
+        jewelArm = hardwareMap.servo.get("jewelArm");
 
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
@@ -84,7 +89,7 @@ public class vuforiaTest extends LinearOpMode {
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
-        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphGrab, glyphLift, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
+        DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphWheelLeft, glyphWheelRight, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
         //Vuforia Initialization
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -109,25 +114,28 @@ public class vuforiaTest extends LinearOpMode {
 
 
 //****************************************************************************************************************************************
-
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 telemetry.update();
-
             }
 
-            if (vuMark == RelicRecoveryVuMark.LEFT){
+            if (vuMark == RelicRecoveryVuMark.LEFT)
+            {
                 functions.rightTurnAutonomous((float) 1.0, 500);
             }
 
-            if (vuMark == RelicRecoveryVuMark.CENTER){
+            if (vuMark == RelicRecoveryVuMark.CENTER)
+            {
                 functions.leftTurnAutonomous((float) 1.0, 500);
             }
 
-            if (vuMark == RelicRecoveryVuMark.RIGHT){
+            if (vuMark == RelicRecoveryVuMark.RIGHT)
+            {
                 functions.driveAutonomous((float) -1.0, -500);
             }
         }

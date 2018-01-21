@@ -31,17 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Disabled
-public class DriveFunctions extends LinearOpMode {
-
+public class DriveFunctions extends LinearOpMode
+{
     //Define Drive Motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
 
-    //Glyph Motors
-    DcMotor glyphGrab;
+    //Define Glyph Motors
+    DcMotor glyphWheelLeft;
+    DcMotor glyphWheelRight;
     DcMotor glyphLift;
+    CRServo glyphFlip;
 
     //Relic Motors
     Servo relicGrab;
@@ -54,16 +56,15 @@ public class DriveFunctions extends LinearOpMode {
     //Define Sensors and the CDI
     ColorSensor colorSensor;
 
-
+    //Initialize vuforia
     OpenGLMatrix lastLocation = null;
-
     VuforiaLocalizer vuforia;
 
     /**
      * Initialize all the hardware
      * This creates a data type DriveFunctions to store all the hardware devices
      */
-    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphGrab, DcMotor glyphLift, Servo relicGrab, CRServo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor)
+    public DriveFunctions(DcMotor leftMotorFront, DcMotor rightMotorFront, DcMotor leftMotorBack, DcMotor rightMotorBack, DcMotor glyphWheelLeft, DcMotor glyphWheelRight, DcMotor glyphLift, CRServo glyphFlip, Servo relicGrab, CRServo relicFlip, DcMotor relicSpool, Servo jewelArm, ColorSensor colorSensor)
     {
         //These lines enable us to store the motors, sensors and CDI without having to write them over and over again
         //Initialize DC and Servo motors
@@ -71,14 +72,16 @@ public class DriveFunctions extends LinearOpMode {
         this.leftMotorBack = leftMotorBack;
         this.rightMotorFront = rightMotorFront;
         this.rightMotorBack = rightMotorBack;
-        this.glyphGrab = glyphGrab;
+        this.glyphWheelLeft = glyphWheelLeft;
+        this.glyphWheelLeft = glyphWheelRight;
         this.glyphLift = glyphLift;
+        this.glyphFlip = glyphFlip;
         this.relicGrab = relicGrab;
         this.relicSpool = relicSpool;
         this.relicFlip = relicFlip;
         this.jewelArm = jewelArm;
 
-        //Initialize sensors and CDI
+        //Initialize sensors
         this.colorSensor = colorSensor;
     }
 
@@ -96,6 +99,7 @@ public class DriveFunctions extends LinearOpMode {
         rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //Set the motors to brake mode to prevent rolling due to chain
         leftMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -233,9 +237,17 @@ public class DriveFunctions extends LinearOpMode {
     public void driveAutonomous(float power, int degrees) throws InterruptedException {
         //Everything in the same direction creates linear driving
         moveDriveMotorsWithEncoders(-degrees, -degrees, -degrees, -degrees, -power, -power, -power, -power);
+
+        //Braking mechanism part 1
         moveDriveMotorsWithEncoders(50, 50, 50, 50, (float) 1.0, (float) 1.0, (float) 1.0, (float) 1.0);
+
+        //Small delay
         Thread.sleep(100);
+
+        //Braking mechanism part 2
         setDriveMotorPowers(0,0,0,0);
+
+        //Small delay
         Thread.sleep(100);
     }
 
@@ -247,9 +259,17 @@ public class DriveFunctions extends LinearOpMode {
     {
         //Left motors backwards and right motors forwards gives us a left turn
         moveDriveMotorsWithEncoders(degrees, degrees, -degrees, -degrees, power, power, -power, -power);
+
+        //Braking mechanism part 1
         moveDriveMotorsWithEncoders(-50, -50, 50, 50, (float) -1.0, (float) -1.0, (float) 1.0, (float) 1.0);
+
+        //Small delay
         Thread.sleep(100);
+
+        //Braking mechanism part 2
         setDriveMotorPowers(0,0,0,0);
+
+        //Small delay
         Thread.sleep(100);
     }
 
@@ -261,9 +281,17 @@ public class DriveFunctions extends LinearOpMode {
     {
         //Right motors backwards and left motors forwards gives us a right turn
         moveDriveMotorsWithEncoders(-degrees, -degrees, degrees, degrees, -power, -power, power, power);
+
+        //Braking mechanism part 1
         moveDriveMotorsWithEncoders(50, 50, -50, -50, (float) 1.0, (float) 1.0, (float) -1.0, (float) -1.0);
+
+        //Small delay
         Thread.sleep(100);
+
+        //Braking mechanism part 2
         setDriveMotorPowers(0,0,0,0);
+
+        //Small delay
         Thread.sleep(100);
     }
 
@@ -275,9 +303,17 @@ public class DriveFunctions extends LinearOpMode {
     {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift left
         moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
+
+        //Braking mechanism part 1
         moveDriveMotorsWithEncoders(-50, 50, 50, -50, (float) -1.0, (float) 1.0, (float) 1.0, (float) -1.0);
+
+        //Small delay
         Thread.sleep(100);
+
+        //Braking mechanism part 2
         setDriveMotorPowers(0,0,0,0);
+
+        //Small delay
         Thread.sleep(100);
     }
 
@@ -289,25 +325,38 @@ public class DriveFunctions extends LinearOpMode {
     {
         //This sequence of forwards, backwards, backwards, forwards makes the robot shift right
         moveDriveMotorsWithEncoders(-degrees, degrees, degrees, -degrees, -power, power, power, -power);
+
+        //Braking mechanism part 1
         moveDriveMotorsWithEncoders(50, -50, -50, 50, (float) 1.0, (float) -1.0, (float) -1.0, (float) 1.0);
+
+        //Small delay
         Thread.sleep(100);
+
+        //Braking mechanism part 2
         setDriveMotorPowers(0,0,0,0);
+
+        //Small delay
         Thread.sleep(100);
     }
 
-    public void glyphDoor(String openOrClose) throws InterruptedException {
-        if (openOrClose == "open") {
-            glyphGrab.setPower(-0.8);
-            Thread.sleep(700);
-            glyphGrab.setPower(0.0);
-            oneMotorEncoder(-1000, (float) -1.0, glyphLift);
-        }
-        if (openOrClose == "close") {
-            glyphGrab.setPower(0.8);
-            Thread.sleep(700);
-            glyphGrab.setPower(0.2);
-            oneMotorEncoder(1000, (float) 1.0, glyphLift);
-        }
+    public void intake(float power)
+    {
+        //Move the wheels in opposite directions to intake or shoot the glyphs out, depending on the power entered
+        glyphWheelLeft.setPower(power);
+        glyphWheelRight.setPower(-power);
+    }
+
+    public void glyphFlip (float power, long time) throws InterruptedException
+    {
+        //Activate the glyph flipper at the given power and for the given time
+        glyphFlip.setPower(power);
+        Thread.sleep(time);
+        glyphFlip.setPower(0.0);
+    }
+
+    public void glyphLift(float power)
+    {
+        glyphLift.setPower(power);
     }
 
     /**
@@ -361,67 +410,62 @@ public class DriveFunctions extends LinearOpMode {
         return "Red";
     }
 
-    public void jewelPushBlue(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
+    public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
     {
+        //Define constants to avoid magic numbers
         float power = (float) 0.3;
         int shortDistance = 100;
         int longDistance = 140;
 
+        //Drop the arm
         jewelArm.setPosition(0.0);
+
+        //Wait for 1 second
         Thread.sleep(1000);
+
+        //Delay until a color is seen
         while (!iSeeAColor(colorSensor))
         { }
 
+        //If a color is seen, set it to the variable colorSeen
         if (iSeeAColor(colorSensor))
         {
             colorSeen = whatColor(colorSensor);
         }
+
+        //If the color seen is our team color
         if (colorSeen.equals(color))
         {
+            //Turn to the right to hit the opposite ball
             rightTurnAutonomous(power, longDistance);
+
+            //Lift the arm
             jewelArm.setPosition(0.9);
+
+            //Wait for 1 second
             Thread.sleep(1000);
+
+            //Turn back to the original position so we can continue
             leftTurnAutonomous(power, longDistance);
         }
+
+        //If the color seen is not our team color
         if (!colorSeen.equals(color))
         {
+            //Turn to the left to hit the ball we see
             leftTurnAutonomous(power, shortDistance);
+
+            //Lift the arm
             jewelArm.setPosition(0.9);
+
+            //Wait for 1 second
             Thread.sleep(1000);
+
+            //Turn back to the original position so we can continue
             rightTurnAutonomous(power, shortDistance);
         }
     }
 
-    public void jewelPushRed(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
-    {
-        float power = (float) 0.3;
-        int shortDistance = 100;
-        int longDistance = 140;
-
-        jewelArm.setPosition(0.0);
-        Thread.sleep(1000);
-        while (!iSeeAColor(colorSensor))
-        { }
-
-        if (iSeeAColor(colorSensor))
-        {
-            colorSeen = whatColor(colorSensor);
-        }
-        if (colorSeen.equals(color))
-        {
-            leftTurnAutonomous(power, longDistance);
-            jewelArm.setPosition(0.9);
-            Thread.sleep(1000);
-            rightTurnAutonomous(power, longDistance);
-        }
-        if (!colorSeen.equals(color))
-        {
-            rightTurnAutonomous(power, shortDistance);
-            jewelArm.setPosition(0.9);
-            Thread.sleep(1000);
-            leftTurnAutonomous(power, shortDistance);
-        }
-    }
     //Empty main
     @Override
     public void runOpMode() throws InterruptedException
