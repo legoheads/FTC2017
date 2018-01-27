@@ -266,8 +266,8 @@ public class Teleop extends LinearOpMode
             if (gamepad1.a)
             {
                 //Up while holding relic, since it requires more time
-                relicFlip.setPower(1.0);
-                Thread.sleep(2300);
+                relicFlip.setPower(-1.0);
+                Thread.sleep(4000);
                 relicFlip.setPower(0.0);
             }
 
