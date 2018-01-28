@@ -83,13 +83,14 @@ public class vuforiaTest extends LinearOpMode
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");
 
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
         //Get references to the sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
         DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphWheelLeft, glyphWheelRight, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
+
+        //Initialize the camera
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         //Vuforia Initialization
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -109,34 +110,41 @@ public class vuforiaTest extends LinearOpMode
         //Wait for start button to be clicked
         waitForStart();
 
+        //Activate the relic trackables
         relicTrackables.activate();
-
-
 
 //****************************************************************************************************************************************
         while (opModeIsActive())
         {
+            //Initialize the vuforia template
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN)
+
+            //Look for the cryptobox key for 5 seconds, then move on. Set the key as equal to vuMark
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
             {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 telemetry.update();
+                sleep(10);
+                count++;
             }
 
+            //If left is seen, turn to the left
             if (vuMark == RelicRecoveryVuMark.LEFT)
             {
                 functions.rightTurnAutonomous((float) 1.0, 500);
             }
 
+            //If center is seen, drive forward
             if (vuMark == RelicRecoveryVuMark.CENTER)
             {
-                functions.leftTurnAutonomous((float) 1.0, 500);
+                functions.driveAutonomous((float) 1.0, 500);
             }
 
+            //If right is seen, turn to the right
             if (vuMark == RelicRecoveryVuMark.RIGHT)
             {
-                functions.driveAutonomous((float) -1.0, -500);
+                functions.rightTurnAutonomous((float) -1.0, -500);
             }
         }
     }

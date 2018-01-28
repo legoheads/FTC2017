@@ -150,22 +150,37 @@ public class autoRed2 extends LinearOpMode
                 distanceToCryptobox = vuforiaValues[1];
             }
 
+            //Lift the flipper so we can drive around
+            glyphFlip.setPosition(0.4);
+
             //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
-            Thread.sleep(1000);
-            jewelArm.setPosition(0.9);
 
+            //Drive towards the cryptobox
             functions.driveAutonomous(-drivePower, -1100);
 
-            functions.rightTurnAutonomous(turnPower / 2, 2000);
+            //Shift towards the cryptobox
+            functions.rightShiftAutonomous(shiftPower, distanceToCryptobox);
 
-            functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
+            //Drive into the cryptobox
+            functions.driveAutonomous(-drivePower, -450);
 
-            functions.driveAutonomous(drivePower, 450);
+            //Flip the glyph into the cryptobox
+            glyphFlip.setPosition(0.0);
 
-            functions.leftTurnAutonomous(turnPower, 300);
+            ///Turn to ensure the glyph enters the cryptobox
+            if (distanceToCryptobox == vuforiaValues[0])
+            {
+                functions.rightTurnAutonomous(turnPower, 300);
+            }
+            else
+            {
+                functions.leftTurnAutonomous(turnPower, 300);
+            }
 
-            functions.driveAutonomous(drivePower, 300);
+            //Push the glyph in one final time
+            functions.driveAutonomous(-drivePower, -300);
+
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run

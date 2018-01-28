@@ -154,6 +154,9 @@ public class autoBlue1 extends LinearOpMode
                 distanceToCryptobox = vuforiaValues[1];
             }
 
+            //Lift the flipper off the ground so we can drive around
+            glyphFlip.setPosition(0.4);
+
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
@@ -164,19 +167,37 @@ public class autoBlue1 extends LinearOpMode
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.rightTurnAutonomous(turnPower, 1000);
+            functions.rightTurnAutonomous(turnPower, 1050);
 
             //Small delay
             Thread.sleep(300);
 
             //Go to the cryptobox and put the glyph into the cryptobox
-            functions.driveAutonomous(drivePower, 600);
+//            functions.driveAutonomous(-drivePower, -80);
+
+            functions.driveAutonomous(-drivePower, -100);
+
+            //Flip the glyph into the cryptobox
+            glyphFlip.setPosition(0.0);
+
+            Thread.sleep(2000);
+
+            functions.driveAutonomous(-drivePower, -200);
 
             //Turn to ensure the glyph enters the cryptobox
-            functions.rightTurnAutonomous(turnPower, 300);
+            if (distanceToCryptobox == vuforiaValues[0])
+            {
+                functions.rightTurnAutonomous(turnPower, 300);
+            }
+            else
+            {
+                functions.leftTurnAutonomous(turnPower, 300);
+            }
 
             //Push in the glyph one final time
-            functions.driveAutonomous(drivePower, 400);
+            functions.driveAutonomous(-drivePower, -400);
+
+            functions.driveAutonomous(drivePower, 250);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

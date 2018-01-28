@@ -354,10 +354,6 @@ public class DriveFunctions extends LinearOpMode
 //        glyphFlip.setPower(0.0);
 //    }
 
-    public void glyphLift(float power)
-    {
-        glyphLift.setPower(power);
-    }
 
     /**
      * @param colorSensor take in the correct color sensor

@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+@Disabled
 @TeleOp(name="Tele Op Test") //Name the class
-public class testBotTele extends LinearOpMode
-{
+public class testBotTele extends LinearOpMode {
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -55,8 +55,7 @@ public class testBotTele extends LinearOpMode
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //Set float variables as the inputs from the joysticks and the triggers
             drivePower = gamepad1.left_stick_y;
             shiftPower = gamepad1.left_stick_x / 3 ;

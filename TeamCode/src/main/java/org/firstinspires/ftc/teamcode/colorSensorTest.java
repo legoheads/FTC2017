@@ -80,8 +80,10 @@ public class colorSensorTest extends LinearOpMode
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive())
         {
+            //Convert the color sensor values from RGB to HSV
             Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
 
+            //Display the sensor outputs on the screen
             telemetry.addData("Clear", colorSensor.alpha());
             telemetry.addData("Red", colorSensor.red());
             telemetry.addData("Green", colorSensor.green());

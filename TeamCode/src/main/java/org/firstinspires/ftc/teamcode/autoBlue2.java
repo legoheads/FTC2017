@@ -19,7 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Auto Blue2") //Name the program
-public class autoBlue2 extends LinearOpMode {
+public class autoBlue2 extends LinearOpMode
+{
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -148,19 +149,40 @@ public class autoBlue2 extends LinearOpMode {
                 distanceToCryptobox = vuforiaValues[1];
             }
 
+            //Lift the flipper off the ground so we can drive around
+            glyphFlip.setPosition(0.4);
 
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
-            functions.driveAutonomous(drivePower, 1000);
+            //Drive towards the cryptobox
+            functions.driveAutonomous(drivePower, 1200);
 
-            functions.rightShiftAutonomous(shiftPower, distanceToCryptobox);
+            //Turn 180 degrees
+            functions.rightTurnAutonomous(turnPower, 2000);
 
-            functions.driveAutonomous(drivePower, 700);
+            //Shift towards the cryptobox
+            functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
-            functions.leftTurnAutonomous(turnPower, 300);
+            //Drive into the cryptobox
+            functions.driveAutonomous(-drivePower, -700);
 
-            functions.driveAutonomous(drivePower, 400);
+            //Flip the glyph into the cryptobox
+            glyphFlip.setPosition(0.0);
+
+            //Turn to ensure the glyph is in the cryptobox
+            if (distanceToCryptobox != vuforiaValues[0])
+            {
+                functions.rightTurnAutonomous(turnPower, 300);
+            }
+            else
+            {
+                functions.leftTurnAutonomous(turnPower, 300);
+            }
+
+            //Push the glyph in one final time
+            functions.driveAutonomous(-drivePower, -400);
+
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
             //Break the loop after one run

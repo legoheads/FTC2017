@@ -50,9 +50,6 @@ public class Teleop extends LinearOpMode
     float liftPower;
 
     //Define ints to be used as toggles
-    int glyphGrabToggle = 0;
-    int glyphFlipToggle = 0;
-    int relicGrabToggle = 0;
     int relicFlipToggle = 0;
 
     //Define an elapsed time variable
@@ -105,6 +102,7 @@ public class Teleop extends LinearOpMode
             //Lift the arm for the whole teleop phase so that it doesn't fall out of the robot
             jewelArm.setPosition(-0.3);
 
+
     //DRIVE MOTOR CONTROLS
             //Set float variables as the inputs from the joysticks and the triggers
             drivePowerFast = gamepad1.left_stick_y * (float) 0.8;
@@ -118,8 +116,7 @@ public class Teleop extends LinearOpMode
             liftPower = -gamepad1.right_stick_y;
 
             //Do nothing if joysticks are untouched
-            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
-            {
+            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0) {
                 functions.setDriveMotorPowers(0, 0, 0, 0);
             }
 
@@ -130,20 +127,17 @@ public class Teleop extends LinearOpMode
             }
 
             //Drive if joystick pushed more Y than X on gamepad1 (fast)
-            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast))
-            {
+            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast)) {
                 functions.driveTeleop(drivePowerFast);
             }
 
             //Shift if pushed more on X than Y on gamepad2 (slow)
-            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
-            {
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow)) {
                 functions.shiftTeleop(shiftPowerSlow);
             }
 
             //Drive if pushed more on Y than X on gamepad2 (slow)
-            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
-            {
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow)) {
                 functions.driveTeleop(drivePowerSlow);
             }
 
@@ -171,53 +165,59 @@ public class Teleop extends LinearOpMode
                 functions.rightTurnTeleop(slowRightTurnPower);
             }
 
-    //GLYPH CONTROLS
-//            //Intake system on/off on gamepad1 left bumper
-//            if (gamepad1.left_bumper)
-//            {
-//                //Increase the increment operator
-//                glyphGrabToggle++;
-//
-//                //If the left bumper is pressed an odd number of times, turn on the intake system wheels
-//                if (glyphGrabToggle % 2 == 1)
-//                {
-//                    functions.intake((float) 1.0);
-//                }
-//
-//                //If the left bumper is pressed an even number of times, turn off the intake system wheels
-//                if (glyphGrabToggle % 2 == 0)
-//                {
-//                    functions.intake((float) 0.0);
-//                }
-//            }
-//            functions.intake((float) 1.0);
             glyphWheelLeft.setPower(-1.0);
             glyphWheelRight.setPower(1.0);
 
-            //If the right joystick is pushed significantly, operate the lifter at the given power
-            if (Math.abs(liftPower) >= 0.05)
+            if (gamepad1.right_stick_y == 0.0)
             {
-                glyphFlip.setPosition(0.3);
-                functions.glyphLift(liftPower);
+                relicSpool.setPower(0.0);
+            }
+
+
+            //If the right joystick is pushed significantly, operate the lifter at the given power
+            if (gamepad1.dpad_up)
+            {
+                glyphFlip.setPosition(0.4);
+                glyphLift.setPower(-0.7);
             }
 
             //If the right joystick is not pushed significantly, keep it stationary
-            if (Math.abs(liftPower) < 0.05)
+            if (gamepad1.dpad_down)
             {
-                functions.glyphLift((float) 0.0);
+                glyphFlip.setPosition(0.4);
+                glyphLift.setPower(0.7);
+            }
+
+            if (!gamepad1.dpad_up || !gamepad1.dpad_down)
+            {
+                glyphLift.setPower(0.0);
             }
 
             //Glyph flipper forwards/backwards
-            if (gamepad2.x)
+            if (gamepad1.right_bumper)
             {
                 glyphFlip.setPosition(0.0);
-            }
-            if (gamepad2.b)
-            {
-                glyphFlip.setPosition(1.0);
+                Thread.sleep(1000);
+                glyphFlip.setPosition(0.6);
             }
 
-    //RELIC CONTROLS
+        //RELIC CONTROLS
+            //If the dpad is pushed to the right, unwind the spool
+            if (gamepad1.right_stick_y <= -0.05)
+            {
+                relicSpool.setPower(1.0);
+                Thread.sleep(700);
+                relicSpool.setPower(0.0);
+            }
+
+            //If the dpad is pushed to the left, rewind the spool
+            if (gamepad1.right_stick_y >= 0.05)
+            {
+                relicSpool.setPower(-1.0);
+                Thread.sleep(700);
+                relicSpool.setPower(0.0);
+            }
+
             //If the x button is pressed, grab/drop the relic
             if (gamepad1.x)
             {
@@ -233,33 +233,25 @@ public class Teleop extends LinearOpMode
             //If the y button is pressed, operate the relic flipper
             if (gamepad1.y)
             {
+
                 //Increase the increment operator
                 relicFlipToggle++;
 
-                //First down movement, from the start position to perpendicular to the ground
-                if (relicFlipToggle == 1)
+                //Down movement
+                if (relicFlipToggle % 2 == 0)
                 {
-                    relicFlip.setPower(-1.0);
-                    Thread.sleep(1800);
+                    relicFlip.setPower(1.0);
+                    Thread.sleep(1200);
                     relicFlip.setPower(0.0);
                 }
 
                 //Up movement
-                if (relicFlipToggle % 2 == 0)
-                {
-                    relicFlip.setPower(1.0);
-                    Thread.sleep(700);
-                    relicFlip.setPower(0.0);
-                }
-
-                //Down movement
-                if ((relicFlipToggle % 2 == 1  && relicFlipToggle != 1))
+                if (relicFlipToggle % 2 == 1)
                 {
                     relicFlip.setPower(-1.0);
-                    Thread.sleep(700);
+                    Thread.sleep(1000);
                     relicFlip.setPower(0.0);
                 }
-
             }
 
             //If the a button is pressed, lift the relic over the wall
@@ -269,22 +261,6 @@ public class Teleop extends LinearOpMode
                 relicFlip.setPower(-1.0);
                 Thread.sleep(4000);
                 relicFlip.setPower(0.0);
-            }
-
-            //If the dpad is pushed to the right, unwind the spool
-            if (gamepad1.dpad_right)
-            {
-                relicSpool.setPower(1.0);
-                Thread.sleep(700);
-                relicSpool.setPower(0.0);
-            }
-
-            //If the dpad is pushed to the left, rewind the spool
-            if (gamepad1.dpad_left)
-            {
-                relicSpool.setPower(-1.0);
-                Thread.sleep(700);
-                relicSpool.setPower(0.0);
             }
 
             //Count time
