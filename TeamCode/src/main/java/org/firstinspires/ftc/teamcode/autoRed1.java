@@ -108,6 +108,8 @@ public class autoRed1 extends LinearOpMode
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
+//        jewelArm.setPosition(0.0);
+
         //Wait for start button to be clicked
         waitForStart();
 
@@ -165,17 +167,21 @@ public class autoRed1 extends LinearOpMode
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.rightTurnAutonomous(turnPower / 2, 1000);
+            functions.rightTurnAutonomous(turnPower / 2, 1050);
 
             Thread.sleep(300);
 
             //Go to the cryptobox
-            functions.driveAutonomous(-drivePower, -600);
+            functions.driveAutonomous(-drivePower, -100);
 
             glyphFlip.setPosition(0.0);
 
+            Thread.sleep(2000);
+
+            functions.driveAutonomous(-drivePower, -200);
+
             //Turn to ensure that the glyph enters the cryptobox
-            if (distanceToCryptobox == vuforiaValues[0])
+            if (distanceToCryptobox != vuforiaValues[0])
             {
                 functions.rightTurnAutonomous(turnPower, 300);
             }
@@ -186,6 +192,8 @@ public class autoRed1 extends LinearOpMode
 
             //Push the glyph in one last time
             functions.driveAutonomous(-drivePower, -400);
+
+            functions.driveAutonomous(drivePower, 250);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

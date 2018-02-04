@@ -108,6 +108,7 @@ public class autoBlue1 extends LinearOpMode
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
+//        jewelArm.setPosition(0.0);
         //Wait for start button to be clicked
         waitForStart();
 
@@ -155,7 +156,7 @@ public class autoBlue1 extends LinearOpMode
             }
 
             //Lift the flipper off the ground so we can drive around
-            glyphFlip.setPosition(0.4);
+            glyphFlip.setPosition(0.5);
 
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);

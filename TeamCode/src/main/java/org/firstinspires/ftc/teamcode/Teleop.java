@@ -51,6 +51,7 @@ public class Teleop extends LinearOpMode
 
     //Define ints to be used as toggles
     int relicFlipToggle = 0;
+    int intakeToggle = 0;
 
     //Define an elapsed time variable
     private ElapsedTime runtime = new ElapsedTime();
@@ -116,7 +117,8 @@ public class Teleop extends LinearOpMode
             liftPower = -gamepad1.right_stick_y;
 
             //Do nothing if joysticks are untouched
-            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0) {
+            if (drivePowerFast == 0 && shiftPowerFast == 0 && drivePowerSlow == 0 && shiftPowerSlow == 0)
+            {
                 functions.setDriveMotorPowers(0, 0, 0, 0);
             }
 
@@ -127,17 +129,20 @@ public class Teleop extends LinearOpMode
             }
 
             //Drive if joystick pushed more Y than X on gamepad1 (fast)
-            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast)) {
+            if (Math.abs(drivePowerFast) > Math.abs(shiftPowerFast))
+            {
                 functions.driveTeleop(drivePowerFast);
             }
 
             //Shift if pushed more on X than Y on gamepad2 (slow)
-            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow)) {
+            if (Math.abs(shiftPowerSlow) > Math.abs(drivePowerSlow))
+            {
                 functions.shiftTeleop(shiftPowerSlow);
             }
 
             //Drive if pushed more on Y than X on gamepad2 (slow)
-            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow)) {
+            if (Math.abs(drivePowerSlow) > Math.abs(shiftPowerSlow))
+            {
                 functions.driveTeleop(drivePowerSlow);
             }
 
@@ -165,8 +170,20 @@ public class Teleop extends LinearOpMode
                 functions.rightTurnTeleop(slowRightTurnPower);
             }
 
-            glyphWheelLeft.setPower(-1.0);
-            glyphWheelRight.setPower(1.0);
+            if (gamepad1.left_bumper)
+            {intakeToggle++;}
+
+            if (intakeToggle % 2 == 0)
+            {
+                glyphWheelLeft.setPower(-1.0);
+                glyphWheelRight.setPower(1.0);
+            }
+            if (intakeToggle % 2 == 1)
+            {
+                glyphWheelLeft.setPower(1.0);
+                glyphWheelRight.setPower(-1.0);
+            }
+
 
             if (gamepad1.right_stick_y == 0.0)
             {
@@ -198,7 +215,7 @@ public class Teleop extends LinearOpMode
             {
                 glyphFlip.setPosition(0.0);
                 Thread.sleep(1000);
-                glyphFlip.setPosition(0.6);
+                glyphFlip.setPosition(0.75);
             }
 
         //RELIC CONTROLS
@@ -206,7 +223,7 @@ public class Teleop extends LinearOpMode
             if (gamepad1.right_stick_y <= -0.05)
             {
                 relicSpool.setPower(1.0);
-                Thread.sleep(700);
+                Thread.sleep(200);
                 relicSpool.setPower(0.0);
             }
 
@@ -214,7 +231,7 @@ public class Teleop extends LinearOpMode
             if (gamepad1.right_stick_y >= 0.05)
             {
                 relicSpool.setPower(-1.0);
-                Thread.sleep(700);
+                Thread.sleep(200);
                 relicSpool.setPower(0.0);
             }
 
