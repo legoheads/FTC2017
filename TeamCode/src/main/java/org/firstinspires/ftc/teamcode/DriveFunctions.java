@@ -138,21 +138,21 @@ public class DriveFunctions extends LinearOpMode
     }
 
     /**
-     * If this function is called, turn on the drive motors at the given powers, to make it tank turn right
-     */
-    public void rightTurnTeleop(float power)
-    {
-        //Turn the right motors backwards and the left motors forward so that it turns right
-        setDriveMotorPowers(-power, -power, power, power);
-    }
-
-    /**
      * If this function is called, turn on the drive motors at the given powers, to make it tank turn left
      */
     public void leftTurnTeleop(float power)
     {
         //Turn the left motors backwards and the right motors forward so that it turns left
         setDriveMotorPowers(power, power, -power, -power);
+    }
+
+    /**
+     * If this function is called, turn on the drive motors at the given powers, to make it tank turn right
+     */
+    public void rightTurnTeleop(float power)
+    {
+        //Turn the right motors backwards and the left motors forward so that it turns right
+        setDriveMotorPowers(-power, -power, power, power);
     }
 
     /**
@@ -217,7 +217,7 @@ public class DriveFunctions extends LinearOpMode
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public static void oneMotorEncoder(int degrees, float power, DcMotor motor)
+    public static void oneMotorEncoder(DcMotor motor, float power, int degrees)
     {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
