@@ -204,6 +204,7 @@ public class Teleop extends LinearOpMode
                 intakeToggle++;
 
             }
+
             if (intakeToggle % 2 == 0)
             {
                 glyphWheelLeft.setPower(-1.0);

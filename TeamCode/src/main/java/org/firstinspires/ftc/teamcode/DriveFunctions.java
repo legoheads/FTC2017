@@ -339,20 +339,19 @@ public class DriveFunctions extends LinearOpMode
         Thread.sleep(100);
     }
 
-//    public void intake(float power)
-//    {
-//        //Move the wheels in opposite directions to intake or shoot the glyphs out, depending on the power entered
-//        glyphWheelLeft.setPower(power);
-//        glyphWheelRight.setPower(-power);
-//    }
+    public void sweepTurnLeft(float power) throws InterruptedException
+    {
+        setDriveMotorPowers(-power, -power, 0, 0);
+        Thread.sleep(600);
+        setDriveMotorPowers(0,0,0,0);
+    }
 
-//    public void glyphFlip (float power, long time) throws InterruptedException
-//    {
-//        //Activate the glyph flipper at the given power and for the given time
-//        glyphFlip.setPower(power);
-//        Thread.sleep(time);
-//        glyphFlip.setPower(0.0);
-//    }
+    public void sweepTurnRight(float power) throws InterruptedException
+    {
+        setDriveMotorPowers(0,0, -power, -power);
+        Thread.sleep(400);
+        setDriveMotorPowers(0,0,0,0);
+    }
 
 
     /**
@@ -409,12 +408,12 @@ public class DriveFunctions extends LinearOpMode
     public void jewelPush(ColorSensor colorSensor, String color, String colorSeen) throws InterruptedException
     {
         //Define constants to avoid magic numbers
-        float power = (float) 0.3;
-        int shortDistance = 100;
-        int longDistance = 140;
+        float power = (float) 0.7;
+        int shortDistance = 120;
+        int longDistance = 170;
 
         //Drop the arm
-        jewelArm.setPosition(0.8);
+        jewelArm.setPosition(0.7);
 
         //Wait for 1 second
         Thread.sleep(1000);
@@ -438,9 +437,6 @@ public class DriveFunctions extends LinearOpMode
             //Lift the arm
             jewelArm.setPosition(0.0);
 
-            //Wait for 1 second
-            Thread.sleep(1000);
-
             //Turn back to the original position so we can continue
             leftTurnAutonomous(power, longDistance);
         }
@@ -453,9 +449,6 @@ public class DriveFunctions extends LinearOpMode
 
             //Lift the arm
             jewelArm.setPosition(0.0);
-
-            //Wait for 1 second
-            Thread.sleep(1000);
 
             //Turn back to the original position so we can continue
             rightTurnAutonomous(power, shortDistance);

@@ -115,6 +115,13 @@ public class autoBlue1 extends LinearOpMode
         //Activate Trackables
         relicTrackables.activate();
 
+        relicSpool.setPower(1.0);
+        Thread.sleep(300);
+        relicSpool.setPower(0.0);
+        relicFlip.setPower(-1.0);
+        Thread.sleep(700);
+        relicFlip.setPower(0.0);
+
 //***************************************************************************************************************************
         while (opModeIsActive())
         {
@@ -161,17 +168,11 @@ public class autoBlue1 extends LinearOpMode
             //Drive to the cryptobox
             functions.driveAutonomous(drivePower, distanceToCryptobox);
 
-            //Small delay
-            Thread.sleep(300);
-
             //Turn to be aligned with crytobox
             functions.rightTurnAutonomous(turnPower, 1075);
 
             glyphWheelLeft.setPower(-1.0);
             glyphWheelRight.setPower(1.0);
-
-            //Small delay
-            Thread.sleep(300);
 
             //Go to the cryptobox and put the glyph into the cryptobox
 //            functions.driveAutonomous(-drivePower, -80);
@@ -180,27 +181,23 @@ public class autoBlue1 extends LinearOpMode
 
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.2);
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             glyphFlip.setPosition(1.0);
 
             functions.driveAutonomous(-drivePower / 4, -300);
 
             functions.driveAutonomous(drivePower, 2500);
 
-            functions.leftTurnAutonomous(turnPower, 400);
+            functions.sweepTurnLeft(turnPower);
 
-            functions.rightTurnAutonomous(turnPower, 400);
-
-
-
-//            functions.driveAutonomous(drivePower, 500);
+            functions.sweepTurnRight(turnPower);
 
             //Push in the glyph one final time
             functions.driveAutonomous(-drivePower, -2000);
 
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.2);
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             glyphFlip.setPosition(1.0);
 
             functions.driveAutonomous(-drivePower / 4, -300);

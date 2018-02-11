@@ -156,29 +156,33 @@ public class autoBlue2 extends LinearOpMode
             functions.driveAutonomous(drivePower, 1200);
 
             //Turn 180 degrees
-            functions.rightTurnAutonomous(turnPower, 2000);
+            functions.rightTurnAutonomous(turnPower, 2050);
 
             //Shift towards the cryptobox
             functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
-            //Drive into the cryptobox
-            functions.driveAutonomous(-drivePower, -700);
-
             //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.0);
+            glyphFlip.setPosition(0.2);
+            Thread.sleep(1000);
+            glyphFlip.setPosition(1.0);
+
+            //Drive into the cryptobox
+            functions.driveAutonomous(-drivePower, -300);
 
             //Turn to ensure the glyph is in the cryptobox
             if (distanceToCryptobox != vuforiaValues[0])
             {
-                functions.rightTurnAutonomous(turnPower, 300);
+                functions.leftTurnAutonomous(turnPower, 300);
             }
             else
             {
-                functions.leftTurnAutonomous(turnPower, 300);
+                functions.rightTurnAutonomous(turnPower, 300);
             }
 
             //Push the glyph in one final time
             functions.driveAutonomous(-drivePower, -400);
+
+            functions.driveAutonomous(drivePower, 200);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
