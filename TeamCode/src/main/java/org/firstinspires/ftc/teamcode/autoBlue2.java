@@ -149,9 +149,6 @@ public class autoBlue2 extends LinearOpMode
                 distanceToCryptobox = vuforiaValues[1];
             }
 
-            //Lift the flipper off the ground so we can drive around
-            glyphFlip.setPosition(0.4);
-
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 

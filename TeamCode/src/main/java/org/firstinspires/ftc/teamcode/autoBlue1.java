@@ -51,15 +51,15 @@ public class autoBlue1 extends LinearOpMode
     String colorSeen;
 
     //Define the vuforia values
-    int vuforiaValues[] = {1290, 1650, 2010};
+    int vuforiaValues[] = {1250, 1650, 2050};
 
     //Define an int to use as the distance to the cryptobox
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
-    float drivePower = (float) 0.2;
-    float shiftPower = (float) 0.2;
-    float turnPower = (float) 0.2;
+    float drivePower = (float) 0.8;
+    float shiftPower = (float) 0.8;
+    float turnPower = (float) 0.8;
 
     //Vuforia Initialization
     OpenGLMatrix lastLocation = null;
@@ -155,9 +155,6 @@ public class autoBlue1 extends LinearOpMode
                 distanceToCryptobox = vuforiaValues[1];
             }
 
-            //Lift the flipper off the ground so we can drive around
-            glyphFlip.setPosition(0.5);
-
             //Do jewels
             functions.jewelPush(colorSensor, color, colorSeen);
 
@@ -168,7 +165,10 @@ public class autoBlue1 extends LinearOpMode
             Thread.sleep(300);
 
             //Turn to be aligned with crytobox
-            functions.rightTurnAutonomous(turnPower, 1050);
+            functions.rightTurnAutonomous(turnPower, 1075);
+
+            glyphWheelLeft.setPower(-1.0);
+            glyphWheelRight.setPower(1.0);
 
             //Small delay
             Thread.sleep(300);
@@ -176,29 +176,49 @@ public class autoBlue1 extends LinearOpMode
             //Go to the cryptobox and put the glyph into the cryptobox
 //            functions.driveAutonomous(-drivePower, -80);
 
-            functions.driveAutonomous(-drivePower, -100);
+            functions.driveAutonomous(-drivePower, -300);
 
             //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.0);
-
+            glyphFlip.setPosition(0.2);
             Thread.sleep(2000);
+            glyphFlip.setPosition(1.0);
 
-            functions.driveAutonomous(-drivePower, -200);
+            functions.driveAutonomous(-drivePower / 4, -300);
+
+            functions.driveAutonomous(drivePower, 2500);
+
+            functions.leftTurnAutonomous(turnPower, 400);
+
+            functions.rightTurnAutonomous(turnPower, 400);
+
+
+
+//            functions.driveAutonomous(drivePower, 500);
+
+            //Push in the glyph one final time
+            functions.driveAutonomous(-drivePower, -2000);
+
+            //Flip the glyph into the cryptobox
+            glyphFlip.setPosition(0.2);
+            Thread.sleep(2000);
+            glyphFlip.setPosition(1.0);
+
+            functions.driveAutonomous(-drivePower / 4, -300);
 
             //Turn to ensure the glyph enters the cryptobox
             if (distanceToCryptobox == vuforiaValues[0])
             {
-                functions.rightTurnAutonomous(turnPower, 300);
+                functions.rightTurnAutonomous(turnPower / 4, 300);
             }
             else
             {
-                functions.leftTurnAutonomous(turnPower, 300);
+                functions.leftTurnAutonomous(turnPower / 4, 300);
             }
 
             //Push in the glyph one final time
-            functions.driveAutonomous(-drivePower, -400);
+            functions.driveAutonomous(-drivePower / 4, -400);
 
-            functions.driveAutonomous(drivePower, 250);
+            functions.driveAutonomous(drivePower / 4, 250);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

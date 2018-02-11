@@ -414,7 +414,7 @@ public class DriveFunctions extends LinearOpMode
         int longDistance = 140;
 
         //Drop the arm
-        jewelArm.setPosition(0.5);
+        jewelArm.setPosition(0.8);
 
         //Wait for 1 second
         Thread.sleep(1000);
