@@ -197,12 +197,12 @@ public class Teleop extends LinearOpMode
             if (gamepad1.dpad_up)
             {
                 glyphFlip.setPosition(0.9);
-                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1600);
+                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1500);
 //                functions.servoTime(glyphFlip, 0.2, 1.0,1000);
                 glyphFlip.setPosition(0.3);
                 sleep(1200);
                 glyphFlip.setPosition(0.95);
-                functions.oneMotorEncoder(glyphLift, (float) 0.5, 1600);
+                functions.oneMotorEncoder(glyphLift, (float) 0.5, 1500);
             }
 
             //If the right joystick is not pushed significantly, keep it stationary
