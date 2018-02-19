@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Disabled
 @TeleOp(name = "Data Logging Program") //Name the program
 public class dataLogging extends LinearOpMode
 {
@@ -83,12 +82,14 @@ public class dataLogging extends LinearOpMode
                 leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                glyphLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
                 //Use the encoders
                 leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                glyphLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             //Show all the encoder values on the driver station
@@ -96,6 +97,7 @@ public class dataLogging extends LinearOpMode
             telemetry.addData("left back", leftMotorBack.getCurrentPosition());
             telemetry.addData("right front", rightMotorFront.getCurrentPosition());
             telemetry.addData("right back", rightMotorBack.getCurrentPosition());
+            telemetry.addData("glyphSpool", glyphLift.getCurrentPosition());
 
             //Update the data if/when it changes
             telemetry.update();

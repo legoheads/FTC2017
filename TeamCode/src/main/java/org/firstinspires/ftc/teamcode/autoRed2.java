@@ -150,9 +150,6 @@ public class autoRed2 extends LinearOpMode
                 distanceToCryptobox = vuforiaValues[1];
             }
 
-            //Lift the flipper so we can drive around
-            glyphFlip.setPosition(0.4);
-
             //Do jewels and get off platform
             functions.jewelPush(colorSensor, color, colorSeen);
 
@@ -166,7 +163,9 @@ public class autoRed2 extends LinearOpMode
             functions.driveAutonomous(-drivePower, -450);
 
             //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.0);
+            glyphFlip.setPosition(0.3);
+            Thread.sleep(1200);
+            glyphFlip.setPosition(0.95);
 
             ///Turn to ensure the glyph enters the cryptobox
             if (distanceToCryptobox == vuforiaValues[0])

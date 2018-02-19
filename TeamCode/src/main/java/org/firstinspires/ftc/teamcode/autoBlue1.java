@@ -180,9 +180,9 @@ public class autoBlue1 extends LinearOpMode
             functions.driveAutonomous(-drivePower, -300);
 
             //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.2);
-            Thread.sleep(1000);
-            glyphFlip.setPosition(1.0);
+            glyphFlip.setPosition(0.3);
+            Thread.sleep(1200);
+            glyphFlip.setPosition(0.95);
 
             functions.driveAutonomous(-drivePower / 4, -300);
 
@@ -196,9 +196,9 @@ public class autoBlue1 extends LinearOpMode
             functions.driveAutonomous(-drivePower, -2000);
 
             //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.2);
-            Thread.sleep(1000);
-            glyphFlip.setPosition(1.0);
+            glyphFlip.setPosition(0.3);
+            Thread.sleep(1200);
+            glyphFlip.setPosition(0.95);
 
             functions.driveAutonomous(-drivePower / 4, -300);
 

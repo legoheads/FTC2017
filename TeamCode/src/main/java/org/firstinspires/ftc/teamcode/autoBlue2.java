@@ -162,8 +162,9 @@ public class autoBlue2 extends LinearOpMode
             functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
             //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.2);
-
+            glyphFlip.setPosition(0.3);
+            Thread.sleep(1200);
+            glyphFlip.setPosition(0.95);
 
             //Drive into the cryptobox
             functions.driveAutonomous(-drivePower, -300);

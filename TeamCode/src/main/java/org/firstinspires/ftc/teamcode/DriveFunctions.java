@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -228,6 +229,28 @@ public class DriveFunctions extends LinearOpMode
         { }
         motor.setPower(0.0);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public static void crServoTime(CRServo motor, float power, int time)
+    {
+        ElapsedTime count = new ElapsedTime();
+        count.reset();
+        motor.setPower(power);
+        if (count.time() > time)
+        {
+            motor.setPower(0.0);
+        }
+    }
+
+    public void servoTime(Servo motor, double position1, double position2, int time)
+    {
+        ElapsedTime counter = new ElapsedTime();
+        counter.reset();
+        if (counter.time() <= time)
+        {
+            motor.setPosition(position1);
+        }
+        motor.setPosition(position2);
     }
 
     /**
