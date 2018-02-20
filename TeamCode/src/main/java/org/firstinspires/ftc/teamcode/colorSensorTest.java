@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import android.graphics.Color;
 
-@Disabled
 @TeleOp(name="Color Sensor Test") //Name the class
 public class colorSensorTest extends LinearOpMode
 {

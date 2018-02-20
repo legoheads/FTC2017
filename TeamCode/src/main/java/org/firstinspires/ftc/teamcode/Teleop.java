@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.concurrent.locks.Lock;
+
 @TeleOp(name="TeleOp") //Name the class
 public class Teleop extends LinearOpMode
 {
@@ -37,14 +39,10 @@ public class Teleop extends LinearOpMode
     ColorSensor colorSensor;
 
     //Define floats to be used as joystick inputs and trigger inputs
-    float fastDrivePower;
-    float fastShiftPower;
-    float fastLeftTurnPower;
-    float fastRightTurnPower;
-    float slowDrivePower;
-    float slowShiftPower;
-    float slowLeftTurnPower;
-    float slowRightTurnPower;
+    float drivePower;
+    float shiftPower;
+    float leftTurnPower;
+    float rightTurnPower;
     float liftPower;
 
     //Define ints to be used as toggles
@@ -111,14 +109,10 @@ public class Teleop extends LinearOpMode
 
     //DRIVE MOTOR CONTROLS
             //Set float variables as the inputs from the joysticks and the triggers
-            fastDrivePower = gamepad1.left_stick_y + gamepad2.left_stick_y;
-            fastShiftPower = gamepad1.left_stick_x + gamepad2.left_stick_x;
-            fastLeftTurnPower = (gamepad1.left_trigger + gamepad2.left_trigger)/2;
-            fastRightTurnPower = (gamepad1.right_trigger + gamepad2.right_trigger)/2;
-            slowDrivePower = gamepad1.left_stick_y / 3;
-            slowShiftPower = gamepad1.left_stick_x / 3;
-            //slowLeftTurnPower = gamepad2.left_trigger / 3;
-            //slowRightTurnPower = gamepad2.right_trigger / 3;
+            drivePower = (float) ((gamepad1.left_stick_y + gamepad2.left_stick_y) * 0.85);
+            shiftPower = (float) ((gamepad1.left_stick_x + gamepad2.left_stick_x) * 0.85);
+            leftTurnPower = (gamepad1.left_trigger + gamepad2.left_trigger) / 2;
+            rightTurnPower = (gamepad1.right_trigger + gamepad2.right_trigger) / 2;
             liftPower = -gamepad1.right_stick_y;
 
 
@@ -136,51 +130,32 @@ public class Teleop extends LinearOpMode
             }
 
             //Shift if pushed more on X than Y on gamepad1 (fast)
-            if (Math.abs(fastShiftPower) > Math.abs(fastDrivePower))
+            if (Math.abs(shiftPower) > Math.abs(drivePower))
             {
-                functions.shiftTeleop(fastShiftPower);
+                functions.shiftTeleop(shiftPower);
             }
 
             //Drive if joystick pushed more Y than X on gamepad1 (fast)
-            if (Math.abs(fastDrivePower) > Math.abs(fastShiftPower))
+            if (Math.abs(drivePower) > Math.abs(shiftPower))
             {
-                functions.driveTeleop(fastDrivePower);
-            }
-
-            //Shift if pushed more on X than Y on gamepad2 (slow)
-            if (Math.abs(slowShiftPower) > Math.abs(slowDrivePower))
-            {
-                functions.shiftTeleop(slowShiftPower);
-            }
-
-            //Drive if pushed more on Y than X on gamepad2 (slow)
-            if (Math.abs(slowDrivePower) > Math.abs(slowShiftPower))
-            {
-                functions.driveTeleop(slowDrivePower);
+                functions.driveTeleop(drivePower);
             }
 
             //If the left trigger is pushed on gamepad1, turn left at that power (fast)
-            if (fastLeftTurnPower > 0)
+            if (leftTurnPower > 0)
             {
-                functions.leftTurnTeleop(fastLeftTurnPower);
+                functions.leftTurnTeleop(leftTurnPower);
             }
 
             //If the right trigger is pushed on gamepad1, turn right at that power (fast)
-            if (fastRightTurnPower > 0)
+            if (rightTurnPower > 0)
             {
-                functions.rightTurnTeleop(fastRightTurnPower);
+                functions.rightTurnTeleop(rightTurnPower);
             }
 
-            //If the left trigger is pushed on gamepad2, turn left at that power (slow)
-            if (slowLeftTurnPower > 0)
+            if (Math.abs(drivePower) + Math.abs(shiftPower) + Math.abs(leftTurnPower) + Math.abs(rightTurnPower) < 0.15)
             {
-                functions.leftTurnTeleop(slowLeftTurnPower);
-            }
-
-            //If the right trigger is pushed on gamepad2, turn right at that power (slow)
-            if (slowRightTurnPower > 0)
-            {
-                functions.rightTurnTeleop(slowRightTurnPower);
+                functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
             }
 
             if (gamepad1.right_stick_y == 0.0)
@@ -188,17 +163,11 @@ public class Teleop extends LinearOpMode
                 relicSpool.setPower(0.0);
             }
 
-            if (Math.abs(fastDrivePower) + Math.abs(fastShiftPower) + Math.abs(fastLeftTurnPower) + Math.abs(fastRightTurnPower) + Math.abs(slowDrivePower) + Math.abs(slowShiftPower) + Math.abs(slowLeftTurnPower) + Math.abs(slowRightTurnPower) < 0.15)
-            {
-                functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
-            }
-
             //If the right joystick is pushed significantly, operate the lifter at the given power
             if (gamepad1.dpad_up)
             {
                 glyphFlip.setPosition(0.9);
                 functions.oneMotorEncoder(glyphLift, (float) -0.7, -1500);
-//                functions.servoTime(glyphFlip, 0.2, 1.0,1000);
                 glyphFlip.setPosition(0.3);
                 sleep(1200);
                 glyphFlip.setPosition(0.95);
@@ -208,7 +177,6 @@ public class Teleop extends LinearOpMode
             //If the right joystick is not pushed significantly, keep it stationary
             if (gamepad1.dpad_down)
             {
-//                functions.servoTime(glyphFlip, 0.2, 1.0,1000);
                 glyphFlip.setPosition(0.3);
                 sleep(1200);
                 glyphFlip.setPosition(0.95);
@@ -226,8 +194,8 @@ public class Teleop extends LinearOpMode
             }
             if (intakeToggle % 2 == 1)
             {
-                glyphWheelLeft.setPower(0.0);
-                glyphWheelRight.setPower(0.0);
+                glyphWheelLeft.setPower(1.0);
+                glyphWheelRight.setPower(-1.0);
             }
 
         //RELIC CONTROLS

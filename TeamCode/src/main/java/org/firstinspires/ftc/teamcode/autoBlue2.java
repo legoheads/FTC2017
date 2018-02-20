@@ -48,13 +48,13 @@ public class autoBlue2 extends LinearOpMode
     String color = "Blue";
     String colorSeen;
 
-    int vuforiaValues[] = {350, 750, 1100};
+    int vuforiaValues[] = {300, 700, 1100};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
-    float drivePower = (float) 0.2;
-    float shiftPower = (float) 0.2;
-    float turnPower = (float) 0.2;
+    float drivePower = (float) 0.3;
+    float shiftPower = (float) 0.3;
+    float turnPower = (float) 0.3;
 
     //Vuforia Initialization
     OpenGLMatrix lastLocation = null;
@@ -116,7 +116,7 @@ public class autoBlue2 extends LinearOpMode
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
             //Look for the cryptobox key for 5 seconds, then move on. Set the key as equal to vuMark
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 400)
             {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
@@ -153,7 +153,7 @@ public class autoBlue2 extends LinearOpMode
             functions.jewelPush(colorSensor, color, colorSeen);
 
             //Drive towards the cryptobox
-            functions.driveAutonomous(drivePower, 1350);
+            functions.driveAutonomous(drivePower, 1250);
 
             //Turn 180 degrees
             functions.rightTurnAutonomous(turnPower, 2050);
@@ -161,28 +161,30 @@ public class autoBlue2 extends LinearOpMode
             //Shift towards the cryptobox
             functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
+            functions.driveAutonomous(-drivePower, -200);
+
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.3);
             Thread.sleep(1200);
             glyphFlip.setPosition(0.95);
 
             //Drive into the cryptobox
-            functions.driveAutonomous(-drivePower, -300);
+            functions.driveAutonomous(-drivePower * 2, -300);
 
             //Turn to ensure the glyph is in the cryptobox
             if (distanceToCryptobox != vuforiaValues[0])
             {
-                functions.leftTurnAutonomous(turnPower, 300);
+                functions.leftTurnAutonomous(turnPower * 2, 300);
             }
             else
             {
-                functions.rightTurnAutonomous(turnPower, 300);
+                functions.rightTurnAutonomous(turnPower * 2, 300);
             }
 
             glyphFlip.setPosition(1.0);
 
-            //Push the glyph in one final time
-            functions.driveAutonomous(-drivePower, -200);
+//            //Push the glyph in one final time
+//            functions.driveAutonomous(-drivePower, -200);
 
 
 

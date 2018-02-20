@@ -105,6 +105,9 @@ public class DriveFunctions extends LinearOpMode
         leftMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        relicSpool.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        glyphLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 
     /**
