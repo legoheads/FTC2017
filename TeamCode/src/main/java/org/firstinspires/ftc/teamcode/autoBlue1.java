@@ -182,15 +182,17 @@ public class autoBlue1 extends LinearOpMode
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.3);
             Thread.sleep(1200);
-            glyphFlip.setPosition(0.95);
 
             functions.driveAutonomous(-drivePower / 4, -300);
 
+            glyphFlip.setPosition(0.95);
+
             functions.driveAutonomous(drivePower, 2500);
 
-            functions.sweepTurnLeft(turnPower);
+            functions.leftTurnAutonomous((float)0.8, 530);
 
-            functions.sweepTurnRight(turnPower);
+            functions.rightTurnAutonomous((float)0.8, 530);
+
 
             //Push in the glyph one final time
             functions.driveAutonomous(-drivePower, -2000);
@@ -198,9 +200,12 @@ public class autoBlue1 extends LinearOpMode
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.3);
             Thread.sleep(1200);
-            glyphFlip.setPosition(0.95);
+
 
             functions.driveAutonomous(-drivePower / 4, -300);
+
+            glyphFlip.setPosition(0.95);
+
 
             //Turn to ensure the glyph enters the cryptobox
             if (distanceToCryptobox == vuforiaValues[0])

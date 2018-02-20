@@ -48,7 +48,7 @@ public class autoBlue2 extends LinearOpMode
     String color = "Blue";
     String colorSeen;
 
-    int vuforiaValues[] = {300, 700, 1100};
+    int vuforiaValues[] = {300, 720, 1100};
     int distanceToCryptobox;
 
     //Define powers to avoid magic numbers
@@ -161,23 +161,23 @@ public class autoBlue2 extends LinearOpMode
             //Shift towards the cryptobox
             functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
-            functions.driveAutonomous(-drivePower, -200);
+            functions.driveAutonomous(-drivePower, -150);
 
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.3);
             Thread.sleep(1200);
-            glyphFlip.setPosition(0.95);
+//            glyphFlip.setPosition(0.95);
+
+            functions.driveAutonomous(drivePower, 100);
 
             //Drive into the cryptobox
             functions.driveAutonomous(-drivePower * 2, -300);
 
             //Turn to ensure the glyph is in the cryptobox
-            if (distanceToCryptobox != vuforiaValues[0])
-            {
+            if (distanceToCryptobox != vuforiaValues[0]){
                 functions.leftTurnAutonomous(turnPower * 2, 300);
             }
-            else
-            {
+            else {
                 functions.rightTurnAutonomous(turnPower * 2, 300);
             }
 
@@ -185,8 +185,6 @@ public class autoBlue2 extends LinearOpMode
 
 //            //Push the glyph in one final time
 //            functions.driveAutonomous(-drivePower, -200);
-
-
 
             functions.driveAutonomous(drivePower, 200);
 
