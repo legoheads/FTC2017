@@ -45,13 +45,16 @@ public class Teleop extends LinearOpMode
     float rightTurnPower;
     float liftPower;
 
-    //Define ints to be used as toggles
+    //Define an int to be used as a toggle
     int intakeToggle = 0;
 
+    //Define an int to use as gamepad2 initialization
     int gamepad2Init = 0;
+
     //Define an elapsed time variable
     private ElapsedTime runtime = new ElapsedTime();
 
+    //Define booleans to make relic movements and shut off the intake wheels when gamepad2 is initialized
     boolean bMoved = false;
     boolean intakeWheelsOn = true;
 
@@ -60,7 +63,7 @@ public class Teleop extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //Get references to the DC motors from the hardware map
+        //Get references to the DC Motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
@@ -76,7 +79,7 @@ public class Teleop extends LinearOpMode
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");
 
-        //Get references to the sensor from the hardware map
+        //Get references to the Color Sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
@@ -88,6 +91,7 @@ public class Teleop extends LinearOpMode
         //Wait for start button to be clicked
         waitForStart();
 
+        //Reset the flipper
         glyphFlip.setPosition(0.95);
 
         //Reset the runtime after the start button is clicked
@@ -100,7 +104,6 @@ public class Teleop extends LinearOpMode
         while (opModeIsActive())
         {
 
-            telemetry.addData("ENC", glyphLift.getCurrentPosition());
     //ARM CONTROLS
             //Lift the arm for the whole teleop phase so that it doesn't fall out of the robot
             jewelArm.setPosition(0.0);
