@@ -303,11 +303,13 @@ public class DriveFunctions extends LinearOpMode
         //Set the servo motor to the first position entered
         motor.setPosition(position1);
 
-        //While the timecounter is less
+        //While the timecounter is less than the entered time, delay
         while (counter.time() <= time)
         {
-            motor.setPosition(position1);
+
         }
+
+        //After the entered time has elapsed, move the servo to the second position
         motor.setPosition(position2);
     }
 

@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Disabled
 @TeleOp(name="Tele Op Test") //Name the class
-public class testBotTele extends LinearOpMode {
+public class testBotTele extends LinearOpMode
+{
     //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
@@ -23,6 +24,7 @@ public class testBotTele extends LinearOpMode {
     float rightTurnPower;
     float leftTurnPower;
 
+    //Define a function to use to set motor powers
     public void setDriveMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower)
     {
         //Use the entered powers and feed them to the motors
@@ -55,29 +57,24 @@ public class testBotTele extends LinearOpMode {
         //LOOP BELOW
         //While the op mode is active, do anything within the loop
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //Set float variables as the inputs from the joysticks and the triggers
             drivePower = gamepad1.left_stick_y;
             shiftPower = gamepad1.left_stick_x / 3 ;
             leftTurnPower = gamepad1.left_trigger / 2;
             rightTurnPower = gamepad1.right_trigger / 2;
 
-            //Shift if pushed more on X than Y
-            if (Math.abs(shiftPower) > Math.abs(drivePower))
-            {
-                setDriveMotorPowers(-shiftPower, shiftPower, shiftPower, -shiftPower);
-            }
-
-            //Drive if joystick pushed more Y than X
+            //Drive if the joystick is pushed more Y than X
             if (Math.abs(drivePower) > Math.abs(shiftPower))
             {
                 setDriveMotorPowers(drivePower, drivePower, drivePower, drivePower);
             }
 
-            //Do nothing if joystick is stationary
-            if (drivePower == 0 && shiftPower == 0)
+            //Shift if the joystick is pushed more on X than Y
+            if (Math.abs(shiftPower) > Math.abs(drivePower))
             {
-                setDriveMotorPowers(0, 0, 0, 0);
+                setDriveMotorPowers(-shiftPower, shiftPower, shiftPower, -shiftPower);
             }
 
             //If the left trigger is pushed, turn left at that power
@@ -90,6 +87,12 @@ public class testBotTele extends LinearOpMode {
             if (rightTurnPower > 0)
             {
                 setDriveMotorPowers(rightTurnPower, rightTurnPower, -rightTurnPower, -rightTurnPower);
+            }
+
+            //Do nothing if joystick is stationary and triggers are stationary
+            if ((drivePower == 0) && (shiftPower == 0) && (leftTurnPower == 0) && (rightTurnPower == 0))
+            {
+                setDriveMotorPowers(0, 0, 0, 0);
             }
 
             //Update the data

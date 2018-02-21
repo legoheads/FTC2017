@@ -67,7 +67,7 @@ public class vuforiaTest extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //Get references to the DC motors from the hardware map
+        //Get references to the DC Motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
@@ -83,7 +83,7 @@ public class vuforiaTest extends LinearOpMode
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");
 
-        //Get references to the sensor from the hardware map
+        //Get references to the Color Sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
@@ -132,7 +132,7 @@ public class vuforiaTest extends LinearOpMode
             //If left is seen, turn to the left
             if (vuMark == RelicRecoveryVuMark.LEFT)
             {
-                functions.rightTurnAutonomous((float) 1.0, 500);
+                functions.leftTurnAutonomous((float) 1.0, 500);
             }
 
             //If center is seen, drive forward
@@ -144,8 +144,8 @@ public class vuforiaTest extends LinearOpMode
             //If right is seen, turn to the right
             if (vuMark == RelicRecoveryVuMark.RIGHT)
             {
-                functions.rightTurnAutonomous((float) -1.0, -500);
+                functions.rightTurnAutonomous((float) 1.0, 500);
             }
-        }
-    }
-}
+        } //Close "while (opModeIsActive())" loop
+    } //Close main
+} //Close class and end program
