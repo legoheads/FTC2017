@@ -163,7 +163,9 @@ public class Teleop extends LinearOpMode
                 functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
             }
 
-            if (gamepad1.right_stick_y == 0.0)
+            //If the dpad is pushed down, flip the glyphs into the cryptobox
+            //Then reset the flipper
+            if (gamepad1.dpad_down)
             {
                 glyphFlip.setPosition(0.3);
                 sleep(1200);
