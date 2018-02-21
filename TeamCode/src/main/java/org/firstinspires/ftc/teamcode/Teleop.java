@@ -53,6 +53,7 @@ public class Teleop extends LinearOpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     boolean bMoved = false;
+    boolean intakeWheelsOn = true;
 
 //***********************************************************************************************************
     //MAIN BELOW
@@ -88,10 +89,6 @@ public class Teleop extends LinearOpMode
         waitForStart();
 
         glyphFlip.setPosition(0.95);
-        relicSpool.setPower(1.0);
-        Thread.sleep(300);
-        relicSpool.setPower(0.0);
-        functions.crServoTime(relicFlip, (float) -1.0, 1400);
 
         //Reset the runtime after the start button is clicked
         runtime.reset();
@@ -103,6 +100,7 @@ public class Teleop extends LinearOpMode
         while (opModeIsActive())
         {
 
+            telemetry.addData("ENC", glyphLift.getCurrentPosition());
     //ARM CONTROLS
             //Lift the arm for the whole teleop phase so that it doesn't fall out of the robot
             jewelArm.setPosition(0.0);
@@ -125,8 +123,11 @@ public class Teleop extends LinearOpMode
             {
                 functions.crServoTime(relicFlip, (float) 1.0, 1500);
                 relicGrab.setPosition(0.32);
-                gamepad2Init++;
+                functions.intake((float) 0.0);
+                intakeWheelsOn = false;
                 bMoved = false;
+                gamepad2Init++;
+
             }
 
             //Shift if pushed more on X than Y on gamepad1 (fast)
@@ -167,11 +168,11 @@ public class Teleop extends LinearOpMode
             if (gamepad1.dpad_up)
             {
                 glyphFlip.setPosition(0.9);
-                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1500);
+                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1800);
                 glyphFlip.setPosition(0.3);
                 sleep(1200);
                 glyphFlip.setPosition(0.95);
-                functions.oneMotorEncoder(glyphLift, (float) 0.5, 1500);
+                functions.oneMotorEncoder(glyphLift, (float) 0.5, 1800);
             }
 
             //If the right joystick is not pushed significantly, keep it stationary
@@ -182,20 +183,23 @@ public class Teleop extends LinearOpMode
                 glyphFlip.setPosition(0.95);
             }
 
-            if (gamepad1.left_bumper || gamepad2.left_bumper)
+            if (gamepad1.left_bumper)
             {
                 intakeToggle++;
             }
 
-            if (intakeToggle % 2 == 0)
+            if (intakeWheelsOn)
             {
-                glyphWheelLeft.setPower(- 1.0);
-                glyphWheelRight.setPower(1.0);
-            }
-            if (intakeToggle % 2 == 1)
-            {
-                glyphWheelLeft.setPower(1.0);
-                glyphWheelRight.setPower(-1.0);
+                if (intakeToggle % 2 == 0)
+                {
+                    glyphWheelLeft.setPower(- 1.0);
+                    glyphWheelRight.setPower(1.0);
+                }
+                if (intakeToggle % 2 == 1)
+                {
+                    glyphWheelLeft.setPower(1.0);
+                    glyphWheelRight.setPower(-1.0);
+                }
             }
 
         //RELIC CONTROLS
@@ -232,7 +236,7 @@ public class Teleop extends LinearOpMode
             if (gamepad2.y)
             {
                 functions.crServoTime(relicFlip, (float) 1.0, 1500);
-                Thread.sleep(1500);
+                Thread.sleep(1800);
                 relicGrab.setPosition(0.32);
             }
 
@@ -243,6 +247,13 @@ public class Teleop extends LinearOpMode
                 functions.crServoTime(relicFlip, (float) -1.0, 4000);
             }
 
+            if (gamepad2.left_bumper)
+            {
+                functions.oneMotorEncoder(relicSpool, (float) 1.0, 6000);
+                functions.crServoTime(relicFlip, (float) 1.0, 1500);
+                Thread.sleep(1800);
+                relicGrab.setPosition(0.32);
+            }
             if (gamepad2.right_bumper)
             {
                 functions.oneMotorEncoder(relicSpool, (float) -1.0, -6000);

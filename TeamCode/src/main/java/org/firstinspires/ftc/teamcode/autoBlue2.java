@@ -44,14 +44,17 @@ public class autoBlue2 extends LinearOpMode
     //Define the color sensor
     ColorSensor colorSensor;
 
-    //Define strings to use, as our team color, and the color we see with the sensor
+    //Define strings to use as our team color and the color we see with the sensor
     String color = "Blue";
     String colorSeen;
 
+    //Define the vuforia values
     int vuforiaValues[] = {300, 720, 1100};
+
+    //Define an int to use as the distance to the cryptobox
     int distanceToCryptobox;
 
-    //Define powers to avoid magic numbers
+    //Define drive powers to avoid magic numbers
     float drivePower = (float) 0.3;
     float shiftPower = (float) 0.3;
     float turnPower = (float) 0.3;
@@ -61,12 +64,12 @@ public class autoBlue2 extends LinearOpMode
     VuforiaLocalizer vuforia;
     int count = 0;
 
-    //***************************************************************************************************************************
+//***************************************************************************************************************************
     //MAIN BELOW
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //Get references to the DC motors from the hardware map
+        //Get references to the DC Motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
@@ -82,13 +85,14 @@ public class autoBlue2 extends LinearOpMode
         relicFlip = hardwareMap.crservo.get("relicFlip");
         jewelArm = hardwareMap.servo.get("jewelArm");
 
-        //Get references to the sensor from the hardware map
+        //Get references to the Color Sensor from the hardware map
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         //Set up the DriveFunctions class and give it all the necessary components (motors, sensors)
         DriveFunctions functions = new DriveFunctions(leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack, glyphWheelLeft, glyphWheelRight, glyphLift, glyphFlip, relicGrab, relicFlip, relicSpool, jewelArm, colorSensor);
 
-        //Set the sensor to active mode and set the directions of the motors
+        //Set the sensor to active mode
+        //Set the directions and modes of the motors.
         functions.initializeMotorsAndSensors();
 
         //Vuforia Initialization
@@ -103,11 +107,22 @@ public class autoBlue2 extends LinearOpMode
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
+        //Lift the jewel arm
+        jewelArm.setPosition(0.0);
+
         //Wait for start button to be clicked
         waitForStart();
 
-        //Activate Trackables
+        //Activate relic trackables
         relicTrackables.activate();
+
+        //Spool out so that the relic system does not affect glyph flipping and intake
+        relicSpool.setPower(1.0);
+        Thread.sleep(300);
+        relicSpool.setPower(0.0);
+
+        //Lift the relic grabber so it does not interfere with glyph flipping and intake
+        functions.crServoTime(relicFlip, (float) -1.0, 1400);
 
 //***************************************************************************************************************************
         while (opModeIsActive())
@@ -116,7 +131,7 @@ public class autoBlue2 extends LinearOpMode
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
             //Look for the cryptobox key for 5 seconds, then move on. Set the key as equal to vuMark
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 400)
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && count < 500)
             {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 telemetry.addData("VuMark", "%s visible", vuMark);
@@ -161,35 +176,39 @@ public class autoBlue2 extends LinearOpMode
             //Shift towards the cryptobox
             functions.leftShiftAutonomous(shiftPower, distanceToCryptobox);
 
+            //Get closer to the cryptobox
             functions.driveAutonomous(-drivePower, -150);
 
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.3);
             Thread.sleep(1200);
-//            glyphFlip.setPosition(0.95);
 
+            //Come off the cryptobox
             functions.driveAutonomous(drivePower, 100);
 
-            //Drive into the cryptobox
+            //Push the glyph into the cryptobox
             functions.driveAutonomous(-drivePower * 2, -300);
 
-            //Turn to ensure the glyph is in the cryptobox
-            if (distanceToCryptobox != vuforiaValues[0]){
+            //Turn to ensure the glyph enters the cryptobox
+            //The if statement exists simply to ensure that we do not miss the whole cryptobox by turning the wrong way
+            if (distanceToCryptobox != vuforiaValues[0])
+            {
                 functions.leftTurnAutonomous(turnPower * 2, 300);
             }
-            else {
+            else
+            {
                 functions.rightTurnAutonomous(turnPower * 2, 300);
             }
 
-            glyphFlip.setPosition(1.0);
+            //Reset the flipper
+            glyphFlip.setPosition(0.95);
 
-//            //Push the glyph in one final time
-//            functions.driveAutonomous(-drivePower, -200);
-
+            //Come off the cryptobox to ensure that the block scores since we cannot touch it to have it score
             functions.driveAutonomous(drivePower, 200);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
+
             //Break the loop after one run
             break;
         }//Close while opModeIsActive loop

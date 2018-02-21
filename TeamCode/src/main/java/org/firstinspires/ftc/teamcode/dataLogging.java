@@ -75,9 +75,10 @@ public class dataLogging extends LinearOpMode
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive())
         {
+            //If b is pressed, reset the encoders
             if (gamepad1.b)
             {
-                //If "b" is pressed, reset the encoders
+                //Reset the encoders
                 leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -97,13 +98,14 @@ public class dataLogging extends LinearOpMode
             telemetry.addData("left back", leftMotorBack.getCurrentPosition());
             telemetry.addData("right front", rightMotorFront.getCurrentPosition());
             telemetry.addData("right back", rightMotorBack.getCurrentPosition());
-            telemetry.addData("glyphSpool", glyphLift.getCurrentPosition());
+            telemetry.addData("glyphter", glyphLift.getCurrentPosition());
 
             //Update the data if/when it changes
             telemetry.update();
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
+
         } //Close "while(opModeIsActive())" loop
     } //Close "run Opmode" loop
 } //Close class and end program

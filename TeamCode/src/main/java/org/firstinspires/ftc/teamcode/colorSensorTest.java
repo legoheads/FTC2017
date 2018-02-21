@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import android.graphics.Color;
 
+@Disabled
 @TeleOp(name="Color Sensor Test") //Name the class
 public class colorSensorTest extends LinearOpMode
 {
@@ -38,6 +39,7 @@ public class colorSensorTest extends LinearOpMode
     //Define the color sensor
     ColorSensor colorSensor;
 
+    //Define a float array that will be used to store sensor input
     float hsvValues[] = {0F, 0F, 0F};
 
 //***************************************************************************************************************************
@@ -45,7 +47,7 @@ public class colorSensorTest extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //Get references to the DC motors from the hardware map
+        //Get references to the DC Motors from the hardware map
         leftMotorFront = hardwareMap.dcMotor.get("leftMotorFront");
         rightMotorFront = hardwareMap.dcMotor.get("rightMotorFront");
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
@@ -96,6 +98,7 @@ public class colorSensorTest extends LinearOpMode
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();
+
         } //Close "while (opModeIsActive())" loop
     } //Close main
 } //Close class and end program

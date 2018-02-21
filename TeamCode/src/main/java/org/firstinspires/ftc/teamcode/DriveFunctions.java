@@ -34,32 +34,28 @@ import java.util.List;
 @Disabled
 public class DriveFunctions extends LinearOpMode
 {
-    //Define Drive Motors
+    //Define drive motors
     DcMotor leftMotorFront;
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
 
-    //Define Glyph Motors
+    //Define glyph motors
     DcMotor glyphWheelLeft;
     DcMotor glyphWheelRight;
     DcMotor glyphLift;
     Servo glyphFlip;
 
-    //Relic Motors
+    //Define relic motors
     Servo relicGrab;
     CRServo relicFlip;
     DcMotor relicSpool;
 
-    //Jewel Motor
+    //Define the jewel motor
     Servo jewelArm;
 
-    //Define Sensors and the CDI
+    //Define the color sensor
     ColorSensor colorSensor;
-
-    //Initialize vuforia
-    OpenGLMatrix lastLocation = null;
-    VuforiaLocalizer vuforia;
 
     /**
      * Initialize all the hardware
@@ -87,7 +83,7 @@ public class DriveFunctions extends LinearOpMode
     }
 
     /**
-     * Set sensor addresses, modes and DC motor directions
+     * Set sensor addresses, modes and DC motor directions, modes
      */
     public void initializeMotorsAndSensors()
     {
@@ -100,12 +96,16 @@ public class DriveFunctions extends LinearOpMode
         rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //Set the motors to brake mode to prevent rolling due to chain
+        //Set the drive motors to brake mode to prevent rolling due to chain
         leftMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //Set the relic spool on float mode to allow the motor to move when it has no power set to it
         relicSpool.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        //Set the glyph lifter on brake mode to lock the glyphter at a certain height when not being used
         glyphLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
@@ -135,10 +135,10 @@ public class DriveFunctions extends LinearOpMode
     /**
      * If this function is called, turn on the drive motors at the given powers to make it drive forward or backwards
      */
-    public void driveTeleop(float drive)
+    public void driveTeleop(float power)
     {
         //Send all the motors in the same direction
-        setDriveMotorPowers(drive, drive, drive, drive);
+        setDriveMotorPowers(power, power, power, power);
     }
 
     /**
@@ -163,10 +163,20 @@ public class DriveFunctions extends LinearOpMode
      * If this function is called, turn on the drive motors at the
      * given powers, to make it shift in the desired direction
      */
-    public void shiftTeleop(float shift)
+    public void shiftTeleop(float power)
     {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift
-        setDriveMotorPowers(-shift, shift, shift, -shift);
+        setDriveMotorPowers(-power, power, power, -power);
+    }
+
+    /**
+     * If this function is called, turn on the intake wheels either intaking or outputing
+     */
+    public void intake(float power)
+    {
+        //Start the intake wheels
+        glyphWheelLeft.setPower(-power);
+        glyphWheelRight.setPower(power);
     }
 
     public void resetEncoders()
@@ -192,7 +202,7 @@ public class DriveFunctions extends LinearOpMode
         //Reset the encoders
         resetEncoders();
 
-        //Set up the motors run to the given position
+        //Set up the motors to run to the given position
         leftMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftMotorBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -221,35 +231,80 @@ public class DriveFunctions extends LinearOpMode
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    /**
+     * If this function is called, it enables us to run one DC motor to a specific distance
+     */
     public static void oneMotorEncoder(DcMotor motor, float power, int degrees)
     {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Use the encoder
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //Reset the encoder
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //Use the encoder
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //Set up the motor to run to the given position
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setTargetPosition(degrees);
+
+        //Set the target position as the value entered
+        motor.setTargetPosition(-degrees);
+
+        //Turn the motor on at the corresponding power
         motor.setPower(power);
+
+        //Empty while loop while the motor is moving
         while (motor.isBusy())
         { }
+
+        //Stop the motor
         motor.setPower(0.0);
+
+        //Use the encoder in the future
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public static void crServoTime(CRServo motor, float power, int time)
+    /**
+     * If this function is called, it enables us to run one continuous rotation servo motor for a specific time
+     * without affecting the rest of the robot
+     */
+    public void crServoTime(CRServo motor, float power, int time)
     {
+        //Define an elapsed time variable to count time in milliseconds
         ElapsedTime count = new ElapsedTime();
+
+        //Reset the time counter
         count.reset();
+
+        //Turn on the continuous rotation servo motor at the given power
         motor.setPower(power);
+
+        //If the time counter passes the time given, shut off the robot
         if (count.time() > time)
         {
+            //Turn off the motor
             motor.setPower(0.0);
         }
     }
 
+    /**
+     * If this function is called, it enables us to run one servo motor for a specific time
+     * without affecting the rest of the robot
+     */
     public void servoTime(Servo motor, double position1, double position2, int time)
     {
+        //Define an elapsed time variable to count time in milliseconds
         ElapsedTime counter = new ElapsedTime();
+
+        //Reset the time counter
         counter.reset();
-        if (counter.time() <= time)
+
+        //Set the servo motor to the first position entered
+        motor.setPosition(position1);
+
+        //While the timecounter is less
+        while (counter.time() <= time)
         {
             motor.setPosition(position1);
         }
@@ -260,7 +315,8 @@ public class DriveFunctions extends LinearOpMode
      * Drive for the given distance at the given power
      * @param degrees distance
      */
-    public void driveAutonomous(float power, int degrees) throws InterruptedException {
+    public void driveAutonomous(float power, int degrees) throws InterruptedException
+    {
         //Everything in the same direction creates linear driving
         moveDriveMotorsWithEncoders(-degrees, -degrees, -degrees, -degrees, -power, -power, -power, -power);
 
@@ -364,21 +420,6 @@ public class DriveFunctions extends LinearOpMode
         //Small delay
         Thread.sleep(100);
     }
-
-    public void sweepTurnLeft(float power) throws InterruptedException
-    {
-        setDriveMotorPowers(-power, -power, 0, 0);
-        Thread.sleep(600);
-        setDriveMotorPowers(0,0,0,0);
-    }
-
-    public void sweepTurnRight(float power) throws InterruptedException
-    {
-        setDriveMotorPowers(0,0, -power, -power);
-        Thread.sleep(400);
-        setDriveMotorPowers(0,0,0,0);
-    }
-
 
     /**
      * @param colorSensor take in the correct color sensor
