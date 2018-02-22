@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import necessary items
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -116,12 +117,13 @@ public class Teleop extends LinearOpMode
             rightTurnPower = (gamepad1.right_trigger + gamepad2.right_trigger) / 2;
             liftPower = -gamepad1.right_stick_y;
 
-
+            //Gamepad2 init
             if ((Math.abs(gamepad2.left_stick_y) > 0.1) && (gamepad2Init == 0))
             {
                 bMoved = true;
             }
 
+            //If gamepad2 is used, flip down the relic grabber and open the claws
             if (bMoved)
             {
                 functions.crServoTime(relicFlip, (float) 1.0, 1500);
@@ -133,16 +135,16 @@ public class Teleop extends LinearOpMode
 
             }
 
-            //Shift if pushed more on X than Y on gamepad1 (fast)
-            if (Math.abs(shiftPower) > Math.abs(drivePower))
-            {
-                functions.shiftTeleop(shiftPower);
-            }
-
             //Drive if joystick pushed more Y than X on gamepad1 (fast)
             if (Math.abs(drivePower) > Math.abs(shiftPower))
             {
                 functions.driveTeleop(drivePower);
+            }
+
+            //Shift if pushed more on X than Y on gamepad1 (fast)
+            if (Math.abs(shiftPower) > Math.abs(drivePower))
+            {
+                functions.shiftTeleop(shiftPower);
             }
 
             //If the left trigger is pushed on gamepad1, turn left at that power (fast)
@@ -168,7 +170,7 @@ public class Teleop extends LinearOpMode
             if (gamepad1.dpad_down)
             {
                 glyphFlip.setPosition(0.3);
-                sleep(1200);
+                Thread.sleep(1200);
                 glyphFlip.setPosition(0.95);
             }
 
@@ -178,28 +180,34 @@ public class Teleop extends LinearOpMode
             if (gamepad1.dpad_up)
             {
                 glyphFlip.setPosition(0.9);
-                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1800);
+                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1560);
                 glyphFlip.setPosition(0.3);
-                sleep(1200);
+                Thread.sleep(1200);
                 glyphFlip.setPosition(0.95);
-                functions.oneMotorEncoder(glyphLift, (float) 0.5, 1800);
+                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1515);
+            }
+
+            //If gamepad1 right bumper is pressed, set the intakeToggle to
+            if (gamepad1.right_bumper)
+            {
+                intakeToggle = 0;
             }
 
             //If gamepad1 left bumper is pressed, increase the increment operator for intake toggling
             if (gamepad1.left_bumper)
             {
-                intakeToggle++;
+                intakeToggle = 1;
             }
 
             //If the intake wheels are supposed to be on, set up the toggling function that allows us to intake and eject whenever we want
             if (intakeWheelsOn)
             {
-                if (intakeToggle % 2 == 0)
+                if (intakeToggle == 0)
                 {
-                    glyphWheelLeft.setPower(- 1.0);
+                    glyphWheelLeft.setPower(-1.0);
                     glyphWheelRight.setPower(1.0);
                 }
-                if (intakeToggle % 2 == 1)
+                if (intakeToggle == 1)
                 {
                     glyphWheelLeft.setPower(1.0);
                     glyphWheelRight.setPower(-1.0);
@@ -271,10 +279,10 @@ public class Teleop extends LinearOpMode
             }
 
             //If the gamepad2 dpad is pushed down, automatically climb onto the platform
-            //InstaClimb ©
+            //InstaClimb
             if (gamepad2.dpad_down)
             {
-                functions.driveAutonomous((float) -0.9, -1000);
+                functions.driveAutonomous((float) -0.9, -1200);
             }
 
             //Count time
