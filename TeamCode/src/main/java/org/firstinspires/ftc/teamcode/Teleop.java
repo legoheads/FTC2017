@@ -113,8 +113,8 @@ public class Teleop extends LinearOpMode
             //Set float variables as the inputs from the joysticks and the triggers
             drivePower = (float) ((gamepad1.left_stick_y + gamepad2.left_stick_y) * 0.85);
             shiftPower = (float) ((gamepad1.left_stick_x + gamepad2.left_stick_x) * 0.85);
-            leftTurnPower = (gamepad1.left_trigger + gamepad2.left_trigger) / 2;
-            rightTurnPower = (gamepad1.right_trigger + gamepad2.right_trigger) / 2;
+            leftTurnPower = (gamepad1.left_trigger + gamepad2.left_trigger);
+            rightTurnPower = (gamepad1.right_trigger + gamepad2.right_trigger);
             liftPower = -gamepad1.right_stick_y;
 
             //Gamepad2 init
