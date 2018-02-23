@@ -54,6 +54,9 @@ public class Teleop extends LinearOpMode
 
     //Define an elapsed time variable
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime flipTime = new ElapsedTime();
+    private ElapsedTime liftTime = new ElapsedTime();
+    private ElapsedTime spoolTime = new ElapsedTime();
 
     //Define booleans to make relic movements and shut off the intake wheels when gamepad2 is initialized
     boolean bMoved = false;
@@ -113,8 +116,8 @@ public class Teleop extends LinearOpMode
             //Set float variables as the inputs from the joysticks and the triggers
             drivePower = (float) ((gamepad1.left_stick_y + gamepad2.left_stick_y) * 0.85);
             shiftPower = (float) ((gamepad1.left_stick_x + gamepad2.left_stick_x) * 0.85);
-            leftTurnPower = (gamepad1.left_trigger + gamepad2.left_trigger);
-            rightTurnPower = (gamepad1.right_trigger + gamepad2.right_trigger);
+            leftTurnPower = (float) ((gamepad1.left_trigger + gamepad2.left_trigger) * 0.75);
+            rightTurnPower = (float) ((gamepad1.right_trigger + gamepad2.right_trigger) * 0.75);
             liftPower = -gamepad1.right_stick_y;
 
             //Gamepad2 init
@@ -165,13 +168,21 @@ public class Teleop extends LinearOpMode
                 functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
             }
 
+            if (drivePower < -0.7)
+            {
+                glyphFlip.setPosition(0.95);
+            }
+
             //If the dpad is pushed down, flip the glyphs into the cryptobox
             //Then reset the flipper
             if (gamepad1.dpad_down)
             {
                 glyphFlip.setPosition(0.3);
-                Thread.sleep(1200);
-                glyphFlip.setPosition(0.95);
+                flipTime.reset();
+                if (flipTime.time() > 1.2)
+                {
+                    glyphFlip.setPosition(0.95);
+                }
             }
 
             //If the dpad is pushed up, lift the flipper slightly to make it parallel to the groun
@@ -179,12 +190,16 @@ public class Teleop extends LinearOpMode
             //Also reset the flipper and lower the glyphter
             if (gamepad1.dpad_up)
             {
-                glyphFlip.setPosition(0.9);
-                functions.oneMotorEncoder(glyphLift, (float) -0.7, -1560);
-                glyphFlip.setPosition(0.3);
-                Thread.sleep(1200);
-                glyphFlip.setPosition(0.95);
-                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1515);
+                    glyphFlip.setPosition(0.9);
+                    functions.oneMotorEncoder(glyphLift, (float) - 0.7, - 1750, 6000, liftTime);
+                    glyphFlip.setPosition(0.3);
+                    flipTime.reset();
+                    if (flipTime.time() > 1.2)
+                    {
+                        glyphFlip.setPosition(0.95);
+                    }
+                    Thread.sleep(300);
+                    functions.oneMotorEncoder(glyphLift, (float) 0.4, 1705, 6000, liftTime);
             }
 
             //If gamepad1 right bumper is pressed, set the intakeToggle to
@@ -248,8 +263,8 @@ public class Teleop extends LinearOpMode
             if (gamepad2.y)
             {
                 functions.crServoTime(relicFlip, (float) 1.0, 1500);
-                Thread.sleep(1800);
-                relicGrab.setPosition(0.32);
+//                Thread.sleep(1800);
+//                relicGrab.setPosition(0.32);
             }
 
             //If the a button is pressed, flip the relic flipper up
@@ -264,7 +279,7 @@ public class Teleop extends LinearOpMode
             //Then open the relic claws to drop the relic
             if (gamepad2.left_bumper)
             {
-                functions.oneMotorEncoder(relicSpool, (float) 1.0, 6000);
+                functions.oneMotorEncoder(relicSpool, (float) -1.0, -6000, 5000, spoolTime);
                 functions.crServoTime(relicFlip, (float) 1.0, 1500);
                 Thread.sleep(1800);
                 relicGrab.setPosition(0.32);
@@ -275,19 +290,19 @@ public class Teleop extends LinearOpMode
             if (gamepad2.right_bumper)
             {
                 functions.crServoTime(relicFlip, (float) -1.0, 2000);
-                functions.oneMotorEncoder(relicSpool, (float) -1.0, -6000);
+                functions.oneMotorEncoder(relicSpool, (float) -1.0, -6000, 10000, spoolTime);
             }
 
             //If the gamepad2 dpad is pushed down, automatically climb onto the platform
             //InstaClimb
             if (gamepad2.dpad_down)
             {
-                functions.driveAutonomous((float) -0.9, -1200);
+                functions.driveAutonomous((float) -0.9, -1050);
             }
 
             //Count time
             //Update the data
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", runtime);
             telemetry.update();
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop

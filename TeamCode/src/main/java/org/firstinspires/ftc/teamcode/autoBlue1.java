@@ -48,7 +48,7 @@ public class autoBlue1 extends LinearOpMode
     String colorSeen;
 
     //Define the vuforia values
-    int vuforiaValues[] = {1250, 1650, 2050};
+    int vuforiaValues[] = {1150, 1550, 1950};
 
     //Define an int to use as the distance to the cryptobox
     int distanceToCryptobox;
@@ -167,10 +167,10 @@ public class autoBlue1 extends LinearOpMode
             functions.jewelPush(colorSensor, color, colorSeen);
 
             //Drive to the cryptobox
-            functions.driveAutonomous(drivePower, distanceToCryptobox);
+            functions.driveAutonomous(drivePower / 3, distanceToCryptobox);
 
             //Turn to be aligned with crytobox
-            functions.rightTurnAutonomous(turnPower, 1075);
+            functions.rightTurnAutonomous(turnPower, 1000);
 
 
             //Start the intake wheels
@@ -194,13 +194,13 @@ public class autoBlue1 extends LinearOpMode
             functions.driveAutonomous(drivePower, 2500);
 
             //Intake glyphs by turning left
-            functions.leftTurnAutonomous((float)0.8, 530);
+            functions.leftTurnAutonomous(drivePower, 530);
 
             //Intake glyphs by turning right and resetting the robots position
-            functions.rightTurnAutonomous((float)0.8, 530);
+            functions.rightTurnAutonomous(drivePower, 530);
 
             //Drive back to the cryptobox
-            functions.driveAutonomous(-drivePower, -2000);
+            functions.driveAutonomous(-drivePower, -1900);
 
             //Flip the glyph into the cryptobox
             glyphFlip.setPosition(0.3);

@@ -170,7 +170,7 @@ public class autoRed1 extends LinearOpMode
             functions.driveAutonomous(-drivePower / 2, -distanceToCryptobox);
 
             //Turn to be aligned with crytobox
-            functions.rightTurnAutonomous(turnPower, 1075);
+            functions.rightTurnAutonomous(turnPower, 1000);
 
             //Turn on the intake wheels
             glyphWheelLeft.setPower(-1.0);
@@ -199,7 +199,7 @@ public class autoRed1 extends LinearOpMode
             functions.rightTurnAutonomous(turnPower, 400);
 
             //Drive back to the cryptobox
-            functions.driveAutonomous(-drivePower, -2400);
+            functions.driveAutonomous(-drivePower / 2, -1900);
 
             //Flip the glyphs into the cryptobox
             glyphFlip.setPosition(0.3);

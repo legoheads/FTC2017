@@ -102,8 +102,8 @@ public class DriveFunctions extends LinearOpMode
         rightMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Set the relic spool on float mode to allow the motor to move when it has no power set to it
-        relicSpool.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        //Set the relic spool on brake mode to not allow the motor move when it has no power set to it
+        relicSpool.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Set the glyph lifter on brake mode to lock the glyphter at a certain height when not being used
         glyphLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -234,8 +234,9 @@ public class DriveFunctions extends LinearOpMode
     /**
      * If this function is called, it enables us to run one DC motor to a specific distance
      */
-    public static void oneMotorEncoder(DcMotor motor, float power, int degrees)
+    public static void oneMotorEncoder(DcMotor motor, float power, int degrees, int time, ElapsedTime runTime)
     {
+
         //Use the encoder
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -251,11 +252,13 @@ public class DriveFunctions extends LinearOpMode
         //Set the target position as the value entered
         motor.setTargetPosition(-degrees);
 
+        runTime.reset();
+
         //Turn the motor on at the corresponding power
         motor.setPower(power);
 
         //Empty while loop while the motor is moving
-        while (motor.isBusy())
+        while ((motor.isBusy()) && (runTime.time() <= time / 1000))
         { }
 
         //Stop the motor
@@ -297,14 +300,14 @@ public class DriveFunctions extends LinearOpMode
         //Define an elapsed time variable to count time in milliseconds
         ElapsedTime counter = new ElapsedTime();
 
-        //Reset the time counter
-        counter.reset();
-
         //Set the servo motor to the first position entered
         motor.setPosition(position1);
 
+        //Reset the time counter
+        counter.reset();
+
         //While the timecounter is less than the entered time, delay
-        while (counter.time() <= time)
+        if (counter.time() <= time)
         {
 
         }
@@ -321,18 +324,6 @@ public class DriveFunctions extends LinearOpMode
     {
         //Everything in the same direction creates linear driving
         moveDriveMotorsWithEncoders(-degrees, -degrees, -degrees, -degrees, -power, -power, -power, -power);
-
-        //Braking mechanism part 1
-        moveDriveMotorsWithEncoders(50, 50, 50, 50, (float) 1.0, (float) 1.0, (float) 1.0, (float) 1.0);
-
-        //Small delay
-        Thread.sleep(100);
-
-        //Braking mechanism part 2
-        setDriveMotorPowers(0,0,0,0);
-
-        //Small delay
-        Thread.sleep(100);
     }
 
     /**
@@ -343,18 +334,6 @@ public class DriveFunctions extends LinearOpMode
     {
         //Left motors backwards and right motors forwards gives us a left turn
         moveDriveMotorsWithEncoders(degrees, degrees, -degrees, -degrees, power, power, -power, -power);
-
-        //Braking mechanism part 1
-        moveDriveMotorsWithEncoders(-50, -50, 50, 50, (float) -1.0, (float) -1.0, (float) 1.0, (float) 1.0);
-
-        //Small delay
-        Thread.sleep(100);
-
-        //Braking mechanism part 2
-        setDriveMotorPowers(0,0,0,0);
-
-        //Small delay
-        Thread.sleep(100);
     }
 
     /**
@@ -365,18 +344,6 @@ public class DriveFunctions extends LinearOpMode
     {
         //Right motors backwards and left motors forwards gives us a right turn
         moveDriveMotorsWithEncoders(-degrees, -degrees, degrees, degrees, -power, -power, power, power);
-
-        //Braking mechanism part 1
-        moveDriveMotorsWithEncoders(50, 50, -50, -50, (float) 1.0, (float) 1.0, (float) -1.0, (float) -1.0);
-
-        //Small delay
-        Thread.sleep(100);
-
-        //Braking mechanism part 2
-        setDriveMotorPowers(0,0,0,0);
-
-        //Small delay
-        Thread.sleep(100);
     }
 
     /**
@@ -387,18 +354,6 @@ public class DriveFunctions extends LinearOpMode
     {
         //This sequence of backwards, forwards, forwards, backwards makes the robot shift left
         moveDriveMotorsWithEncoders(degrees, -degrees, -degrees, degrees, power, -power, -power, power);
-
-        //Braking mechanism part 1
-        moveDriveMotorsWithEncoders(-50, 50, 50, -50, (float) -1.0, (float) 1.0, (float) 1.0, (float) -1.0);
-
-        //Small delay
-        Thread.sleep(100);
-
-        //Braking mechanism part 2
-        setDriveMotorPowers(0,0,0,0);
-
-        //Small delay
-        Thread.sleep(100);
     }
 
     /**
@@ -409,18 +364,6 @@ public class DriveFunctions extends LinearOpMode
     {
         //This sequence of forwards, backwards, backwards, forwards makes the robot shift right
         moveDriveMotorsWithEncoders(-degrees, degrees, degrees, -degrees, -power, power, power, -power);
-
-        //Braking mechanism part 1
-        moveDriveMotorsWithEncoders(50, -50, -50, 50, (float) 1.0, (float) -1.0, (float) -1.0, (float) 1.0);
-
-        //Small delay
-        Thread.sleep(100);
-
-        //Braking mechanism part 2
-        setDriveMotorPowers(0,0,0,0);
-
-        //Small delay
-        Thread.sleep(100);
     }
 
     /**
