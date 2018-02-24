@@ -120,8 +120,9 @@ public class autoRed1 extends LinearOpMode
         Thread.sleep(300);
         relicSpool.setPower(0.0);
 
-        //Lift the relic grabber so it does not interfere with glyph flipping and intake
-        functions.crServoTime(relicFlip, (float) -0.7, 1400);
+        relicFlip.setPower(-0.7);
+        Thread.sleep(1400);
+        relicFlip.setPower(0.0);
 
 //***************************************************************************************************************************
         while (opModeIsActive())
