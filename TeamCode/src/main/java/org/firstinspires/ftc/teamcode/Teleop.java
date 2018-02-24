@@ -198,8 +198,7 @@ public class Teleop extends LinearOpMode
             //If the dpad is pushed up, lift the flipper slightly to make it parallel to the groun
             //Then lift the glyphs and flip them into the cryptobox
             //Also reset the flipper and lower the glyphter
-            if (gamepad1.dpad_up)
-            {
+            if (gamepad1.dpad_up) {
                 glyphFlip.setPosition(0.9);
 //                functions.oneMotorEncoder(glyphLift, (float) - 0.7, - 1750, 6000, liftTime);
                 //Use the encoder
@@ -223,8 +222,7 @@ public class Teleop extends LinearOpMode
                 glyphLift.setPower(-0.7);
 
                 //Empty while loop while the motor is moving
-                while ((glyphLift.isBusy()) && (liftTime.time() <= 6))
-                {
+                while ((glyphLift.isBusy()) && (liftTime.time() <= 6)) {
 
                     //Set float variables as the inputs from the joysticks and the triggers
                     drivePower = (float) ((gamepad1.left_stick_y + gamepad2.left_stick_y) * 0.85);
@@ -233,32 +231,27 @@ public class Teleop extends LinearOpMode
                     rightTurnPower = (float) ((gamepad1.right_trigger + gamepad2.right_trigger) * 0.75);
 
                     //Drive if joystick pushed more Y than X on gamepad1 (fast)
-                    if (Math.abs(drivePower) > Math.abs(shiftPower))
-                    {
+                    if (Math.abs(drivePower) > Math.abs(shiftPower)) {
                         functions.driveTeleop(drivePower);
                     }
 
                     //Shift if pushed more on X than Y on gamepad1 (fast)
-                    if (Math.abs(shiftPower) > Math.abs(drivePower))
-                    {
+                    if (Math.abs(shiftPower) > Math.abs(drivePower)) {
                         functions.shiftTeleop(shiftPower);
                     }
 
                     //If the left trigger is pushed on gamepad1, turn left at that power (fast)
-                    if (leftTurnPower > 0)
-                    {
+                    if (leftTurnPower > 0) {
                         functions.leftTurnTeleop(leftTurnPower);
                     }
 
                     //If the right trigger is pushed on gamepad1, turn right at that power (fast)
-                    if (rightTurnPower > 0)
-                    {
+                    if (rightTurnPower > 0) {
                         functions.rightTurnTeleop(rightTurnPower);
                     }
 
                     //If the joysticks are not pushed significantly shut off the wheels
-                    if (Math.abs(drivePower) + Math.abs(shiftPower) + Math.abs(leftTurnPower) + Math.abs(rightTurnPower) < 0.15)
-                    {
+                    if (Math.abs(drivePower) + Math.abs(shiftPower) + Math.abs(leftTurnPower) + Math.abs(rightTurnPower) < 0.15) {
                         functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
                     }
                 }
@@ -272,22 +265,20 @@ public class Teleop extends LinearOpMode
                 glyphFlip.setPosition(0.3);
                 flipTime.reset();
                 downTime.reset();
-                if (flipTime.time() > 1.2)
-                {
+                if (flipTime.time() > 1.2) {
                     glyphFlip.setPosition(0.95);
                 }
                 functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
-            }
 
-            if (downTime.time() > 0.8)
-            {
-                downAllowed = true;
-            }
 
-            if (downAllowed)
-            {
-                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1755, 7000, liftTime);
-                downAllowed = false;
+                if (downTime.time() > 0.8) {
+                    downAllowed = true;
+                }
+
+                if (downAllowed) {
+                    functions.oneMotorEncoder(glyphLift, (float) 0.4, 1800, 7000, liftTime);
+                    downAllowed = false;
+                }
             }
 
             //If gamepad1 right bumper is pressed, set the intakeToggle to
