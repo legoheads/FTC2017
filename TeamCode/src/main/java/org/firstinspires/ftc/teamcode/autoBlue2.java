@@ -121,7 +121,7 @@ public class autoBlue2 extends LinearOpMode
         relicSpool.setPower(0.0);
 
         //Lift the relic grabber so it does not interfere with glyph flipping and intake
-        functions.crServoTime(relicFlip, (float) -1.0, 1400);
+        functions.crServoTime(relicFlip, (float) -0.7, 1400);
 
 //***************************************************************************************************************************
         while (opModeIsActive())
