@@ -51,6 +51,7 @@ public class Teleop extends LinearOpMode
 
     //Define an int to use as gamepad2 initialization
     int gamepad2Init = 0;
+    int downTimeInit = 0;
 
     //Define an elapsed time variable
     private ElapsedTime runtime = new ElapsedTime();
@@ -110,8 +111,7 @@ public class Teleop extends LinearOpMode
         //Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive())
         {
-
-    //ARM CONTROLS
+            //ARM CONTROLS
             //Lift the arm for the whole teleop phase so that it doesn't fall out of the robot
             jewelArm.setPosition(0.0);
 
@@ -265,20 +265,23 @@ public class Teleop extends LinearOpMode
                 glyphFlip.setPosition(0.3);
                 flipTime.reset();
                 downTime.reset();
-                if (flipTime.time() > 1.2) {
+                downTimeInit = 1;
+                if (flipTime.time() > 1.2)
+                {
                     glyphFlip.setPosition(0.95);
                 }
                 functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
+            }
 
+            if (downTime.time() > 0.8 && downTimeInit == 1)
+            {
+                downAllowed = true;
+            }
 
-                if (downTime.time() > 0.8) {
-                    downAllowed = true;
-                }
-
-                if (downAllowed) {
-                    functions.oneMotorEncoder(glyphLift, (float) 0.4, 1800, 7000, liftTime);
-                    downAllowed = false;
-                }
+            if (downAllowed)
+            {
+                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1800, 7000, liftTime);
+                downAllowed = false;
             }
 
             //If gamepad1 right bumper is pressed, set the intakeToggle to
