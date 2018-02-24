@@ -173,7 +173,7 @@ public class Teleop extends LinearOpMode
                 functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
             }
 
-            if (drivePower < -0.7)
+            if (drivePower < -0.6)
             {
                 glyphFlip.setPosition(0.95);
             }
