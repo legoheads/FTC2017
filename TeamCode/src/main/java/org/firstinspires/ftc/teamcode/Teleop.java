@@ -57,10 +57,13 @@ public class Teleop extends LinearOpMode
     private ElapsedTime flipTime = new ElapsedTime();
     private ElapsedTime liftTime = new ElapsedTime();
     private ElapsedTime spoolTime = new ElapsedTime();
+    private ElapsedTime relicTime = new ElapsedTime();
+    private ElapsedTime downTime = new ElapsedTime();
 
     //Define booleans to make relic movements and shut off the intake wheels when gamepad2 is initialized
     boolean bMoved = false;
     boolean intakeWheelsOn = true;
+    boolean downAllowed = false;
 
 //***********************************************************************************************************
     //MAIN BELOW
@@ -129,7 +132,9 @@ public class Teleop extends LinearOpMode
             //If gamepad2 is used, flip down the relic grabber and open the claws
             if (bMoved)
             {
-                functions.crServoTime(relicFlip, (float) 1.0, 1500);
+//                functions.crServoTime(relicFlip, (float) 0.7, 1500);
+                relicFlip.setPower(0.7);
+                relicTime.reset();
                 relicGrab.setPosition(0.32);
                 functions.intake((float) 0.0);
                 intakeWheelsOn = false;
@@ -185,21 +190,104 @@ public class Teleop extends LinearOpMode
                 }
             }
 
+            if (relicTime.time() > 1.1)
+            {
+                relicFlip.setPower(0.0);
+            }
+
             //If the dpad is pushed up, lift the flipper slightly to make it parallel to the groun
             //Then lift the glyphs and flip them into the cryptobox
             //Also reset the flipper and lower the glyphter
             if (gamepad1.dpad_up)
             {
-                    glyphFlip.setPosition(0.9);
-                    functions.oneMotorEncoder(glyphLift, (float) - 0.7, - 1750, 6000, liftTime);
-                    glyphFlip.setPosition(0.3);
-                    flipTime.reset();
-                    if (flipTime.time() > 1.2)
+                glyphFlip.setPosition(0.9);
+//                functions.oneMotorEncoder(glyphLift, (float) - 0.7, - 1750, 6000, liftTime);
+                //Use the encoder
+                glyphLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                //Reset the encoder
+                glyphLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                //Use the encoder
+                glyphLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                //Set up the motor to run to the given position
+                glyphLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                //Set the target position as the value entered
+                glyphLift.setTargetPosition(1750);
+
+                liftTime.reset();
+
+                //Turn the motor on at the corresponding power
+                glyphLift.setPower(-0.7);
+
+                //Empty while loop while the motor is moving
+                while ((glyphLift.isBusy()) && (liftTime.time() <= 6))
+                {
+
+                    //Set float variables as the inputs from the joysticks and the triggers
+                    drivePower = (float) ((gamepad1.left_stick_y + gamepad2.left_stick_y) * 0.85);
+                    shiftPower = (float) ((gamepad1.left_stick_x + gamepad2.left_stick_x) * 0.85);
+                    leftTurnPower = (float) ((gamepad1.left_trigger + gamepad2.left_trigger) * 0.75);
+                    rightTurnPower = (float) ((gamepad1.right_trigger + gamepad2.right_trigger) * 0.75);
+
+                    //Drive if joystick pushed more Y than X on gamepad1 (fast)
+                    if (Math.abs(drivePower) > Math.abs(shiftPower))
                     {
-                        glyphFlip.setPosition(0.95);
+                        functions.driveTeleop(drivePower);
                     }
-                    Thread.sleep(300);
-                    functions.oneMotorEncoder(glyphLift, (float) 0.4, 1705, 6000, liftTime);
+
+                    //Shift if pushed more on X than Y on gamepad1 (fast)
+                    if (Math.abs(shiftPower) > Math.abs(drivePower))
+                    {
+                        functions.shiftTeleop(shiftPower);
+                    }
+
+                    //If the left trigger is pushed on gamepad1, turn left at that power (fast)
+                    if (leftTurnPower > 0)
+                    {
+                        functions.leftTurnTeleop(leftTurnPower);
+                    }
+
+                    //If the right trigger is pushed on gamepad1, turn right at that power (fast)
+                    if (rightTurnPower > 0)
+                    {
+                        functions.rightTurnTeleop(rightTurnPower);
+                    }
+
+                    //If the joysticks are not pushed significantly shut off the wheels
+                    if (Math.abs(drivePower) + Math.abs(shiftPower) + Math.abs(leftTurnPower) + Math.abs(rightTurnPower) < 0.15)
+                    {
+                        functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
+                    }
+                }
+
+                if (downTime.time() > 0.8)
+                {
+                    downAllowed = true;
+                }
+
+                //Stop the motor
+                glyphLift.setPower(0.0);
+
+                //Use the encoder in the future
+                glyphLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                glyphFlip.setPosition(0.3);
+                flipTime.reset();
+                downTime.reset();
+                if (flipTime.time() > 1.2)
+                {
+                    glyphFlip.setPosition(0.95);
+                }
+                functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
+            }
+
+            if (downAllowed)
+            {
+                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1705, 6000, liftTime);
+                downAllowed = false;
             }
 
             //If gamepad1 right bumper is pressed, set the intakeToggle to
@@ -262,16 +350,18 @@ public class Teleop extends LinearOpMode
             //Also open the claws after a certain time to drop the relic
             if (gamepad2.y)
             {
-                functions.crServoTime(relicFlip, (float) 1.0, 1500);
-//                Thread.sleep(1800);
-//                relicGrab.setPosition(0.32);
+                relicFlip.setPower(0.7);
+                relicTime.reset();
+//                functions.crServoTime(relicFlip, (float) 0.7, 1500);
             }
 
             //If the a button is pressed, flip the relic flipper up
             if (gamepad2.a)
             {
                 //Up while holding relic, since it requires more time
-                functions.crServoTime(relicFlip, (float) -1.0, 4000);
+//                functions.crServoTime(relicFlip, (float) -0.7, 3000);
+                relicFlip.setPower(-0.7);
+                relicTime.reset();
             }
 
             //If the gamepad2 left bumper is pressed, spool out for a full zone 3 extension
@@ -280,7 +370,9 @@ public class Teleop extends LinearOpMode
             if (gamepad2.left_bumper)
             {
                 functions.oneMotorEncoder(relicSpool, (float) -1.0, -6000, 5000, spoolTime);
-                functions.crServoTime(relicFlip, (float) 1.0, 1500);
+                relicFlip.setPower(0.7);
+                relicTime.reset();
+//                functions.crServoTime(relicFlip, (float) 0.7, 2000);
                 Thread.sleep(1800);
                 relicGrab.setPosition(0.32);
             }
@@ -289,7 +381,9 @@ public class Teleop extends LinearOpMode
             //Then spool the relic system all the way in
             if (gamepad2.right_bumper)
             {
-                functions.crServoTime(relicFlip, (float) -1.0, 2000);
+//                functions.crServoTime(relicFlip, (float) -0.7, 2000);
+                relicFlip.setPower(-0.7);
+                relicTime.reset();
                 functions.oneMotorEncoder(relicSpool, (float) -1.0, -6000, 10000, spoolTime);
             }
 
@@ -297,7 +391,7 @@ public class Teleop extends LinearOpMode
             //InstaClimb
             if (gamepad2.dpad_down)
             {
-                functions.driveAutonomous((float) -0.9, -1050);
+                functions.driveAutonomous((float) -0.9, -1000);
             }
 
             //Count time

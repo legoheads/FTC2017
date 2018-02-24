@@ -236,7 +236,6 @@ public class DriveFunctions extends LinearOpMode
      */
     public static void oneMotorEncoder(DcMotor motor, float power, int degrees, int time, ElapsedTime runTime)
     {
-
         //Use the encoder
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
