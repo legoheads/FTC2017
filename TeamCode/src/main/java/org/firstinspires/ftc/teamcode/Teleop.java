@@ -215,7 +215,7 @@ public class Teleop extends LinearOpMode
                 glyphLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 //Set the target position as the value entered
-                glyphLift.setTargetPosition(1750);
+                glyphLift.setTargetPosition(1800);
 
                 liftTime.reset();
 
@@ -263,11 +263,6 @@ public class Teleop extends LinearOpMode
                     }
                 }
 
-                if (downTime.time() > 0.8)
-                {
-                    downAllowed = true;
-                }
-
                 //Stop the motor
                 glyphLift.setPower(0.0);
 
@@ -284,9 +279,14 @@ public class Teleop extends LinearOpMode
                 functions.setDriveMotorPowers((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0);
             }
 
+            if (downTime.time() > 0.8)
+            {
+                downAllowed = true;
+            }
+
             if (downAllowed)
             {
-                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1705, 6000, liftTime);
+                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1755, 7000, liftTime);
                 downAllowed = false;
             }
 
