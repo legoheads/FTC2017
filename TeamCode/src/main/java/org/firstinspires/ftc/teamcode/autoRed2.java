@@ -117,7 +117,7 @@ public class autoRed2 extends LinearOpMode
 
         //Spool out so that the relic system does not affect glyph flipping and intake
         relicSpool.setPower(1.0);
-        Thread.sleep(300);
+        Thread.sleep(600);
         relicSpool.setPower(0.0);
 
         relicFlip.setPower(-0.7);

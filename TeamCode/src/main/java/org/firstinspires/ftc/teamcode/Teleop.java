@@ -214,7 +214,7 @@ public class Teleop extends LinearOpMode
                 glyphLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 //Set the target position as the value entered
-                glyphLift.setTargetPosition(1800);
+                glyphLift.setTargetPosition(1770);
 
                 liftTime.reset();
 
@@ -222,7 +222,7 @@ public class Teleop extends LinearOpMode
                 glyphLift.setPower(-0.7);
 
                 //Empty while loop while the motor is moving
-                while ((glyphLift.isBusy()) && (liftTime.time() <= 6)) {
+                while ((glyphLift.isBusy()) && (liftTime.time() <= 7)) {
 
                     //Set float variables as the inputs from the joysticks and the triggers
                     drivePower = (float) ((gamepad1.left_stick_y + gamepad2.left_stick_y) * 0.85);
@@ -280,8 +280,9 @@ public class Teleop extends LinearOpMode
 
             if (downAllowed)
             {
-                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1800, 7000, liftTime);
+                functions.oneMotorEncoder(glyphLift, (float) 0.4, 1755, 7000, liftTime);
                 downAllowed = false;
+                downTimeInit = 0;
             }
 
             //If gamepad1 right bumper is pressed, set the intakeToggle to
@@ -383,7 +384,7 @@ public class Teleop extends LinearOpMode
 
             //If the gamepad2 dpad is pushed down, automatically climb onto the platform
             //InstaClimb
-            if (gamepad2.dpad_down)
+            if ((gamepad2.dpad_down) || gamepad1.a)
             {
                 functions.driveAutonomous((float) -0.9, -1000);
             }

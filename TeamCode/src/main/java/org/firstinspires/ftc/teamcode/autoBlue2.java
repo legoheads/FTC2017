@@ -48,7 +48,7 @@ public class autoBlue2 extends LinearOpMode
     String colorSeen;
 
     //Define the vuforia values
-    int vuforiaValues[] = {300, 720, 1100};
+    int vuforiaValues[] = {210, 555, 900};
 
     //Define an int to use as the distance to the cryptobox
     int distanceToCryptobox;
@@ -117,7 +117,7 @@ public class autoBlue2 extends LinearOpMode
 
         //Spool out so that the relic system does not affect glyph flipping and intake
         relicSpool.setPower(1.0);
-        Thread.sleep(300);
+        Thread.sleep(600);
         relicSpool.setPower(0.0);
 
         relicFlip.setPower(-0.7);
@@ -204,7 +204,7 @@ public class autoBlue2 extends LinearOpMode
             glyphFlip.setPosition(0.95);
 
             //Come off the cryptobox to ensure that the block scores since we cannot touch it to have it score
-            functions.driveAutonomous(drivePower, 200);
+            functions.driveAutonomous(drivePower, 170);
 
             //Always call idle() at the bottom of your while(opModeIsActive()) loop
             idle();

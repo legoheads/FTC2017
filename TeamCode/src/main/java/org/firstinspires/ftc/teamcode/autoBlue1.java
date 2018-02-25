@@ -48,7 +48,7 @@ public class autoBlue1 extends LinearOpMode
     String colorSeen;
 
     //Define the vuforia values
-    int vuforiaValues[] = {1150, 1550, 1950};
+    int vuforiaValues[] = {1220, 1550, 1950};
 
     //Define an int to use as the distance to the cryptobox
     int distanceToCryptobox;
@@ -117,7 +117,7 @@ public class autoBlue1 extends LinearOpMode
 
         //Spool out so that the relic system does not affect glyph flipping and intake
         relicSpool.setPower(1.0);
-        Thread.sleep(300);
+        Thread.sleep(600);
         relicSpool.setPower(0.0);
 
         relicFlip.setPower(-0.7);
@@ -203,15 +203,25 @@ public class autoBlue1 extends LinearOpMode
             //Drive back to the cryptobox
             functions.driveAutonomous(-drivePower, -1900);
 
-            //Flip the glyph into the cryptobox
-            glyphFlip.setPosition(0.3);
-            Thread.sleep(1200);
+
+//            //Don't do it if it's left
+//            if (distanceToCryptobox != vuforiaValues[0]){
+//                //Flip the glyph into the cryptobox
+//                glyphFlip.setPosition(0.3);
+//                Thread.sleep(1200);
+//            }
+
 
             //Push the glyph into the cryptobox
             functions.driveAutonomous(-drivePower / 4, -300);
 
-            //Reset the flipper
-            glyphFlip.setPosition(0.95);
+
+//            //Don't do it if it's left
+//            if (distanceToCryptobox != vuforiaValues[0]){
+//                //Reset the flipper
+//                glyphFlip.setPosition(0.95);
+//            }
+
 
             //Turn to ensure the glyph enters the cryptobox
             //The if statement exists simply to ensure that we do not miss the whole cryptobox by turning the wrong way
