@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Disabled
+//@Disabled
 @TeleOp(name="Tele Op Test") //Name the class
 public class testBotTele extends LinearOpMode
 {
@@ -51,6 +51,11 @@ public class testBotTele extends LinearOpMode
         rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        leftMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightMotorFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightMotorBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         //Wait for start button to be clicked
         waitForStart();
 //***********************************************************************************************************
@@ -60,8 +65,8 @@ public class testBotTele extends LinearOpMode
         while (opModeIsActive())
         {
             //Set float variables as the inputs from the joysticks and the triggers
-            drivePower = gamepad1.left_stick_y;
-            shiftPower = gamepad1.left_stick_x / 3 ;
+            drivePower = -gamepad1.left_stick_y;
+            shiftPower = -gamepad1.left_stick_x;
             leftTurnPower = gamepad1.left_trigger / 2;
             rightTurnPower = gamepad1.right_trigger / 2;
 
